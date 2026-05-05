@@ -6,7 +6,7 @@ Template statico HTML/CSS in palette verde petrolio e azzurro metano.
 
 - index.html
 - assets/css/style.css
-- assets/img/logo.jpeg
+- assets/img/logo.png
 
 ## Anteprima locale
 
