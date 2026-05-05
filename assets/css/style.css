@@ -142,7 +142,6 @@ a {
   line-height: 1;
   letter-spacing: 0;
   white-space: nowrap;
-  text-transform: uppercase;
   animation: banner-flow 5.5s ease-in-out infinite;
 }
 
