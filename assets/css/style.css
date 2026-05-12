@@ -39,6 +39,103 @@ a {
   animation: circuit-drift 24s ease-in-out infinite alternate;
 }
 
+/* --- Menu Overlay Styles --- */
+.nav-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 34px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 0;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: var(--white);
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-toggle.active span:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.active span:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+.overlay-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7, 40, 45, 0.85);
+  backdrop-filter: blur(25px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-menu.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.overlay-menu nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.overlay-menu nav ul li {
+  margin: 24px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease-out;
+}
+
+.overlay-menu.active nav ul li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delay for staggered animation */
+.overlay-menu.active nav ul li:nth-child(1) { transition-delay: 0.1s; }
+.overlay-menu.active nav ul li:nth-child(2) { transition-delay: 0.2s; }
+.overlay-menu.active nav ul li:nth-child(3) { transition-delay: 0.3s; }
+.overlay-menu.active nav ul li:nth-child(4) { transition-delay: 0.4s; }
+.overlay-menu.active nav ul li:nth-child(5) { transition-delay: 0.5s; }
+.overlay-menu.active nav ul li:nth-child(6) { transition-delay: 0.6s; }
+
+.overlay-menu nav ul li a {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  transition: color 0.3s ease;
+}
+
+.overlay-menu nav ul li a:hover {
+  color: var(--aqua);
+}
+
 .topbar {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
@@ -198,4 +295,127 @@ a {
   .hero h1 {
     padding: 14px 16px;
   }
+}
+
+/* --- Resources Grid --- */
+.resources-container {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.resource-card {
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.resource-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--aqua);
+}
+
+.resource-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+
+.resource-card p {
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  flex-grow: 1;
+}
+
+.resource-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(85, 213, 228, 0.15);
+  color: var(--aqua);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: var(--aqua);
+  color: var(--ink);
+  border-radius: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  transition: opacity 0.3s ease;
+}
+
+.btn-download:hover {
+  opacity: 0.9;
+}
+
+.resource-card-dlms {
+  border-color: rgba(85, 213, 228, 0.5);
+}
+
+.dlms-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.btn-download-secondary {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--white);
+}
+
+.dlms-diagnostics {
+  margin-top: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(4, 26, 30, 0.35);
+}
+
+.diag-title {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--aqua);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.diag-line {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.diag-updated {
+  margin-bottom: 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.72);
 }
