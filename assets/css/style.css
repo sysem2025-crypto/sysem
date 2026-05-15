@@ -243,6 +243,17 @@ a {
   animation: banner-flow 5.5s ease-in-out infinite;
 }
 
+.home-quick-links {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-quick-links .btn-download {
+  min-width: 128px;
+}
+
 @keyframes banner-flow {
   0% {
     background-position: 0% 50%;
@@ -295,6 +306,17 @@ a {
 
   .hero h1 {
     padding: 14px 16px;
+  }
+
+  .home-quick-links {
+    margin-top: 16px;
+    gap: 8px;
+  }
+
+  .home-quick-links .btn-download {
+    min-width: auto;
+    padding: 10px 14px;
+    font-size: 0.78rem;
   }
 }
 
