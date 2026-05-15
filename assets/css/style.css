@@ -34,6 +34,7 @@ a {
   background-image:
     linear-gradient(90deg, rgba(4, 26, 30, 0.72), rgba(4, 26, 30, 0.26)),
     url("../img/hero-circuit-code.png");
+  background-repeat: no-repeat, no-repeat;
   background-size: cover, 108% auto;
   background-position: center, center;
   animation: circuit-drift 24s ease-in-out infinite alternate;
@@ -305,10 +306,73 @@ a {
   z-index: 1;
 }
 
+.resources-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.resource-menu-panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  padding: 18px;
+}
+
+.resource-menu-title {
+  margin: 0 0 14px;
+  color: var(--aqua);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resource-menu {
+  max-height: 460px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.resource-menu-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.resource-menu-item:hover {
+  border-color: rgba(85, 213, 228, 0.7);
+  background: rgba(85, 213, 228, 0.14);
+}
+
+.resource-menu-item.active {
+  border-color: var(--aqua);
+  background: rgba(85, 213, 228, 0.2);
+  transform: translateX(4px);
+}
+
+.resource-detail-panel {
+  min-height: 460px;
+}
+
 .resources-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 32px;
+  align-items: start;
 }
 
 .resource-card {
@@ -320,7 +384,7 @@ a {
   transition: transform 0.3s ease, border-color 0.3s ease;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
 }
 
 .resource-card:hover {
@@ -339,7 +403,6 @@ a {
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
-  flex-grow: 1;
 }
 
 .resource-badge {
@@ -418,4 +481,51 @@ a {
   margin-bottom: 0;
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.72);
+}
+
+/* Resource page layout fixes */
+.resource-page {
+  overflow: visible;
+}
+
+.resource-page .hero {
+  min-height: auto;
+  width: min(1180px, calc(100% - 40px));
+  margin: -84px auto 18px;
+  padding: 0 0 0 104px;
+  justify-content: flex-start;
+}
+
+.resource-page .hero p {
+  margin: 0 0 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+.resource-page .hero h1 {
+  padding: 8px 12px;
+  font-size: clamp(0.96rem, 1.8vw, 1.4rem);
+  border-radius: 6px;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .resource-page .hero {
+    margin: -20px auto 18px;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .resources-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-menu {
+    max-height: 220px;
+  }
+
+  .resource-detail-panel {
+    min-height: auto;
+  }
 }
