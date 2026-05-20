@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body>
+<body data-page="resource" data-required-role="base">
   <main class="home resource-page">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -25,16 +25,7 @@
     </header>
 
     <div class="overlay-menu" id="overlay-menu">
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="industries.html">Industries</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="resource.html">Resource</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
+      <nav><ul></ul></nav>
     </div>
 
     <section class="hero" aria-labelledby="page-title">
@@ -52,6 +43,7 @@
         <span class="resource-badge" id="resource-detail-badge">--</span>
         <h3 id="resource-detail-title">--</h3>
         <p id="resource-detail-description">Seleziona una risorsa dal menu per visualizzare dettagli e azioni.</p>
+        <div class="resource-meta" id="resource-detail-meta" aria-label="Scheda risorsa"></div>
         <div class="dlms-actions" id="resource-detail-actions"></div>
         <div class="dlms-diagnostics" id="resource-diagnostics" aria-live="polite" hidden>
           <p class="diag-title">Indice diagnostico aggiornamenti</p>

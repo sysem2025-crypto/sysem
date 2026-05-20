@@ -390,6 +390,34 @@ a {
   min-height: 460px;
 }
 
+.resource-meta {
+  margin: 2px 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(4, 26, 30, 0.28);
+}
+
+.resource-meta-line {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.resource-meta-line:last-child {
+  margin-bottom: 0;
+}
+
+.resource-meta-label {
+  color: var(--aqua);
+  font-weight: 700;
+}
+
+.resource-meta-value {
+  color: var(--white);
+  font-weight: 700;
+}
+
 .resources-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -549,5 +577,130 @@ a {
 
   .resource-detail-panel {
     min-height: auto;
+  }
+}
+
+.auth-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.74rem;
+}
+
+.auth-pill button,
+.auth-pill a {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--white);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.auth-hero,
+.admin-hero {
+  justify-content: flex-start;
+  min-height: auto;
+  padding-top: 24px;
+}
+
+.auth-grid {
+  width: 100%;
+  max-width: 1040px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.auth-card,
+.admin-panel {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  padding: 18px;
+}
+
+.auth-card h2 {
+  margin: 0 0 8px;
+}
+
+.auth-card p {
+  margin: 0 0 12px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-form input,
+.auth-form select,
+.admin-toolbar input,
+.admin-toolbar select,
+.admin-table select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(4, 26, 30, 0.4);
+  color: var(--white);
+  padding: 10px;
+}
+
+.auth-feedback,
+.auth-hint {
+  margin-top: 14px;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.admin-panel {
+  width: 100%;
+  max-width: 1080px;
+}
+
+.admin-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 10px;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.admin-save-btn {
+  padding: 8px 12px;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 900px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-toolbar {
+    grid-template-columns: 1fr;
   }
 }
