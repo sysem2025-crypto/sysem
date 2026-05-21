@@ -451,8 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAccessPage();
   initAdminPage();
 
-  const resourceMenuEl = document.getElementById('resource-menu');
-  const detailBadgeEl = document.getElementById('resource-detail-badge');
+  const resourceSelectEl = document.getElementById('resource-select');
   const detailTitleEl = document.getElementById('resource-detail-title');
   const detailDescriptionEl = document.getElementById('resource-detail-description');
   const detailMetaEl = document.getElementById('resource-detail-meta');
@@ -462,116 +461,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const autoCountEl = document.getElementById('auto-download-count');
   const lastUpdateEl = document.getElementById('diag-last-update');
 
-  if (resourceMenuEl && detailBadgeEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
-    const resources = [
+  if (resourceSelectEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
+    const programs = [
       {
-        id: 'interface-dlms',
-        badge: 'InterfaceDLMS',
-        title: 'Download Programma',
-        description: "Scarica manualmente l'installer ufficiale o verifica le informazioni diagnostiche sugli aggiornamenti online.",
+        id: 'genius-monitor',
+        title: 'GeniusMonitor',
+        description: '',
         meta: [
           ['Tipologia', 'Software desktop'],
-          ['Formato', 'Installer'],
+          ['Formato', 'Installer .exe'],
           ['Compatibilita', 'Windows 10/11'],
-          ['Aggiornamenti', 'Manifest online disponibile']
+          ['Canale', 'Release stabile']
         ],
-        showDiagnostics: true,
-        actions: [
-          {
-            label: 'Download GeniusMonitor',
-            href: '/interface-dlms/manual-download-gm.php',
-            secondary: false
-          },
-          {
-            label: 'Download RTU Terminal',
-            href: '/interface-dlms/manual-download-rtu.php',
-            secondary: false
-          },
-          {
-            label: 'Apri Manifest Update',
-            href: 'https://sysem.it/interface-dlms/update.json',
-            secondary: true
-          }
-        ]
+        downloadHref: '/interface-dlms/manual-download-gm.php'
       },
       {
-        id: 'digital-transformation',
-        badge: 'PDF Guide',
-        title: 'Digital Transformation',
-        description: 'Una guida completa ai processi di digitalizzazione per le medie imprese nel 2024.',
+        id: 'rtu-terminal',
+        title: 'RTU Terminal',
+        description: '',
         meta: [
-          ['Tipologia', 'Documento PDF'],
-          ['Formato', 'PDF scaricabile'],
-          ['Livello', 'Manageriale / Operativo'],
-          ['Focus', 'Processi e roadmap di adozione']
+          ['Tipologia', 'Software desktop'],
+          ['Formato', 'Installer .exe'],
+          ['Compatibilita', 'Windows 10/11'],
+          ['Canale', 'Release stabile']
         ],
-        showDiagnostics: false,
-        actions: [
-          {
-            label: 'Download Free',
-            href: '#',
-            secondary: false
-          }
-        ]
-      },
-      {
-        id: 'project-roadmap',
-        badge: 'Template',
-        title: 'Project Roadmap',
-        description: 'Template professionale per la gestione di progetti complessi, ottimizzato per team agili.',
-        meta: [
-          ['Tipologia', 'Template operativo'],
-          ['Formato', 'Modello editabile'],
-          ['Destinazione', 'PM e Team leader'],
-          ['Uso', 'Pianificazione milestone']
-        ],
-        showDiagnostics: false,
-        actions: [
-          {
-            label: 'Premium Access',
-            href: '#',
-            secondary: false
-          }
-        ]
-      },
-      {
-        id: 'cybersecurity-101',
-        badge: 'E-book',
-        title: 'Cybersecurity 101',
-        description: 'Tutto quello che la tua azienda deve sapere per proteggere i dati sensibili dagli attacchi moderni.',
-        meta: [
-          ['Tipologia', 'E-book'],
-          ['Formato', 'PDF/EPUB'],
-          ['Destinazione', 'IT e Management'],
-          ['Focus', 'Best practice e policy base']
-        ],
-        showDiagnostics: false,
-        actions: [
-          {
-            label: 'Download Free',
-            href: '#',
-            secondary: false
-          }
-        ]
+        downloadHref: '/interface-dlms/manual-download-rtu.php'
       }
     ];
 
-    const renderActions = resource => {
+    const renderActions = program => {
       detailActionsEl.innerHTML = '';
-      resource.actions.forEach(action => {
-        const link = document.createElement('a');
-        link.className = action.secondary ? 'btn-download btn-download-secondary' : 'btn-download';
-        link.href = action.href;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = action.label;
-        detailActionsEl.appendChild(link);
-      });
+      const link = document.createElement('a');
+      link.className = 'btn-download';
+      link.href = program.downloadHref;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = `Download ${program.title}`;
+      detailActionsEl.appendChild(link);
     };
 
-    const renderMeta = resource => {
+    const renderMeta = program => {
       detailMetaEl.innerHTML = '';
-      resource.meta.forEach(entry => {
+      program.meta.forEach(entry => {
         const row = document.createElement('p');
         row.className = 'resource-meta-line';
 
@@ -590,40 +521,39 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     };
 
-    const selectResource = resourceId => {
-      const selected = resources.find(item => item.id === resourceId);
+    const selectProgram = programId => {
+      const selected = programs.find(item => item.id === programId);
       if (!selected) {
         return;
       }
 
-      detailBadgeEl.textContent = selected.badge;
+      const description = typeof selected.description === 'string' ? selected.description.trim() : '';
       detailTitleEl.textContent = selected.title;
-      detailDescriptionEl.textContent = selected.description;
+      detailDescriptionEl.textContent = description;
+      detailDescriptionEl.hidden = description.length === 0;
       renderMeta(selected);
-      diagnosticsEl.hidden = !selected.showDiagnostics;
+      diagnosticsEl.hidden = false;
       renderActions(selected);
 
-      const menuButtons = resourceMenuEl.querySelectorAll('.resource-menu-item');
-      menuButtons.forEach(button => {
-        const isActive = button.dataset.resourceId === selected.id;
-        button.classList.toggle('active', isActive);
-        button.setAttribute('aria-selected', String(isActive));
-      });
+      resourceSelectEl.value = selected.id;
     };
 
-    resources.forEach((resource, index) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'resource-menu-item';
-      button.dataset.resourceId = resource.id;
-      button.setAttribute('role', 'tab');
-      button.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-      button.textContent = resource.title;
-      button.addEventListener('click', () => selectResource(resource.id));
-      resourceMenuEl.appendChild(button);
+    programs.forEach(program => {
+      const option = document.createElement('option');
+      option.value = program.id;
+      option.textContent = program.title;
+      resourceSelectEl.appendChild(option);
     });
 
-    selectResource(resources[0].id);
+    resourceSelectEl.addEventListener('change', event => {
+      const target = event.target;
+      if (!(target instanceof HTMLSelectElement)) {
+        return;
+      }
+      selectProgram(target.value);
+    });
+
+    selectProgram(programs[0].id);
   }
 
   if (manualCountEl && autoCountEl && lastUpdateEl) {

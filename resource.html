@@ -33,23 +33,24 @@
       <h1 id="page-title">Resource</h1>
     </section>
 
-    <section class="resources-container resources-layout" aria-label="Catalogo risorse">
-      <aside class="resource-menu-panel">
-        <p class="resource-menu-title">Catalogo</p>
-        <div class="resource-menu" id="resource-menu" role="tablist" aria-label="Elenco risorse"></div>
-      </aside>
-
+    <section class="resources-container" aria-label="Catalogo risorse">
       <article class="resource-card resource-detail-panel" id="resource-detail" aria-live="polite">
-        <span class="resource-badge" id="resource-detail-badge">--</span>
+        <div class="resource-select-wrap">
+          <select id="resource-select" class="resource-select" aria-label="Seleziona programma da scaricare"></select>
+        </div>
         <h3 id="resource-detail-title">--</h3>
-        <p id="resource-detail-description">Seleziona una risorsa dal menu per visualizzare dettagli e azioni.</p>
+        <p id="resource-detail-description" hidden></p>
         <div class="resource-meta" id="resource-detail-meta" aria-label="Scheda risorsa"></div>
         <div class="dlms-actions" id="resource-detail-actions"></div>
         <div class="dlms-diagnostics" id="resource-diagnostics" aria-live="polite" hidden>
           <p class="diag-title">Indice diagnostico aggiornamenti</p>
-          <p class="diag-line">Download manuali: <strong id="manual-download-count">--</strong></p>
-          <p class="diag-line">Download automatici: <strong id="auto-download-count">--</strong></p>
-          <p class="diag-line diag-updated">Ultimo aggiornamento dati: <strong id="diag-last-update">--</strong></p>
+          <p class="diag-line diag-inline">
+            Manual: <strong id="manual-download-count">--</strong>
+            <span class="diag-sep">|</span>
+            Auto: <strong id="auto-download-count">--</strong>
+            <span class="diag-sep">|</span>
+            Agg.: <strong id="diag-last-update">--</strong>
+          </p>
         </div>
       </article>
     </section>

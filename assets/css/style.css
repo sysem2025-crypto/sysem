@@ -149,6 +149,13 @@ a {
   z-index: 2;
 }
 
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -326,6 +333,7 @@ a {
   margin: 0 auto 80px;
   position: relative;
   z-index: 1;
+  max-width: 540px;
 }
 
 .resources-layout {
@@ -387,20 +395,48 @@ a {
 }
 
 .resource-detail-panel {
-  min-height: 460px;
+  min-height: auto;
+}
+
+.resource-select-wrap {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.resource-select-label {
+  color: var(--aqua);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.resource-select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(4, 26, 30, 0.4);
+  color: var(--white);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .resource-meta {
-  margin: 2px 0 18px;
-  padding: 12px 14px;
+  margin: 2px 0 12px;
+  padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: rgba(4, 26, 30, 0.28);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 6px 14px;
 }
 
 .resource-meta-line {
-  margin: 0 0 8px;
-  font-size: 0.88rem;
+  margin: 0;
+  font-size: 0.84rem;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -495,7 +531,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
 }
 
 .btn-download-secondary {
@@ -506,15 +542,15 @@ a {
 
 .dlms-diagnostics {
   margin-top: auto;
-  padding: 14px 16px;
+  padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: rgba(4, 26, 30, 0.35);
 }
 
 .diag-title {
-  margin: 0 0 10px;
-  font-size: 0.8rem;
+  margin: 0 0 6px;
+  font-size: 0.76rem;
   font-weight: 800;
   color: var(--aqua);
   letter-spacing: 0.07em;
@@ -522,15 +558,20 @@ a {
 }
 
 .diag-line {
-  margin: 0 0 6px;
-  font-size: 0.9rem;
+  margin: 0;
+  font-size: 0.84rem;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.diag-updated {
-  margin-bottom: 0;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.72);
+.diag-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.diag-sep {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Resource page layout fixes */
@@ -541,9 +582,80 @@ a {
 .resource-page .hero {
   min-height: auto;
   width: min(1180px, calc(100% - 40px));
-  margin: -84px auto 18px;
+  margin: -84px auto 10px;
   padding: 0 0 0 104px;
   justify-content: flex-start;
+}
+
+.resource-page .resource-card {
+  padding: 14px;
+}
+
+.resource-page .resource-select-wrap {
+  margin-bottom: 8px;
+}
+
+.resource-page .resource-select-label {
+  font-size: 0.68rem;
+}
+
+.resource-page .resource-select {
+  padding: 10px 12px;
+  font-size: 0.86rem;
+}
+
+.resource-page .resource-badge {
+  margin-bottom: 8px;
+  font-size: 0.64rem;
+}
+
+.resource-page .resource-card h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+}
+
+#resource-detail-description {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  line-height: 1.32;
+}
+
+.resource-page .resource-meta {
+  margin: 2px 0 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+}
+
+.resource-page .resource-meta-line {
+  font-size: 0.74rem;
+  line-height: 1.1;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.resource-page .btn-download {
+  padding: 10px 14px;
+  font-size: 0.76rem;
+}
+
+.resource-page .dlms-actions {
+  margin-bottom: 8px;
+}
+
+.resource-page .dlms-diagnostics {
+  padding: 8px 10px;
+}
+
+.resource-page .diag-title {
+  font-size: 0.68rem;
+  margin-bottom: 4px;
+}
+
+.resource-page .diag-line {
+  font-size: 0.76rem;
 }
 
 .resource-page .hero p {
@@ -578,13 +690,16 @@ a {
   .resource-detail-panel {
     min-height: auto;
   }
+
+  .resource-meta {
+    grid-template-columns: 1fr;
+  }
 }
 
 .auth-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-left: 12px;
   padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
