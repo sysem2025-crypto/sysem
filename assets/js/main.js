@@ -7,14 +7,21 @@ const STORAGE_KEYS = {
 const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 
 const NAV_BY_ROLE = {
-  guest: [{ label: 'Accesso', href: 'access.html' }],
-  base: [{ label: 'Resource', href: 'resource.html' }],
+  guest: [
+    { label: 'Accesso', href: 'access.html' },
+    { label: 'Program Access', href: 'program-access.html' }
+  ],
+  base: [
+    { label: 'Resource', href: 'resource.html' },
+    { label: 'Program Access', href: 'program-access.html' }
+  ],
   pro: [
     { label: 'Home', href: 'index.html' },
     { label: 'Services', href: 'services.html' },
     { label: 'Industries', href: 'industries.html' },
     { label: 'About', href: 'about.html' },
     { label: 'Resource', href: 'resource.html' },
+    { label: 'Program Access', href: 'program-access.html' },
     { label: 'Contact', href: 'contact.html' }
   ],
   admin: [
@@ -23,6 +30,7 @@ const NAV_BY_ROLE = {
     { label: 'Industries', href: 'industries.html' },
     { label: 'About', href: 'about.html' },
     { label: 'Resource', href: 'resource.html' },
+    { label: 'Program Access', href: 'program-access.html' },
     { label: 'Contact', href: 'contact.html' },
     { label: 'Admin', href: 'admin.html' }
   ]
