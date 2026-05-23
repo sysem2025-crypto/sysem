@@ -10,26 +10,22 @@ const NAV_BY_ROLE = {
   guest: [
     { label: 'Sistema di misura', href: 'sistema-misura.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
-    { label: 'Contatti', href: 'contact.html' },
-    { label: 'Accesso', href: 'access.html' }
+    { label: 'Contatti', href: 'contact.html' }
   ],
   base: [
     { label: 'Sistema di misura', href: 'sistema-misura.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
-    { label: 'Contatti', href: 'contact.html' },
-    { label: 'Accesso', href: 'access.html' }
+    { label: 'Contatti', href: 'contact.html' }
   ],
   pro: [
     { label: 'Sistema di misura', href: 'sistema-misura.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
-    { label: 'Contatti', href: 'contact.html' },
-    { label: 'Accesso', href: 'access.html' }
+    { label: 'Contatti', href: 'contact.html' }
   ],
   admin: [
     { label: 'Sistema di misura', href: 'sistema-misura.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
-    { label: 'Contatti', href: 'contact.html' },
-    { label: 'Accesso', href: 'access.html' }
+    { label: 'Contatti', href: 'contact.html' }
   ]
 };
 
@@ -443,6 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const currentPage = body.dataset.page || '';
   const requiredRole = body.dataset.requiredRole || 'base';
+
+  if (currentPage === 'access') {
+    window.location.replace('index.html');
+    return;
+  }
 
   enforceRouteAccess(requiredRole);
   renderNavigation(currentPage, getCurrentRole());
