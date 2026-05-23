@@ -2,10 +2,14 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=/index.html">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Accesso | SYSEM</title>
   <meta name="description" content="Registrazione e accesso alla documentazione SYSEM.">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    window.location.replace('/index.html');
+  </script>
 </head>
 <body data-page="access" data-required-role="guest">
   <main class="home">
@@ -29,50 +33,25 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p>Gestione accessi</p>
-      <h1 id="page-title">Registrazione Accesso</h1>
+      <p>Area riservata</p>
+      <h1 id="page-title">Accesso</h1>
 
       <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Crea accesso</h2>
-          <p>Il ruolo predefinito e base: puo accedere alla sola sezione Risorse.</p>
-          <form id="register-form" class="auth-form">
-            <label for="register-email">Email</label>
-            <input id="register-email" name="email" type="email" required placeholder="nome@azienda.it">
-            <label for="register-password">Password</label>
-            <input id="register-password" name="password" type="password" required minlength="8" placeholder="Minimo 8 caratteri">
-            <button type="submit" class="btn-download">Registra Email</button>
-          </form>
-        </article>
-
-        <article class="auth-card">
-          <h2>Accedi</h2>
-          <p>Seleziona un utente registrato e apri la sua area consentita.</p>
+        <article class="auth-card" id="login-section">
+          <h2>Login</h2>
+          <p>Inserisci le credenziali per entrare nell'area riservata.</p>
           <form id="login-form" class="auth-form">
             <label for="login-email">Utente</label>
-            <select id="login-email" name="email" required></select>
+            <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username">
+            <datalist id="login-email-list"></datalist>
             <label for="login-password">Password</label>
             <input id="login-password" name="password" type="password" required>
             <button type="submit" class="btn-download">Accedi</button>
           </form>
-          <p class="auth-hint">Promemoria admin: usa la tua password di amministrazione personale.</p>
+          <p class="auth-hint">Solo utenti autorizzati.</p>
+          <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
         </article>
       </div>
-
-      <article class="auth-card" id="change-password-card" hidden>
-        <h2>Cambia Password</h2>
-        <form id="change-password-form" class="auth-form">
-          <label for="current-password">Password attuale</label>
-          <input id="current-password" name="currentPassword" type="password" required>
-          <label for="new-password">Nuova password</label>
-          <input id="new-password" name="newPassword" type="password" required minlength="8">
-          <label for="confirm-password">Conferma nuova password</label>
-          <input id="confirm-password" name="confirmPassword" type="password" required minlength="8">
-          <button type="submit" class="btn-download">Aggiorna password</button>
-        </form>
-      </article>
-
-      <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
     </section>
   </main>
   <script src="assets/js/main.js"></script>
