@@ -8,22 +8,22 @@ const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 
 const NAV_BY_ROLE = {
   guest: [
-    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   base: [
-    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   pro: [
-    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   admin: [
-    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Contatti', href: 'contact.html' }
   ]
