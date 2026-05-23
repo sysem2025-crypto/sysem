@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Protocollo CTR | SYSEM</title>
+  <meta name="description" content="Protocollo CTR UNI/TS 11291-3:2021: panoramica, trame, sicurezza, funzioni e profili.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .ctr-shell {
+      width: 100%;
+      max-width: 1180px;
+      border: 1px solid var(--line);
+      background: rgba(250, 246, 235, 0.82);
+    }
+
+    .ctr-header {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ctr-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .ctr-header h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.05rem, 2.8vw, 1.7rem);
+    }
+
+    .ctr-header p {
+      margin: 0;
+      color: rgba(31, 26, 22, 0.86);
+    }
+
+    .ctr-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ctr-tab {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ctr-tab.active {
+      background: rgba(31, 26, 22, 0.08);
+      font-weight: 700;
+    }
+
+    .ctr-pane {
+      display: none;
+      padding: 18px;
+    }
+
+    .ctr-pane.active {
+      display: block;
+    }
+
+    .ctr-pane h3 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .ctr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .ctr-card {
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: rgba(252, 250, 244, 0.8);
+    }
+
+    .ctr-table-wrap {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .ctr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.87rem;
+    }
+
+    .ctr-table th,
+    .ctr-table td {
+      border: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ctr-code {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      background: rgba(31, 26, 22, 0.04);
+    }
+  </style>
+</head>
+
+<body data-page="protocolli" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p>Norma tecnica</p>
+      <h1 id="page-title">Protocollo CTR</h1>
+
+      <article class="ctr-shell" aria-label="Scheda protocollo CTR">
+        <header class="ctr-header">
+          <span class="ctr-badge">UNI/TS 11291-3:2021</span>
+          <h2>Comunicazione per sistemi di misura gas su base oraria</h2>
+          <p>Scheda tecnica: panoramica, trame, sicurezza, funzioni e modello dati.</p>
+        </header>
+
+        <nav class="ctr-tabs" aria-label="Sezioni protocollo CTR">
+          <button type="button" class="ctr-tab active" data-tab="overview">Panoramica</button>
+          <button type="button" class="ctr-tab" data-tab="frame">Trame</button>
+          <button type="button" class="ctr-tab" data-tab="security">Sicurezza</button>
+          <button type="button" class="ctr-tab" data-tab="functions">Funzioni</button>
+          <button type="button" class="ctr-tab" data-tab="objects">Oggetti</button>
+          <button type="button" class="ctr-tab" data-tab="profiles">Profili</button>
+        </nav>
+
+        <section id="overview" class="ctr-pane active">
+          <h3>Cos'e il protocollo CTR</h3>
+          <p>CTR (Communication protocol for gas metering) e il protocollo applicativo della UNI/TS 11291-3 per sistemi di misura gas oraria. E pensato per canali a bassa capacita e apparati embedded.</p>
+          <div class="ctr-grid">
+            <div class="ctr-card"><strong>Ambito</strong><br>Misuratori gas, convertitori volume, data logger, telelettura.</div>
+            <div class="ctr-card"><strong>Mezzi</strong><br>GSM-SMS, GPRS, PSTN, radio, seriale locale.</div>
+            <div class="ctr-card"><strong>Caratteristiche</strong><br>Trame compatte, autenticazione CPA, cifratura AES-CTR opzionale.</div>
+          </div>
+        </section>
+
+        <section id="frame" class="ctr-pane">
+          <h3>Struttura trame</h3>
+          <div class="ctr-code">[WAKE opz.] | STX | ADD | PROFI | FUNCT | STRUCT | CHAN | DATI | CPA | CRC | ETX</div>
+          <div class="ctr-table-wrap">
+            <table class="ctr-table">
+              <tr><th>Campo</th><th>Descrizione</th></tr>
+              <tr><td>ADD</td><td>Indirizzo nodo (2 byte).</td></tr>
+              <tr><td>PROFI</td><td>Profilo utente + operator_id + flag trama.</td></tr>
+              <tr><td>FUNCT</td><td>Tipo comando (Query, Write, Execute, Voluntary...).</td></tr>
+              <tr><td>CPA</td><td>MAC a 4 byte con AES-128-CMAC.</td></tr>
+              <tr><td>CRC</td><td>Controllo integrita livello collegamento.</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <section id="security" class="ctr-pane">
+          <h3>Sicurezza</h3>
+          <div class="ctr-grid">
+            <div class="ctr-card"><strong>Autenticazione</strong><br>CPA con AES-128-CMAC su campi applicativi.</div>
+            <div class="ctr-card"><strong>Cifratura</strong><br>AES-128-CTR su STRUCT, CHAN, DATI.</div>
+            <div class="ctr-card"><strong>Chiavi</strong><br>KEYC, KEYT, KEYF con gestione amministrativa.</div>
+          </div>
+        </section>
+
+        <section id="functions" class="ctr-pane">
+          <h3>Funzioni principali</h3>
+          <div class="ctr-table-wrap">
+            <table class="ctr-table">
+              <tr><th>Codice</th><th>Funzione</th><th>Uso</th></tr>
+              <tr><td>?</td><td>QUERY</td><td>Lettura dati/attributi oggetti.</td></tr>
+              <tr><td>/</td><td>WRITE</td><td>Scrittura parametri in sessione.</td></tr>
+              <tr><td>&</td><td>EXECUTE</td><td>Azioni operative (reset, sync, sigilli).</td></tr>
+              <tr><td>#</td><td>SECRET</td><td>Gestione chiavi crittografiche.</td></tr>
+              <tr><td>$</td><td>DOWNLOAD</td><td>Aggiornamento firmware (trame lunghe).</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <section id="objects" class="ctr-pane">
+          <h3>Oggetti e modello dati</h3>
+          <p>Modello orientato a oggetti con ID a 2 byte e attributi standard: <code>.qlf</code>, <code>.val</code>, <code>.acces</code>, <code>.def</code>.</p>
+          <div class="ctr-grid">
+            <div class="ctr-card"><strong>REGISTER</strong><br>Elenco oggetti con attributi richiesti.</div>
+            <div class="ctr-card"><strong>TABLE/ARRAY</strong><br>Dati strutturati posizionali o vettoriali.</div>
+            <div class="ctr-card"><strong>TRACE</strong><br>Serie cronologiche (15m/1h/giorno/mese).</div>
+          </div>
+        </section>
+
+        <section id="profiles" class="ctr-pane">
+          <h3>Profili e password</h3>
+          <p>RBAC con 5 profili (0 amministratore, 1-4 operativi). I permessi sono definiti su ogni oggetto dall'attributo <code>.acces</code>. Gestione password per operator_id e chiavi tramite funzioni amministrative.</p>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    (function () {
+      var tabs = document.querySelectorAll('.ctr-tab');
+      var panes = document.querySelectorAll('.ctr-pane');
+
+      function activate(tabId) {
+        panes.forEach(function (pane) {
+          pane.classList.toggle('active', pane.id === tabId);
+        });
+        tabs.forEach(function (tab) {
+          tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
+        });
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          activate(tab.getAttribute('data-tab'));
+        });
+      });
+
+      var hash = window.location.hash ? window.location.hash.slice(1) : '';
+      if (hash) {
+        activate(hash);
+      }
+    })();
+  </script>
+</body>
+</html>
