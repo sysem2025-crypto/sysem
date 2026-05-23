@@ -31,11 +31,12 @@
 
     .ctr-header h2 {
       margin: 0 0 8px;
-      font-size: clamp(1.05rem, 2.8vw, 1.7rem);
+      font-size: clamp(0.95rem, 2.2vw, 1.35rem);
     }
 
     .ctr-header p {
       margin: 0;
+      font-size: 0.86rem;
       color: rgba(31, 26, 22, 0.86);
     }
 
@@ -51,9 +52,9 @@
       border: 1px solid var(--line);
       background: transparent;
       color: var(--ink);
-      padding: 7px 10px;
+      padding: 6px 9px;
       cursor: pointer;
-      font-size: 0.78rem;
+      font-size: 0.7rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -65,7 +66,8 @@
 
     .ctr-pane {
       display: none;
-      padding: 18px;
+      padding: 16px;
+      font-size: 0.86rem;
     }
 
     .ctr-pane.active {
@@ -74,7 +76,7 @@
 
     .ctr-pane h3 {
       margin: 0 0 10px;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
 
     .ctr-grid {
@@ -88,6 +90,7 @@
       border: 1px solid var(--line);
       padding: 12px;
       background: rgba(252, 250, 244, 0.8);
+      font-size: 0.84rem;
     }
 
     .ctr-table-wrap {
@@ -98,7 +101,7 @@
     .ctr-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.87rem;
+      font-size: 0.78rem;
     }
 
     .ctr-table th,
@@ -114,7 +117,7 @@
       padding: 10px;
       border: 1px solid var(--line);
       font-family: Consolas, Monaco, monospace;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       overflow-x: auto;
       background: rgba(31, 26, 22, 0.04);
     }
@@ -162,36 +165,55 @@
 
         <section id="overview" class="ctr-pane active">
           <h3>Cos'e il protocollo CTR</h3>
-          <p>CTR (Communication protocol for gas metering) e il protocollo applicativo della UNI/TS 11291-3 per sistemi di misura gas oraria. E pensato per canali a bassa capacita e apparati embedded.</p>
+          <p>Il <strong>CTR (Communication protocol for gas metering)</strong> e definito dalla UNI/TS 11291-3 ed e il protocollo applicativo per i sistemi di misurazione del gas su base oraria. Progettato per operare con vincoli di banda ridotta (SMS a 140 byte) e apparati embedded con risorse limitate, garantisce trasporto dati efficiente, autenticazione e riservatezza.</p>
           <div class="ctr-grid">
-            <div class="ctr-card"><strong>Ambito</strong><br>Misuratori gas, convertitori volume, data logger, telelettura.</div>
-            <div class="ctr-card"><strong>Mezzi</strong><br>GSM-SMS, GPRS, PSTN, radio, seriale locale.</div>
-            <div class="ctr-card"><strong>Caratteristiche</strong><br>Trame compatte, autenticazione CPA, cifratura AES-CTR opzionale.</div>
+            <div class="ctr-card"><strong>Ambito applicativo</strong><br>Misuratori gas residenziali, industriali, stazioni di misura, data logger e convertitori di volume. Classi A2/A1 escluse.</div>
+            <div class="ctr-card"><strong>Mezzi supportati</strong><br>GSM-SMS, GPRS (TCP/UDP), PSTN, linea dedicata, radio, bus seriali locali.</div>
+            <div class="ctr-card"><strong>Architettura</strong><br>Modello OSI collapsed: livello fisico, data-link e applicazione. Supporto point-to-point e multipunto.</div>
           </div>
+          <h3>Caratteristiche principali</h3>
+          <ul>
+            <li>Trame a lunghezza fissa: 140 byte (SMS) / 142 o 1026 byte (dati, ad esempio download firmware).</li>
+            <li>Frammentazione non supportata: ogni datagramma e autonomo.</li>
+            <li>Autenticazione obbligatoria tramite CPA (AES-128-CMAC) e cifratura opzionale AES-128 in modalita CTR.</li>
+            <li>Gestione fino a 14 canali di misura piu canale generico 0.</li>
+            <li>Meccanismi di risparmio energetico: wake-up string e finestre di comunicazione (WUIP-OUT).</li>
+            <li>Comunicazione connection-less adatta a SMS, con protezione anti-replay (data di validita + identificatore).</li>
+          </ul>
+          <p>Il protocollo si interfaccia a dispositivi DTE (gruppi di misura) e DCE (modem, traslatori) secondo lo schema definito dalla norma, supportando comandi di lettura, scrittura, esecuzione azioni e spontanee (voluntary).</p>
         </section>
 
         <section id="frame" class="ctr-pane">
           <h3>Struttura trame</h3>
-          <div class="ctr-code">[WAKE opz.] | STX | ADD | PROFI | FUNCT | STRUCT | CHAN | DATI | CPA | CRC | ETX</div>
+          <p>Ogni trama e composta da campi ben definiti. Le dimensioni ridotte ottimizzano l'uso di SMS e mezzi a pacchetto.</p>
+          <div class="ctr-code">[WAKE (20B opz.)] | STX (0Ah) | ADD (2) | PROFI (1) | FUNCT (1) | STRUCT (1) | CHAN (1) | DATI (n) | CPA (4) | CRC (2) | ETX (0Dh)</div>
           <div class="ctr-table-wrap">
             <table class="ctr-table">
-              <tr><th>Campo</th><th>Descrizione</th></tr>
-              <tr><td>ADD</td><td>Indirizzo nodo (2 byte).</td></tr>
-              <tr><td>PROFI</td><td>Profilo utente + operator_id + flag trama.</td></tr>
-              <tr><td>FUNCT</td><td>Tipo comando (Query, Write, Execute, Voluntary...).</td></tr>
-              <tr><td>CPA</td><td>MAC a 4 byte con AES-128-CMAC.</td></tr>
-              <tr><td>CRC</td><td>Controllo integrita livello collegamento.</td></tr>
+              <tr><th>Campo</th><th>Lunghezza</th><th>Descrizione</th></tr>
+              <tr><td>WAKE</td><td>20 byte</td><td>Stringa di risveglio opzionale per dispositivi in sleep.</td></tr>
+              <tr><td>ADD</td><td>2 byte</td><td>Indirizzo destinatario/mittente (FFFFh broadcast, 0000h non valido).</td></tr>
+              <tr><td>PROFI</td><td>1 byte</td><td>Bit7 LdT + profilo (0-4) + operator_id.</td></tr>
+              <tr><td>FUNCT</td><td>1 byte</td><td>Codice funzione e flag cifratura.</td></tr>
+              <tr><td>STRUCT</td><td>1 byte</td><td>Codice struttura dati (REGISTER, TABLE, ARRAY, TRACE).</td></tr>
+              <tr><td>CHAN</td><td>1 byte</td><td>Canale misura: 0 generico, 1-14 specifici, 0Fh broadcast.</td></tr>
+              <tr><td>DATI</td><td>Variabile</td><td>Payload struttura (max 128 byte trame corte).</td></tr>
+              <tr><td>CPA</td><td>4 byte</td><td>Message Authentication Code (AES-128-CMAC).</td></tr>
+              <tr><td>CRC</td><td>2 byte</td><td>Ridondanza ciclica su campi da ADD a DATI.</td></tr>
             </table>
           </div>
+          <p>Nelle comunicazioni SMS la sequenza WAKE/STX/ETX e omessa: i byte partono da ADD fino a CRC con DATI fisso a 128 byte.</p>
+          <p><strong>PROFI:</strong> bit7 = LdT; bit3-6 = operator_id; bit0-2 = profilo.<br><strong>FUNCT:</strong> bit 6-7 cifratura (00 non cifrato, 01 KEYC, 10 KEYT, 11 KEYF).</p>
         </section>
 
         <section id="security" class="ctr-pane">
           <h3>Sicurezza</h3>
+          <p>CTR protegge autenticita, integrita e riservatezza dei dati utilizzando AES-128 in modalita CMAC (CPA) e CTR (cifratura a flusso).</p>
           <div class="ctr-grid">
-            <div class="ctr-card"><strong>Autenticazione</strong><br>CPA con AES-128-CMAC su campi applicativi.</div>
-            <div class="ctr-card"><strong>Cifratura</strong><br>AES-128-CTR su STRUCT, CHAN, DATI.</div>
-            <div class="ctr-card"><strong>Chiavi</strong><br>KEYC, KEYT, KEYF con gestione amministrativa.</div>
+            <div class="ctr-card"><strong>Autenticazione (CPA)</strong><br>Il CPA e calcolato su ADD+PROFI+FUNCT+STRUCT+CHAN+DATI con AES-128-CMAC. Il ricevente ricalcola e confronta i primi 4 byte.</div>
+            <div class="ctr-card"><strong>Cifratura</strong><br>STRUCT, CHAN e DATI possono essere cifrati con AES-128-CTR. IV = CPA ripetuto 4 volte.</div>
+            <div class="ctr-card"><strong>Gerarchia chiavi</strong><br>KEYC_x, KEYT, KEYF modificabili con funzioni amministrative.</div>
           </div>
+          <p><strong>Protezione replay/spoofing:</strong> comandi Write/Execute con data validita (DV) + WDB; rigetto di DV vecchie e duplicati. Supporto opzionale Caller ID.</p>
         </section>
 
         <section id="functions" class="ctr-pane">
@@ -199,28 +221,40 @@
           <div class="ctr-table-wrap">
             <table class="ctr-table">
               <tr><th>Codice</th><th>Funzione</th><th>Uso</th></tr>
-              <tr><td>?</td><td>QUERY</td><td>Lettura dati/attributi oggetti.</td></tr>
-              <tr><td>/</td><td>WRITE</td><td>Scrittura parametri in sessione.</td></tr>
-              <tr><td>&</td><td>EXECUTE</td><td>Azioni operative (reset, sync, sigilli).</td></tr>
-              <tr><td>#</td><td>SECRET</td><td>Gestione chiavi crittografiche.</td></tr>
-              <tr><td>$</td><td>DOWNLOAD</td><td>Aggiornamento firmware (trame lunghe).</td></tr>
+              <tr><td>?</td><td>QUERY</td><td>Lettura attributi su REGISTER/ARRAY/TRACE/TABLE.</td></tr>
+              <tr><td>/</td><td>WRITE</td><td>Modifica parametri via sessione di configurazione.</td></tr>
+              <tr><td>&</td><td>EXECUTE</td><td>Azioni sul server: reset, sync oraria, sigilli, download.</td></tr>
+              <tr><td>;</td><td>VOLUNTARY</td><td>Trasmissione spontanea server-client.</td></tr>
+              <tr><td>%</td><td>END OF SESSION</td><td>Chiusura sessione comunicazione.</td></tr>
+              <tr><td>#</td><td>SECRET</td><td>Modifica chiavi crittografiche.</td></tr>
+              <tr><td>$</td><td>DOWNLOAD</td><td>Aggiornamento firmware con trame lunghe.</td></tr>
+              <tr><td>( e )</td><td>IDENTIFICATION</td><td>Procedura challenge-response (PUK_S).</td></tr>
             </table>
           </div>
+          <p>Le risposte applicative sono ACK (+) e NACK (-) con codici errore (ad esempio accesso negato, CPA errato, oggetto non supportato, DV scaduta).</p>
         </section>
 
         <section id="objects" class="ctr-pane">
           <h3>Oggetti e modello dati</h3>
-          <p>Modello orientato a oggetti con ID a 2 byte e attributi standard: <code>.qlf</code>, <code>.val</code>, <code>.acces</code>, <code>.def</code>.</p>
+          <p>Modello orientato agli oggetti: ogni oggetto ha .id (2 byte) e attributi standard <code>.qlf</code>, <code>.val</code>, <code>.acces</code>, <code>.def</code>.</p>
           <div class="ctr-grid">
-            <div class="ctr-card"><strong>REGISTER</strong><br>Elenco oggetti con attributi richiesti.</div>
-            <div class="ctr-card"><strong>TABLE/ARRAY</strong><br>Dati strutturati posizionali o vettoriali.</div>
-            <div class="ctr-card"><strong>TRACE</strong><br>Serie cronologiche (15m/1h/giorno/mese).</div>
+            <div class="ctr-card"><strong>Portata/Volume</strong><br>Qm, Qb, Vm, Vb, totalizzatori orari/giornalieri/mensili.</div>
+            <div class="ctr-card"><strong>Pressione/Temperatura</strong><br>P, T, Pb, Tb, valori di riserva e diagnostica.</div>
+            <div class="ctr-card"><strong>Eventi/Allarmi</strong><br>Registri evento con timestamp, progressivo, codice evento.</div>
+          </div>
+          <div class="ctr-grid">
+            <div class="ctr-card"><strong>REGISTER (50h)</strong><br>Lista oggetti con attributi richiesti.</div>
+            <div class="ctr-card"><strong>TABLE / ARRAY (01h-51h)</strong><br>Strutture posizionali o vettoriali.</div>
+            <div class="ctr-card"><strong>TRACE / TRACE_C (52h-53h)</strong><br>Storici a passo costante con informazioni aggiuntive.</div>
           </div>
         </section>
 
         <section id="profiles" class="ctr-pane">
           <h3>Profili e password</h3>
-          <p>RBAC con 5 profili (0 amministratore, 1-4 operativi). I permessi sono definiti su ogni oggetto dall'attributo <code>.acces</code>. Gestione password per operator_id e chiavi tramite funzioni amministrative.</p>
+          <p>CTR implementa RBAC con 5 profili (0 amministratore servizio, 1-4 profili operativi). I permessi sono definiti dall'attributo <code>.acces</code> su ciascun oggetto.</p>
+          <p>Per ogni profilo sono gestibili fino a 10 password (operator_id 0-9). Nel campo PROFI della trama vengono trasmessi profilo e operator_id.</p>
+          <div class="ctr-code">Esempio .acces = 10001010b: scrittura profilo1=1, profilo2-4=0; lettura profilo1=1, profilo2=0, profilo3=1, profilo4=0.</div>
+          <p>Funzioni amministrative disponibili: modifica password (F_PSW), modifica chiavi (F_MKC/F_MKT/SECRET), gestione sigilli (F_DSIG/F_ASIG).</p>
         </section>
       </article>
     </section>
