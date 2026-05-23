@@ -1,9 +1,12 @@
 :root {
-  --ink: #07282d;
-  --white: #ffffff;
-  --aqua: #55d5e4;
-  --glass: rgba(255, 255, 255, 0.12);
-  --line: rgba(255, 255, 255, 0.26);
+  --ink: #1f1a16;
+  --white: #fcfaf4;
+  --aqua: #2f4a45;
+  --glass: rgba(252, 250, 244, 0.7);
+  --line: rgba(31, 26, 22, 0.2);
+  --paper: #f4eedf;
+  --paper-shadow: #e7deca;
+  --paper-highlight: #faf6eb;
 }
 
 * {
@@ -17,9 +20,9 @@ body {
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--white);
-  background: var(--ink);
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
 }
 
 a {
@@ -31,13 +34,43 @@ a {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background-image:
-    linear-gradient(90deg, rgba(4, 26, 30, 0.72), rgba(4, 26, 30, 0.26)),
-    url("../img/hero-circuit-code.png");
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, 108% auto;
-  background-position: center, center;
-  animation: circuit-drift 24s ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 15% 16%, rgba(250, 246, 235, 0.86), transparent 48%),
+    radial-gradient(circle at 78% 72%, rgba(231, 222, 202, 0.5), transparent 45%),
+    linear-gradient(145deg, var(--paper-highlight), var(--paper) 40%, var(--paper-shadow));
+}
+
+.home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(31, 26, 22, 0.028) 0,
+      rgba(31, 26, 22, 0.028) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(31, 26, 22, 0.022) 0,
+      rgba(31, 26, 22, 0.022) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  mix-blend-mode: multiply;
+  opacity: 0.52;
+}
+
+.home::after {
+  content: "";
+  position: absolute;
+  inset: 8% 6% 10%;
+  border: 1px solid rgba(31, 26, 22, 0.14);
+  border-radius: 2px;
+  pointer-events: none;
 }
 
 /* --- Menu Overlay Styles --- */
@@ -58,7 +91,7 @@ a {
   display: block;
   width: 100%;
   height: 3px;
-  background-color: var(--white);
+  background-color: var(--ink);
   border-radius: 10px;
   transition: all 0.3s ease-in-out;
 }
@@ -81,8 +114,8 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(7, 40, 45, 0.85);
-  backdrop-filter: blur(25px);
+  background: rgba(244, 238, 223, 0.95);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -129,12 +162,12 @@ a {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--white);
+  color: var(--ink);
   transition: color 0.3s ease;
 }
 
 .overlay-menu nav ul li a:hover {
-  color: var(--aqua);
+  color: #5a3024;
 }
 
 .topbar {
@@ -166,11 +199,10 @@ a {
   height: clamp(58px, 7vw, 84px);
   object-fit: contain;
   padding: 5px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.22);
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .contact {
@@ -224,10 +256,10 @@ a {
 
 .hero p {
   margin: 0 0 14px;
-  color: var(--aqua);
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.18em;
+  color: rgba(31, 26, 22, 0.75);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
@@ -235,19 +267,37 @@ a {
   width: fit-content;
   max-width: 100%;
   margin: 0;
-  padding: 16px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 8px;
-  color: var(--white);
-  background:
-    linear-gradient(105deg, rgba(255, 255, 255, 0.05), rgba(85, 213, 228, 0.22), rgba(255, 255, 255, 0.05));
-  background-size: 220% 100%;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.2);
-  font-size: clamp(1.55rem, 4.2vw, 3.8rem);
-  line-height: 1;
-  letter-spacing: 0;
+  padding: 14px 22px 12px;
+  border: 1px solid rgba(31, 26, 22, 0.18);
+  border-radius: 2px;
+  color: #241c18;
+  background: rgba(250, 246, 235, 0.46);
+  box-shadow: 8px 8px 0 rgba(31, 26, 22, 0.08);
+  font-size: clamp(1.95rem, 6.4vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.08em;
   white-space: nowrap;
-  animation: banner-flow 5.5s ease-in-out infinite;
+  animation: print-press 1.1s ease-out both, banner-flow 6.2s ease-in-out 1.1s infinite;
+}
+
+.hero-subtitle {
+  margin-top: 14px;
+  margin-bottom: 0;
+  color: rgba(31, 26, 22, 0.82);
+  font-size: clamp(0.86rem, 1.4vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+
+.hero-home {
+  align-items: center;
+  text-align: center;
+}
+
+.hero-home h1 {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-weight: 700;
 }
 
 .home-quick-links {
@@ -278,13 +328,16 @@ a {
   }
 }
 
-@keyframes circuit-drift {
-  from {
-    background-position: center, 48% 50%;
+@keyframes print-press {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.995);
+    filter: blur(0.8px);
   }
-
-  to {
-    background-position: center, 54% 50%;
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
@@ -312,7 +365,8 @@ a {
   }
 
   .hero h1 {
-    padding: 14px 16px;
+    padding: 12px 14px 10px;
+    white-space: normal;
   }
 
   .home-quick-links {
