@@ -8,31 +8,28 @@ const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 
 const NAV_BY_ROLE = {
   guest: [
-    { label: 'Accesso', href: 'access.html' },
-    { label: 'Program Access', href: 'program-access.html' }
+    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Contatti', href: 'contact.html' },
+    { label: 'Accesso', href: 'access.html' }
   ],
   base: [
-    { label: 'Resource', href: 'resource.html' },
-    { label: 'Program Access', href: 'program-access.html' }
+    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Contatti', href: 'contact.html' },
+    { label: 'Accesso', href: 'access.html' }
   ],
   pro: [
-    { label: 'Home', href: 'index.html' },
-    { label: 'Services', href: 'services.html' },
-    { label: 'Industries', href: 'industries.html' },
-    { label: 'About', href: 'about.html' },
-    { label: 'Resource', href: 'resource.html' },
-    { label: 'Program Access', href: 'program-access.html' },
-    { label: 'Contact', href: 'contact.html' }
+    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Contatti', href: 'contact.html' },
+    { label: 'Accesso', href: 'access.html' }
   ],
   admin: [
-    { label: 'Home', href: 'index.html' },
-    { label: 'Services', href: 'services.html' },
-    { label: 'Industries', href: 'industries.html' },
-    { label: 'About', href: 'about.html' },
-    { label: 'Resource', href: 'resource.html' },
-    { label: 'Program Access', href: 'program-access.html' },
-    { label: 'Contact', href: 'contact.html' },
-    { label: 'Admin', href: 'admin.html' }
+    { label: 'Sistema di misura', href: 'sistema-misura.html' },
+    { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Contatti', href: 'contact.html' },
+    { label: 'Accesso', href: 'access.html' }
   ]
 };
 
@@ -94,7 +91,7 @@ function getAllowedLanding(role) {
   if (role === 'base') {
     return 'resource.html';
   }
-  return 'access.html';
+  return 'index.html';
 }
 
 function ensureDefaultAdminUser() {
@@ -175,7 +172,7 @@ function renderNavigation(currentPage, currentRole) {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem(STORAGE_KEYS.sessionEmail);
-      window.location.href = 'access.html';
+      window.location.href = 'index.html';
     });
   }
 }
@@ -194,13 +191,14 @@ function enforceRouteAccess(requiredRole) {
 function initAccessPage() {
   const registerForm = document.getElementById('register-form');
   const loginForm = document.getElementById('login-form');
-  const loginEmailSelect = document.getElementById('login-email');
+  const loginEmailField = document.getElementById('login-email');
+  const loginEmailList = document.getElementById('login-email-list');
   const loginPasswordInput = document.getElementById('login-password');
   const changePasswordCard = document.getElementById('change-password-card');
   const changePasswordForm = document.getElementById('change-password-form');
   const feedback = document.getElementById('auth-feedback');
 
-  if (!registerForm || !loginForm || !loginEmailSelect || !loginPasswordInput || !feedback) {
+  if (!loginForm || !loginEmailField || !loginPasswordInput || !feedback) {
     return;
   }
 
@@ -211,51 +209,64 @@ function initAccessPage() {
 
   const refreshLoginOptions = () => {
     const users = getUsers();
-    loginEmailSelect.innerHTML = '';
+    if (loginEmailField instanceof HTMLSelectElement) {
+      loginEmailField.innerHTML = '';
+      users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.email;
+        option.textContent = `${user.email} (${user.role})`;
+        loginEmailField.appendChild(option);
+      });
 
-    users.forEach(user => {
-      const option = document.createElement('option');
-      option.value = user.email;
-      option.textContent = `${user.email} (${user.role})`;
-      loginEmailSelect.appendChild(option);
-    });
+      if (users.length === 0) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'Nessun utente registrato';
+        loginEmailField.appendChild(option);
+      }
+      return;
+    }
 
-    if (users.length === 0) {
-      const option = document.createElement('option');
-      option.value = '';
-      option.textContent = 'Nessun utente registrato';
-      loginEmailSelect.appendChild(option);
+    if (loginEmailList instanceof HTMLDataListElement) {
+      loginEmailList.innerHTML = '';
+      users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.email;
+        loginEmailList.appendChild(option);
+      });
     }
   };
 
-  registerForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const formData = new FormData(registerForm);
-    const email = normalizeEmail(formData.get('email'));
-    const password = String(formData.get('password') || '');
+  if (registerForm) {
+    registerForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(registerForm);
+      const email = normalizeEmail(formData.get('email'));
+      const password = String(formData.get('password') || '');
 
-    if (!email) {
-      feedback.textContent = 'Inserisci una email valida.';
-      return;
-    }
-    if (password.length < 8) {
-      feedback.textContent = 'La password deve avere almeno 8 caratteri.';
-      return;
-    }
+      if (!email) {
+        feedback.textContent = 'Inserisci una email valida.';
+        return;
+      }
+      if (password.length < 8) {
+        feedback.textContent = 'La password deve avere almeno 8 caratteri.';
+        return;
+      }
 
-    const users = getUsers();
-    const existing = users.find(user => user.email === email);
-    if (existing) {
-      feedback.textContent = 'Questa email e gia registrata.';
-      return;
-    }
+      const users = getUsers();
+      const existing = users.find(user => user.email === email);
+      if (existing) {
+        feedback.textContent = 'Questa email e gia registrata.';
+        return;
+      }
 
-    users.push({ email, password, role: 'base', createdAt: new Date().toISOString() });
-    setUsers(users);
-    refreshLoginOptions();
-    registerForm.reset();
-    feedback.textContent = `Registrazione completata per ${email}. Ruolo assegnato: base.`;
-  });
+      users.push({ email, password, role: 'base', createdAt: new Date().toISOString() });
+      setUsers(users);
+      refreshLoginOptions();
+      registerForm.reset();
+      feedback.textContent = `Registrazione completata per ${email}. Ruolo assegnato: base.`;
+    });
+  }
 
   loginForm.addEventListener('submit', event => {
     event.preventDefault();
