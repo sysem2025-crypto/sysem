@@ -805,6 +805,24 @@ a {
   margin: 0 0 12px;
 }
 
+.normative-list {
+  margin: 0 0 12px;
+  padding-left: 18px;
+}
+
+.normative-list li {
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.norm-path {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  opacity: 0.78;
+  word-break: break-word;
+}
+
 .auth-form {
   display: grid;
   gap: 8px;

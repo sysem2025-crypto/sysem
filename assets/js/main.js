@@ -10,21 +10,29 @@ const NAV_BY_ROLE = {
   guest: [
     { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Normative', href: 'normative.html' },
+    { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   base: [
     { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Normative', href: 'normative.html' },
+    { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   pro: [
     { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Normative', href: 'normative.html' },
+    { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
     { label: 'Contatti', href: 'contact.html' }
   ],
   admin: [
     { label: 'Sistemi', href: 'sistemi.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
+    { label: 'Normative', href: 'normative.html' },
+    { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
     { label: 'Contatti', href: 'contact.html' }
   ]
 };

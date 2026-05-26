@@ -151,7 +151,8 @@
         <header class="ctr-header">
           <span class="ctr-badge">UNI/TS 11291-3:2021</span>
           <h2>Comunicazione per sistemi di misura gas su base oraria</h2>
-          <p>Scheda tecnica: panoramica, trame, sicurezza, funzioni e modello dati.</p>
+          <p>Scheda tecnica divulgativa: panoramica, trame, sicurezza, funzioni e modello dati.</p>
+          <p><strong>Nota legale:</strong> questa pagina e un riassunto originale a scopo informativo e non sostituisce il testo ufficiale della norma.</p>
         </header>
 
         <nav class="ctr-tabs" aria-label="Sezioni protocollo CTR">
@@ -165,7 +166,7 @@
 
         <section id="overview" class="ctr-pane active">
           <h3>Cos'e il protocollo CTR</h3>
-          <p>Il <strong>CTR (Communication protocol for gas metering)</strong> e definito dalla UNI/TS 11291-3 ed e il protocollo applicativo per i sistemi di misurazione del gas su base oraria. Progettato per operare con vincoli di banda ridotta (SMS a 140 byte) e apparati embedded con risorse limitate, garantisce trasporto dati efficiente, autenticazione e riservatezza.</p>
+          <p>Il <strong>CTR (Communication protocol for gas metering)</strong> e il protocollo applicativo usato in ambito misura gas oraria. In questa pagina lo descriviamo in forma sintetica, con taglio pratico per integrazione e manutenzione.</p>
           <div class="ctr-grid">
             <div class="ctr-card"><strong>Ambito applicativo</strong><br>Misuratori gas residenziali, industriali, stazioni di misura, data logger e convertitori di volume. Classi A2/A1 escluse.</div>
             <div class="ctr-card"><strong>Mezzi supportati</strong><br>GSM-SMS, GPRS (TCP/UDP), PSTN, linea dedicata, radio, bus seriali locali.</div>
@@ -173,10 +174,10 @@
           </div>
           <h3>Caratteristiche principali</h3>
           <ul>
-            <li>Trame a lunghezza fissa: 140 byte (SMS) / 142 o 1026 byte (dati, ad esempio download firmware).</li>
+            <li>Trame pensate per canali a banda limitata, con formati compatti e versioni estese per casi specifici.</li>
             <li>Frammentazione non supportata: ogni datagramma e autonomo.</li>
             <li>Autenticazione obbligatoria tramite CPA (AES-128-CMAC) e cifratura opzionale AES-128 in modalita CTR.</li>
-            <li>Gestione fino a 14 canali di misura piu canale generico 0.</li>
+            <li>Supporto canali multipli di misura e canale generico di servizio.</li>
             <li>Meccanismi di risparmio energetico: wake-up string e finestre di comunicazione (WUIP-OUT).</li>
             <li>Comunicazione connection-less adatta a SMS, con protezione anti-replay (data di validita + identificatore).</li>
           </ul>
@@ -185,7 +186,7 @@
 
         <section id="frame" class="ctr-pane">
           <h3>Struttura trame</h3>
-          <p>Ogni trama e composta da campi ben definiti. Le dimensioni ridotte ottimizzano l'uso di SMS e mezzi a pacchetto.</p>
+          <p>Ogni trama usa campi stabili e riconoscibili per rendere robusta la comunicazione su mezzi eterogenei.</p>
           <div class="ctr-code">[WAKE (20B opz.)] | STX (0Ah) | ADD (2) | PROFI (1) | FUNCT (1) | STRUCT (1) | CHAN (1) | DATI (n) | CPA (4) | CRC (2) | ETX (0Dh)</div>
           <div class="ctr-table-wrap">
             <table class="ctr-table">
@@ -201,8 +202,8 @@
               <tr><td>CRC</td><td>2 byte</td><td>Ridondanza ciclica su campi da ADD a DATI.</td></tr>
             </table>
           </div>
-          <p>Nelle comunicazioni SMS la sequenza WAKE/STX/ETX e omessa: i byte partono da ADD fino a CRC con DATI fisso a 128 byte.</p>
-          <p><strong>PROFI:</strong> bit7 = LdT; bit3-6 = operator_id; bit0-2 = profilo.<br><strong>FUNCT:</strong> bit 6-7 cifratura (00 non cifrato, 01 KEYC, 10 KEYT, 11 KEYF).</p>
+          <p>Nel trasporto SMS alcuni campi di incapsulamento possono non essere usati, mantenendo la parte applicativa coerente.</p>
+          <p><strong>PROFI:</strong> codifica profilo/operatore e tipo trama.<br><strong>FUNCT:</strong> codifica operazione richiesta e modalita di protezione.</p>
         </section>
 
         <section id="security" class="ctr-pane">
@@ -213,7 +214,7 @@
             <div class="ctr-card"><strong>Cifratura</strong><br>STRUCT, CHAN e DATI possono essere cifrati con AES-128-CTR. IV = CPA ripetuto 4 volte.</div>
             <div class="ctr-card"><strong>Gerarchia chiavi</strong><br>KEYC_x, KEYT, KEYF modificabili con funzioni amministrative.</div>
           </div>
-          <p><strong>Protezione replay/spoofing:</strong> comandi Write/Execute con data validita (DV) + WDB; rigetto di DV vecchie e duplicati. Supporto opzionale Caller ID.</p>
+          <p><strong>Protezione replay/spoofing:</strong> uso di controlli temporali e identificativi operativi per ridurre riuso improprio dei messaggi.</p>
         </section>
 
         <section id="functions" class="ctr-pane">
@@ -231,7 +232,7 @@
               <tr><td>( e )</td><td>IDENTIFICATION</td><td>Procedura challenge-response (PUK_S).</td></tr>
             </table>
           </div>
-          <p>Le risposte applicative sono ACK (+) e NACK (-) con codici errore (ad esempio accesso negato, CPA errato, oggetto non supportato, DV scaduta).</p>
+          <p>Le risposte applicative distinguono esito positivo e negativo, con codici di errore utili alla diagnostica.</p>
         </section>
 
         <section id="objects" class="ctr-pane">
@@ -252,8 +253,8 @@
         <section id="profiles" class="ctr-pane">
           <h3>Profili e password</h3>
           <p>CTR implementa RBAC con 5 profili (0 amministratore servizio, 1-4 profili operativi). I permessi sono definiti dall'attributo <code>.acces</code> su ciascun oggetto.</p>
-          <p>Per ogni profilo sono gestibili fino a 10 password (operator_id 0-9). Nel campo PROFI della trama vengono trasmessi profilo e operator_id.</p>
-          <div class="ctr-code">Esempio .acces = 10001010b: scrittura profilo1=1, profilo2-4=0; lettura profilo1=1, profilo2=0, profilo3=1, profilo4=0.</div>
+          <p>Per ogni profilo e prevista gestione utenti/credenziali con identificativo operatore nel messaggio.</p>
+          <div class="ctr-code">Esempio didattico: il campo .acces abilita in modo separato permessi di lettura e scrittura per ciascun profilo.</div>
           <p>Funzioni amministrative disponibili: modifica password (F_PSW), modifica chiavi (F_MKC/F_MKT/SECRET), gestione sigilli (F_DSIG/F_ASIG).</p>
         </section>
       </article>
