@@ -9,6 +9,8 @@ const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 const NAV_BY_ROLE = {
   guest: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
+    { label: 'Compressione', href: 'formule-compressione.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Normative', href: 'normative.html' },
     { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
@@ -16,6 +18,8 @@ const NAV_BY_ROLE = {
   ],
   base: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
+    { label: 'Compressione', href: 'formule-compressione.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Normative', href: 'normative.html' },
     { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
@@ -23,6 +27,8 @@ const NAV_BY_ROLE = {
   ],
   pro: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
+    { label: 'Compressione', href: 'formule-compressione.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Normative', href: 'normative.html' },
     { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
@@ -30,6 +36,8 @@ const NAV_BY_ROLE = {
   ],
   admin: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
+    { label: 'Compressione', href: 'formule-compressione.html' },
     { label: 'Protocolli', href: 'protocolli.html' },
     { label: 'Normative', href: 'normative.html' },
     { label: 'Guida norme', href: 'guida-applicazione-norme.html' },
