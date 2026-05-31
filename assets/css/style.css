@@ -67,7 +67,7 @@ a {
 .home::after {
   content: "";
   position: absolute;
-  inset: 8% 6% 10%;
+  inset: 9.5% 6% 9.5%;
   border: 1px solid rgba(31, 26, 22, 0.14);
   border-radius: 2px;
   pointer-events: none;
@@ -187,11 +187,13 @@ a {
   align-items: center;
   gap: 12px;
   margin-left: auto;
+  margin-top: -6px;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
+  margin-top: -6px;
 }
 
 .brand img {
@@ -361,6 +363,11 @@ a {
     min-height: 76px;
     align-items: center;
     padding-top: 0;
+  }
+
+  .brand,
+  .nav-container {
+    margin-top: 0;
   }
 
   .contact {
