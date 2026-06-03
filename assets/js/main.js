@@ -9,6 +9,7 @@ const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 const NAV_BY_ROLE = {
   guest: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Download applicativi', href: 'download-applicativi.html' },
     { label: 'Studio Tecnico Informatico', href: 'about.html' },
     { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
     { label: 'Compressione', href: 'formule-compressione.html' },
@@ -19,6 +20,7 @@ const NAV_BY_ROLE = {
   ],
   base: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Download applicativi', href: 'download-applicativi.html' },
     { label: 'Studio Tecnico Informatico', href: 'about.html' },
     { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
     { label: 'Compressione', href: 'formule-compressione.html' },
@@ -29,6 +31,7 @@ const NAV_BY_ROLE = {
   ],
   pro: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Download applicativi', href: 'download-applicativi.html' },
     { label: 'Studio Tecnico Informatico', href: 'about.html' },
     { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
     { label: 'Compressione', href: 'formule-compressione.html' },
@@ -39,6 +42,7 @@ const NAV_BY_ROLE = {
   ],
   admin: [
     { label: 'Sistemi', href: 'sistemi.html' },
+    { label: 'Download applicativi', href: 'download-applicativi.html' },
     { label: 'Studio Tecnico Informatico', href: 'about.html' },
     { label: 'Sensori', href: 'sensori-caratterizzazione.html' },
     { label: 'Compressione', href: 'formule-compressione.html' },

@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Fallback temporaneo: se il file Genius non e presente,
+# inoltra al pacchetto disponibile sul server.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^download/Genius_Monitor\.exe$ /download/InterfaceDLMS_Setup.exe [R=302,L,NC]
