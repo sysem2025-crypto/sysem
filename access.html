@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="refresh" content="0; url=/index.html">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Accesso | SYSEM</title>
+  <title data-i18n="page.access.metaTitle">Accesso | SYSEM</title>
   <meta name="description" content="Registrazione e accesso alla documentazione SYSEM.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260601">
   <script>
@@ -33,22 +33,22 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p>Area riservata</p>
-      <h1 id="page-title">Accesso</h1>
+      <p data-i18n="page.access.overline">Area riservata</p>
+      <h1 id="page-title" data-i18n="page.access.title">Accesso</h1>
 
       <div class="auth-grid">
         <article class="auth-card" id="login-section">
-          <h2>Login</h2>
-          <p>Inserisci le credenziali per entrare nell'area riservata.</p>
+          <h2 data-i18n="auth.loginTitle">Login</h2>
+          <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nell'area riservata.</p>
           <form id="login-form" class="auth-form">
-            <label for="login-email">Utente</label>
-            <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username">
+            <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
+            <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
             <datalist id="login-email-list"></datalist>
-            <label for="login-password">Password</label>
+            <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
             <input id="login-password" name="password" type="password" required>
-            <button type="submit" class="btn-download">Accedi</button>
+            <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
           </form>
-          <p class="auth-hint">Solo utenti autorizzati.</p>
+          <p class="auth-hint" data-i18n="auth.authorizedOnly">Solo utenti autorizzati.</p>
           <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
         </article>
       </div>

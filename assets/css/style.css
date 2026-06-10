@@ -187,13 +187,13 @@ a {
   align-items: center;
   gap: 12px;
   margin-left: auto;
-  margin-top: -6px;
+  min-height: clamp(58px, 7vw, 84px);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  margin-top: -6px;
+  min-height: clamp(58px, 7vw, 84px);
 }
 
 .brand img {
@@ -367,7 +367,7 @@ a {
 
   .brand,
   .nav-container {
-    margin-top: 0;
+    min-height: auto;
   }
 
   .contact {
@@ -581,7 +581,7 @@ a {
   justify-content: center;
   padding: 12px 24px;
   background: var(--aqua);
-  color: var(--ink);
+  color: var(--white);
   border-radius: 8px;
   font-weight: 800;
   text-transform: uppercase;
@@ -897,6 +897,50 @@ a {
 .admin-save-btn {
   padding: 8px 12px;
   font-size: 0.72rem;
+}
+
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  line-height: 1;
+}
+
+.lang-btn:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.lang-btn:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.lang-btn.active {
+  background: var(--aqua);
+  color: var(--white);
+  border-color: var(--aqua);
+}
+
+.lang-btn:hover:not(.active) {
+  background: rgba(47, 74, 69, 0.12);
+}
+
+@media (max-width: 620px) {
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
 }
 
 @media (max-width: 900px) {

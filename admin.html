@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Accessi | SYSEM</title>
+  <title data-i18n="page.admin.metaTitle">Admin Accessi | SYSEM</title>
   <meta name="description" content="Gestione ruoli utenti per accesso alla documentazione.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260601">
 </head>
@@ -29,14 +29,14 @@
     </div>
 
     <section class="hero admin-hero" aria-labelledby="page-title">
-      <p>Controllo accessi</p>
-      <h1 id="page-title">Gestione Accessi</h1>
+      <p data-i18n="page.admin.overline">Controllo accessi</p>
+      <h1 id="page-title" data-i18n="page.admin.title">Gestione Accessi</h1>
 
       <div class="admin-panel">
         <div class="admin-toolbar">
-          <input id="admin-search" type="search" placeholder="Cerca per email">
+          <input id="admin-search" type="search" placeholder="Cerca per email" data-i18n="admin.searchPlaceholder">
           <select id="admin-role-filter">
-            <option value="all">Tutti i ruoli</option>
+            <option value="all" data-i18n="admin.allRoles">Tutti i ruoli</option>
             <option value="base">base</option>
             <option value="pro">pro</option>
             <option value="admin">admin</option>
@@ -47,10 +47,10 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Email</th>
-                <th>Ruolo</th>
-                <th>Creato il</th>
-                <th>Azione</th>
+                <th data-i18n="admin.thEmail">Email</th>
+                <th data-i18n="admin.thRole">Ruolo</th>
+                <th data-i18n="admin.thCreated">Creato il</th>
+                <th data-i18n="admin.thAction">Azione</th>
               </tr>
             </thead>
             <tbody id="admin-users-body"></tbody>
