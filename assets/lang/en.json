@@ -1,0 +1,210 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "save": "Save",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "actions": "Action",
+    "searchEmail": "Search by email",
+    "allRoles": "All roles",
+    "noUsers": "No users found.",
+    "user": "User",
+    "signin": "Sign in",
+    "authorizedOnly": "Authorized users only.",
+    "openMenu": "Open menu",
+    "homeLabel": "SYSEM home"
+  },
+  "nav": {
+    "sistemi": "Systems",
+    "download": "Software Downloads",
+    "about": "About",
+    "sensori": "Sensors",
+    "compressione": "Compression",
+    "protocolli": "Protocols",
+    "normative": "Regulations",
+    "guidaNorme": "Standards Guide",
+    "contatti": "Contacts"
+  },
+  "lang": {
+    "it": "Italian",
+    "en": "English"
+  },
+  "page": {
+    "home": {
+      "overline": "IT Engineering Studio",
+      "title": "SYSEM",
+      "metaTitle": "Software solutions for utilities",
+      "subtitle": "digital solutions for utility telecontrol"
+    },
+    "about": {
+      "overline": "About us",
+      "title": "SYSEM",
+      "metaTitle": "About",
+      "desc1": "We are a company that develops software for the public utility sector, active in water, gas and electricity distribution.",
+      "desc2": "We combine field technical expertise with a digital approach to simplify the daily activities of technicians and operators."
+    },
+    "services": {
+      "overline": "Operational Services",
+      "title": "Utility Services",
+      "metaTitle": "Services",
+      "desc1": "We support utilities, distributors and technical partners in the complete management of the system operational cycle.",
+      "desc2": "We cover plant startup, parameterization, integration with central systems and post-activation support."
+    },
+    "industries": {
+      "overline": "Application areas",
+      "title": "Where we operate",
+      "metaTitle": "Applications",
+      "desc1": "Our solutions are designed for utility networks, metering stations and industrial delivery points.",
+      "desc2": "We work in contexts where data reliability, service continuity and traceability are essential requirements."
+    },
+    "sistemi": {
+      "overline": "Overview",
+      "title": "Systems",
+      "metaTitle": "Systems"
+    },
+    "protocolli": {
+      "overline": "Technical documentation",
+      "title": "Protocols",
+      "metaTitle": "Protocols"
+    },
+    "ctr": {
+      "overline": "Technical specification",
+      "title": "CTR Section",
+      "metaTitle": "CTR Protocol"
+    },
+    "pot": {
+      "overline": "Technical standard",
+      "title": "POT Section",
+      "metaTitle": "POT Protocol"
+    },
+    "dlms": {
+      "overline": "Technical specification",
+      "title": "DLMS Section",
+      "metaTitle": "DLMS Protocol"
+    },
+    "sensori": {
+      "overline": "Technical insight",
+      "title": "Sensors and characterization",
+      "metaTitle": "Sensors and characterization"
+    },
+    "formule": {
+      "overline": "Technical insight",
+      "title": "Compression formulas",
+      "metaTitle": "Compression formulas"
+    },
+    "normative": {
+      "overline": "Compliance",
+      "title": "Regulations",
+      "metaTitle": "Regulations"
+    },
+    "guidaNorme": {
+      "overline": "Operating method",
+      "title": "How to Apply Standards",
+      "metaTitle": "Standards Application Guide"
+    },
+    "guida-norme": {
+      "overline": "Operating method",
+      "title": "How to Apply Standards",
+      "metaTitle": "Standards Application Guide"
+    },
+    "sistemaMisura": {
+      "overline": "Technical overview",
+      "title": "Measuring System",
+      "metaTitle": "Measuring System"
+    },
+    "download": {
+      "overline": "Operating software",
+      "title": "Software Downloads",
+      "metaTitle": "Software Downloads"
+    },
+    "resource": {
+      "overline": "Learning & Assets",
+      "title": "Resource",
+      "metaTitle": "Resource"
+    },
+    "access": {
+      "overline": "Restricted area",
+      "title": "Sign In",
+      "metaTitle": "Sign In"
+    },
+    "programAccess": {
+      "overline": "Program access",
+      "title": "Program Access",
+      "metaTitle": "Program Access"
+    },
+    "admin": {
+      "overline": "Access control",
+      "title": "Access Management",
+      "metaTitle": "Admin Access"
+    },
+    "contact": {
+      "overline": "Get in touch",
+      "title": "Contact",
+      "metaTitle": "Contact"
+    }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginDesc": "Enter your credentials to access the restricted area.",
+    "loginLabel": "User",
+    "passwordLabel": "Password",
+    "signinBtn": "Sign in",
+    "invalidEmail": "Enter a valid email.",
+    "passwordLength": "Password must be at least 8 characters.",
+    "emailExists": "This email is already registered.",
+    "registered": "Registration complete for {email}. Role assigned: base.",
+    "userNotFound": "User not found.",
+    "wrongPassword": "Incorrect password.",
+    "mustLogin": "You must be logged in to change your password.",
+    "wrongCurrentPassword": "Current password is not valid.",
+    "passwordMismatch": "New passwords do not match.",
+    "passwordUpdated": "Password updated successfully.",
+    "changePassword": "Change Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "changePasswordBtn": "Change password",
+    "registerTitle": "Registration",
+    "registerDesc": "Create an account to access the restricted area.",
+    "registerBtn": "Register",
+    "emailPlaceholder": "name@company.it"
+  },
+  "admin": {
+    "title": "Access control",
+    "heading": "Access Management",
+    "searchPlaceholder": "Search by email",
+    "allRoles": "All roles",
+    "thEmail": "Email",
+    "thRole": "Role",
+    "thCreated": "Created on",
+    "thAction": "Action",
+    "noUsers": "No users found.",
+    "noChange": "No changes for {email}.",
+    "confirmPromotion": "Confirm admin promotion for {email}?",
+    "roleUpdated": "Role updated: {email} -> {newRole}.",
+    "saveBtn": "Save"
+  },
+  "download": {
+    "appTitle": "Available applications",
+    "appDesc": "Applications are distributed in the restricted area to ensure version traceability and access control.",
+    "accessTitle": "Download area access",
+    "accessDesc": "To download software packages, sign in with an authorized account.",
+    "supportTitle": "Technical support",
+    "supportDesc": "For account activation or download support, contact the SYSEM team.",
+    "genius": "GeniusMonitor",
+    "rtu": "RTU Terminal",
+    "releases": "Updates and operational releases",
+    "accessBtn": "Access restricted area",
+    "catalogBtn": "Open download catalog",
+    "contactBtn": "Contact support"
+  },
+  "resource": {
+    "selectLabel": "Select program to download",
+    "diagnosticsTitle": "Update diagnostics index",
+    "manual": "Manual",
+    "auto": "Auto",
+    "updated": "Updated"
+  }
+}

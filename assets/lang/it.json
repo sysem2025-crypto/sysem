@@ -1,0 +1,210 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "save": "Salva",
+    "email": "Email",
+    "password": "Password",
+    "role": "Ruolo",
+    "actions": "Azione",
+    "searchEmail": "Cerca per email",
+    "allRoles": "Tutti i ruoli",
+    "noUsers": "Nessun utente trovato.",
+    "user": "Utente",
+    "signin": "Accedi",
+    "authorizedOnly": "Solo utenti autorizzati.",
+    "openMenu": "Apri menu",
+    "homeLabel": "SYSEM home"
+  },
+  "nav": {
+    "sistemi": "Sistemi",
+    "download": "Download applicativi",
+    "about": "Studio Tecnico Informatico",
+    "sensori": "Sensori",
+    "compressione": "Compressione",
+    "protocolli": "Protocolli",
+    "normative": "Normative",
+    "guidaNorme": "Guida norme",
+    "contatti": "Contatti"
+  },
+  "lang": {
+    "it": "Italiano",
+    "en": "English"
+  },
+  "page": {
+    "home": {
+      "overline": "Studio Tecnico Informatico",
+      "title": "SYSEM",
+      "metaTitle": "Soluzioni software per utilities",
+      "subtitle": "soluzioni digitali per telecontrollo utilities"
+    },
+    "about": {
+      "overline": "Chi siamo",
+      "title": "SYSEM",
+      "metaTitle": "Azienda",
+      "desc1": "Siamo una realtà che sviluppa software per il settore dei servizi pubblici (utilities), attivo nella distribuzione di acqua, gas ed energia elettrica.",
+      "desc2": "Uniamo competenza tecnica sul campo e approccio digitale per semplificare le attività quotidiane di tecnici e operatori."
+    },
+    "services": {
+      "overline": "Servizi operativi",
+      "title": "Servizi per utilities",
+      "metaTitle": "Servizi",
+      "desc1": "Supportiamo utility, distributori e partner tecnici nella gestione completa del ciclo operativo dei sistemi.",
+      "desc2": "Copriamo avvio impianto, parametrizzazione, integrazione con sistemi centrali e supporto post-attivazione."
+    },
+    "industries": {
+      "overline": "Ambiti applicativi",
+      "title": "Dove operiamo",
+      "metaTitle": "Applicazioni",
+      "desc1": "Le nostre soluzioni sono pensate per reti utilities, cabine di misura e punti di consegna industriali.",
+      "desc2": "Interveniamo in contesti dove affidabilità del dato, continuità del servizio e tracciabilità sono requisiti essenziali."
+    },
+    "sistemi": {
+      "overline": "Panoramica",
+      "title": "Sistemi",
+      "metaTitle": "Sistemi"
+    },
+    "protocolli": {
+      "overline": "Documentazione tecnica",
+      "title": "Protocolli",
+      "metaTitle": "Protocolli"
+    },
+    "ctr": {
+      "overline": "Specifica tecnica",
+      "title": "Sezione CTR",
+      "metaTitle": "Protocollo CTR"
+    },
+    "pot": {
+      "overline": "Norma tecnica",
+      "title": "Sezione POT",
+      "metaTitle": "Protocollo POT"
+    },
+    "dlms": {
+      "overline": "Specifica tecnica",
+      "title": "Sezione DLMS",
+      "metaTitle": "Protocollo DLMS"
+    },
+    "sensori": {
+      "overline": "Approfondimento tecnico",
+      "title": "Sensori e caratterizzazione",
+      "metaTitle": "Sensori e caratterizzazione"
+    },
+    "formule": {
+      "overline": "Approfondimento tecnico",
+      "title": "Formule di compressione",
+      "metaTitle": "Formule di compressione"
+    },
+    "normative": {
+      "overline": "Compliance",
+      "title": "Normative",
+      "metaTitle": "Normative"
+    },
+    "guidaNorme": {
+      "overline": "Metodo operativo",
+      "title": "Come Applicare le Norme",
+      "metaTitle": "Guida Applicazione Norme"
+    },
+    "guida-norme": {
+      "overline": "Metodo operativo",
+      "title": "Come Applicare le Norme",
+      "metaTitle": "Guida Applicazione Norme"
+    },
+    "sistemaMisura": {
+      "overline": "Panoramica tecnica",
+      "title": "Sistema di Misura",
+      "metaTitle": "Sistema di Misura"
+    },
+    "download": {
+      "overline": "Software operativi",
+      "title": "Download applicativi",
+      "metaTitle": "Download applicativi"
+    },
+    "resource": {
+      "overline": "Learning & Assets",
+      "title": "Resource",
+      "metaTitle": "Resource"
+    },
+    "access": {
+      "overline": "Area riservata",
+      "title": "Accesso",
+      "metaTitle": "Accesso"
+    },
+    "programAccess": {
+      "overline": "Program access",
+      "title": "Accesso Programma",
+      "metaTitle": "Program Access"
+    },
+    "admin": {
+      "overline": "Controllo accessi",
+      "title": "Gestione Accessi",
+      "metaTitle": "Admin Accessi"
+    },
+    "contact": {
+      "overline": "Get in touch",
+      "title": "Contact",
+      "metaTitle": "Contact"
+    }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",
+    "loginLabel": "Utente",
+    "passwordLabel": "Password",
+    "signinBtn": "Accedi",
+    "invalidEmail": "Inserisci una email valida.",
+    "passwordLength": "La password deve avere almeno 8 caratteri.",
+    "emailExists": "Questa email è già registrata.",
+    "registered": "Registrazione completata per {email}. Ruolo assegnato: base.",
+    "userNotFound": "Utente non trovato.",
+    "wrongPassword": "Password non corretta.",
+    "mustLogin": "Devi essere autenticato per cambiare password.",
+    "wrongCurrentPassword": "Password attuale non valida.",
+    "passwordMismatch": "Le nuove password non coincidono.",
+    "passwordUpdated": "Password aggiornata con successo.",
+    "changePassword": "Cambio Password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "confirmPassword": "Conferma nuova password",
+    "changePasswordBtn": "Cambia password",
+    "registerTitle": "Registrazione",
+    "registerDesc": "Crea un account per accedere all'area riservata.",
+    "registerBtn": "Registrati",
+    "emailPlaceholder": "nome@azienda.it"
+  },
+  "admin": {
+    "title": "Controllo accessi",
+    "heading": "Gestione Accessi",
+    "searchPlaceholder": "Cerca per email",
+    "allRoles": "Tutti i ruoli",
+    "thEmail": "Email",
+    "thRole": "Ruolo",
+    "thCreated": "Creato il",
+    "thAction": "Azione",
+    "noUsers": "Nessun utente trovato.",
+    "noChange": "Nessuna modifica per {email}.",
+    "confirmPromotion": "Confermi promozione admin per {email}?",
+    "roleUpdated": "Ruolo aggiornato: {email} -> {newRole}.",
+    "saveBtn": "Salva"
+  },
+  "download": {
+    "appTitle": "Applicativi disponibili",
+    "appDesc": "Gli applicativi sono distribuiti in area riservata per garantire tracciabilità versioni e controllo accessi.",
+    "accessTitle": "Accesso area download",
+    "accessDesc": "Per scaricare i pacchetti software accedi con un account autorizzato.",
+    "supportTitle": "Supporto tecnico",
+    "supportDesc": "Per attivazione utenze o supporto sui download contatta il team SYSEM.",
+    "genius": "GeniusMonitor",
+    "rtu": "RTU Terminal",
+    "releases": "Aggiornamenti e release operative",
+    "accessBtn": "Accedi all'area riservata",
+    "catalogBtn": "Apri catalogo download",
+    "contactBtn": "Contatta il supporto"
+  },
+  "resource": {
+    "selectLabel": "Seleziona programma da scaricare",
+    "diagnosticsTitle": "Indice diagnostico aggiornamenti",
+    "manual": "Manual",
+    "auto": "Auto",
+    "updated": "Agg."
+  }
+}
