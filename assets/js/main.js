@@ -655,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ['Compatibilita', 'Windows 10/11'],
             ['Canale', 'Release stabile']
           ],
-          downloadHref: '/interface-dlms/manual-download-gm.php'
+          downloadHref: 'interface-dlms/manual-download-gm.php'
         },
         {
           id: 'rtu-terminal',
@@ -667,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ['Compatibilita', 'Windows 10/11'],
             ['Canale', 'Release stabile']
           ],
-          downloadHref: '/interface-dlms/manual-download-rtu.php'
+          downloadHref: 'interface-dlms/manual-download-rtu.php'
         }
       ];
       const renderActions = program => {
@@ -728,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectProgram(programs[0].id);
     }
     if (manualCountEl && autoCountEl && lastUpdateEl) {
-      var diagUrl = '/interface-dlms/stats.php';
+      var diagUrl = 'interface-dlms/stats.php';
       var diagToken = generateDownloadToken();
       if (diagToken) diagUrl += '?token=' + encodeURIComponent(diagToken);
       fetch(diagUrl, { cache: 'no-store' })
