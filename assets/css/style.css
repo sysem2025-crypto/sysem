@@ -495,7 +495,7 @@ a {
   }
 
   .changelog-section {
-    margin: -30px auto 40px;
+    margin: 12px auto 40px;
   }
 
   .changelog-entry {
@@ -915,7 +915,7 @@ a {
 .admin-panel {
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: var(--glass);
+  background: rgba(252, 250, 244, 0.92);
   backdrop-filter: blur(14px);
   padding: 18px;
 }
