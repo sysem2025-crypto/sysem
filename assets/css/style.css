@@ -334,6 +334,7 @@ a {
 .hero-home {
   align-items: center;
   text-align: center;
+  min-height: auto;
 }
 
 .hero-home h1 {
@@ -385,7 +386,7 @@ a {
 /* --- Changelog / Log window --- */
 .changelog-section {
   width: min(640px, calc(100% - 40px));
-  margin: -60px auto 60px;
+  margin: 12px auto 60px;
   position: relative;
   z-index: 1;
 }
@@ -921,6 +922,7 @@ a {
 
 .auth-card h2 {
   margin: 0 0 8px;
+  color: var(--ink);
 }
 
 .auth-card p {
