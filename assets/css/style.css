@@ -33,7 +33,7 @@ a {
 .home {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 15% 16%, rgba(250, 246, 235, 0.86), transparent 48%),
     radial-gradient(circle at 78% 72%, rgba(231, 222, 202, 0.5), transparent 45%),

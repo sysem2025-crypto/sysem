@@ -254,12 +254,12 @@ function getAllowedLanding(role) {
     return 'admin.html';
   }
   if (role === 'pro') {
-    return 'index.html';
+    return 'resource.html';
   }
   if (role === 'base') {
     return 'resource.html';
   }
-  return 'index.html';
+  return 'access.html';
 }
 
 function ensureDefaultAdminUser() {
