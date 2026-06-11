@@ -888,7 +888,7 @@ a {
 .auth-pill a {
   border: 1px solid var(--line);
   background: transparent;
-  color: var(--white);
+  color: var(--ink);
   border-radius: 6px;
   font-size: 0.72rem;
   padding: 4px 8px;
