@@ -381,7 +381,12 @@ function enforceRouteAccess(requiredRole) {
     return;
   }
   if (!hasRoleAccess(currentRole, requiredRole)) {
-    window.location.href = getAllowedLanding(currentRole);
+    var dest = getAllowedLanding(currentRole);
+    var returnUrl = window.location.pathname + window.location.search;
+    if (returnUrl && dest.indexOf('?') === -1) {
+      dest += '?return=' + encodeURIComponent(returnUrl);
+    }
+    window.location.href = dest;
   }
 }
 
@@ -475,7 +480,9 @@ function initAccessPage() {
       return;
     }
     localStorage.setItem(STORAGE_KEYS.sessionEmail, user.email);
-    window.location.href = getAllowedLanding(user.role);
+    var params = new URLSearchParams(window.location.search);
+    var returnUrl = params.get('return');
+    window.location.href = returnUrl || getAllowedLanding(user.role);
   });
   if (changePasswordForm) {
     changePasswordForm.addEventListener('submit', event => {
