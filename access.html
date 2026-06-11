@@ -38,10 +38,9 @@
           <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nell'area riservata.</p>
           <form id="login-form" class="auth-form">
             <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
-            <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
-            <datalist id="login-email-list"></datalist>
+            <input id="login-email" name="email" type="text" placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
             <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
-            <input id="login-password" name="password" type="password" required>
+            <input id="login-password" name="password" type="password">
             <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
           </form>
           <p class="auth-hint" data-i18n="auth.authorizedOnly">Solo utenti autorizzati.</p>
