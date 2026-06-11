@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="page.datacenter.metaTitle">Datacenter | SYSEM</title>
+  <meta name="description" content="Datacenter comunicazione dati SYSEM: infrastruttura per telecontrollo e telelettura utilities.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260610">
+</head>
+
+<body data-page="datacenter" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p data-i18n="page.datacenter.overline">Infrastruttura</p>
+      <h1 id="page-title" data-i18n="page.datacenter.title">Datacenter comunicazione dati</h1>
+
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Gestione dati di telelettura</h2>
+          <p>Piattaforma centralizzata per la raccolta, validazione e distribuzione dei dati provenienti dai gruppi di misura.</p>
+          <ul class="normative-list">
+            <li>Aggregazione dati da protocolli CTR, POT e DLMS</li>
+            <li>Validazione e diagnostica automatica delle misure</li>
+            <li>Storage storico e curve di carico</li>
+          </ul>
+          <p><a class="btn-download" href="#">Accedi al datacenter</a></p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Infrastruttura di comunicazione</h2>
+          <p>Gestione delle connessioni verso i dispositivi in campo: scheduling, retry, e monitoraggio dello stato della comunicazione.</p>
+          <ul class="normative-list">
+            <li>Supporto GSM/GPRS, NB-IoT, radio 169 MHz</li>
+            <li>Programmazione letture e finestre di comunicazione</li>
+            <li>Alert e notifiche su anomalie di connessione</li>
+          </ul>
+        </article>
+
+        <article class="auth-card">
+          <h2>Interfacce e integrazione</h2>
+          <p>API e webhook per integrare i dati del datacenter con sistemi di terze parti e piattaforme di analisi.</p>
+          <ul class="normative-list">
+            <li>API REST per esportazione dati di misura</li>
+            <li>Webhook per eventi e allarmi in tempo reale</li>
+            <li>Esportazione formati standard (XML, CSV, JSON)</li>
+          </ul>
+          <p><a class="btn-download" href="#">Documentazione integrazione</a></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/main.js?v=20260601"></script>
+</body>
+</html>

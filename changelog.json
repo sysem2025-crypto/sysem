@@ -1,0 +1,12 @@
+[
+  { "date": "2026-06-11", "text": "Sistema di autenticazione download: token validation e protezione area riservata" },
+  { "date": "2026-06-11", "text": "Path download spostati su directory remota downloads/ con .htaccess" },
+  { "date": "2026-06-10", "text": "Ristrutturazione menu: nuove sezioni Systema, Tiketing e Intelligenza Artificiale" },
+  { "date": "2026-06-10", "text": "Aggiunta pagina Intelligenza Artificiale con assistente virtuale e automazione" },
+  { "date": "2026-06-10", "text": "Aggiunta pagina Datacenter comunicazione dati" },
+  { "date": "2026-06-10", "text": "Aggiunta pagina Sistema di Ticketing" },
+  { "date": "2026-06-10", "text": "Aggiunta scheda protocollo DLMS (UNI/TS 11291-14-2)" },
+  { "date": "2026-06-01", "text": "Aggiornamento stili CSS e release versioning" },
+  { "date": "2026-05-12", "text": "Aggiornamento diagnostica download e statistiche" },
+  { "date": "2026-05-01", "text": "Pubblicazione sezioni CTR, POT e documentazione protocolli" }
+]

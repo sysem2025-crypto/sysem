@@ -138,7 +138,7 @@ a {
 }
 
 .overlay-menu nav ul li {
-  margin: 24px 0;
+  margin: 6px 0;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.4s ease-out;
@@ -150,23 +150,52 @@ a {
 }
 
 /* Delay for staggered animation */
-.overlay-menu.active nav ul li:nth-child(1) { transition-delay: 0.1s; }
-.overlay-menu.active nav ul li:nth-child(2) { transition-delay: 0.2s; }
-.overlay-menu.active nav ul li:nth-child(3) { transition-delay: 0.3s; }
-.overlay-menu.active nav ul li:nth-child(4) { transition-delay: 0.4s; }
-.overlay-menu.active nav ul li:nth-child(5) { transition-delay: 0.5s; }
-.overlay-menu.active nav ul li:nth-child(6) { transition-delay: 0.6s; }
+.overlay-menu.active nav ul li:nth-child(1) { transition-delay: 0.05s; }
+.overlay-menu.active nav ul li:nth-child(2) { transition-delay: 0.08s; }
+.overlay-menu.active nav ul li:nth-child(3) { transition-delay: 0.11s; }
+.overlay-menu.active nav ul li:nth-child(4) { transition-delay: 0.14s; }
+.overlay-menu.active nav ul li:nth-child(5) { transition-delay: 0.17s; }
+.overlay-menu.active nav ul li:nth-child(6) { transition-delay: 0.20s; }
+.overlay-menu.active nav ul li:nth-child(7) { transition-delay: 0.23s; }
+.overlay-menu.active nav ul li:nth-child(8) { transition-delay: 0.26s; }
+.overlay-menu.active nav ul li:nth-child(9) { transition-delay: 0.29s; }
+.overlay-menu.active nav ul li:nth-child(10) { transition-delay: 0.32s; }
+.overlay-menu.active nav ul li:nth-child(11) { transition-delay: 0.35s; }
+.overlay-menu.active nav ul li:nth-child(12) { transition-delay: 0.38s; }
+.overlay-menu.active nav ul li:nth-child(13) { transition-delay: 0.41s; }
+.overlay-menu.active nav ul li:nth-child(14) { transition-delay: 0.44s; }
+.overlay-menu.active nav ul li:nth-child(15) { transition-delay: 0.47s; }
 
-.overlay-menu nav ul li a {
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 800;
+.overlay-menu nav ul li.nav-category {
+  margin: 18px 0 4px;
+  pointer-events: none;
+}
+
+.overlay-menu nav ul li.nav-category .nav-cat-label {
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--aqua);
+  display: inline-block;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+}
+
+.overlay-menu nav ul li.nav-sub {
+  margin: 10px 0;
+}
+
+.overlay-menu nav ul li.nav-sub a {
+  font-size: clamp(1.4rem, 3.6vw, 2.2rem);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--ink);
   transition: color 0.3s ease;
 }
 
-.overlay-menu nav ul li a:hover {
+.overlay-menu nav ul li.nav-sub a:hover {
   color: #5a3024;
 }
 
@@ -353,6 +382,73 @@ a {
   }
 }
 
+/* --- Changelog / Log window --- */
+.changelog-section {
+  width: min(640px, calc(100% - 40px));
+  margin: -60px auto 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.changelog-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.changelog-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(31, 26, 22, 0.7);
+}
+
+.changelog-list {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(250, 246, 235, 0.6);
+  padding: 12px 16px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.changelog-entry {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(31, 26, 22, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.changelog-entry:last-child {
+  border-bottom: none;
+}
+
+.changelog-date {
+  flex-shrink: 0;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.72rem;
+  color: rgba(31, 26, 22, 0.55);
+  min-width: 80px;
+}
+
+.changelog-text {
+  color: rgba(31, 26, 22, 0.85);
+}
+
+.changelog-loading,
+.changelog-empty {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(31, 26, 22, 0.5);
+  font-style: italic;
+}
+
 @media (max-width: 620px) {
   .home {
     background-position: center top;
@@ -395,6 +491,15 @@ a {
     min-width: auto;
     padding: 10px 14px;
     font-size: 0.78rem;
+  }
+
+  .changelog-section {
+    margin: -30px auto 40px;
+  }
+
+  .changelog-entry {
+    flex-direction: column;
+    gap: 2px;
   }
 }
 

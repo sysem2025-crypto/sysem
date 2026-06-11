@@ -1,0 +1,3 @@
+# deny direct access to downloads folder
+Order deny,allow
+Deny from all

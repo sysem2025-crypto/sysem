@@ -29,9 +29,12 @@ async function loadLang(lang) {
         "authorizedOnly": "Solo utenti autorizzati.", "openMenu": "Apri menu", "homeLabel": "SYSEM home"
       },
       "nav": {
+        "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
+        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
+        "sysem": "Sysem",
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
         "sensori": "Sensori", "compressione": "Compressione", "protocolli": "Protocolli",
-        "normative": "Normative", "guidaNorme": "Guida norme", "contatti": "Contatti"
+        "normative": "Normative", "guidaNorme": "Guida norme", "ai": "Intelligenza Artificiale", "contatti": "Contatti"
       },
       "auth": {
         "loginTitle": "Login", "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",
@@ -77,12 +80,16 @@ async function loadLang(lang) {
         "protocolli": { "overline": "Documentazione tecnica", "title": "Protocolli", "metaTitle": "Protocolli" },
         "ctr": { "overline": "Specifica tecnica", "title": "Sezione CTR", "metaTitle": "Protocollo CTR" },
         "pot": { "overline": "Norma tecnica", "title": "Sezione POT", "metaTitle": "Protocollo POT" },
+        "dlms": { "overline": "Specifica tecnica", "title": "Sezione DLMS", "metaTitle": "Protocollo DLMS" },
         "sensori": { "overline": "Approfondimento tecnico", "title": "Sensori e caratterizzazione", "metaTitle": "Sensori e caratterizzazione" },
         "formule": { "overline": "Approfondimento tecnico", "title": "Formule di compressione", "metaTitle": "Formule di compressione" },
         "normative": { "overline": "Compliance", "title": "Normative", "metaTitle": "Normative" },
         "guidaNorme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
         "guida-norme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
         "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
+        "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
+        "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
+        "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
         "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
         "resource": { "overline": "Learning & Assets", "title": "Resource", "metaTitle": "Resource" },
         "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },
@@ -169,16 +176,16 @@ async function setLang(lang) {
   updateAuthPill();
 }
 
-function updateNavLabels(currentRole) {
+function updateNavLabels() {
   const menuList = document.querySelector('#overlay-menu ul');
   if (!menuList) return;
-  const links = NAV_BY_ROLE[currentRole] || NAV_BY_ROLE.guest;
-  const items = menuList.querySelectorAll('li');
-  items.forEach((li, i) => {
-    const a = li.querySelector('a');
-    if (a && links[i]) {
-      a.textContent = t(links[i].labelKey);
-    }
+  menuList.querySelectorAll('.nav-cat-label').forEach(el => {
+    const key = el.dataset.i18nCat;
+    if (key) el.textContent = t(key);
+  });
+  menuList.querySelectorAll('.nav-sub a').forEach(a => {
+    const key = a.dataset.i18nItem;
+    if (key) a.textContent = t(key);
   });
 }
 
@@ -279,8 +286,14 @@ function ensureDefaultAdminUser() {
   setUsers(users);
 }
 
-const NAV_BY_ROLE = {
-  guest: [
+const NAV_STRUCTURE = [
+  { categoryKey: 'nav.systema', items: [
+    { labelKey: 'nav.datacenter', href: 'datacenter.html' }
+  ]},
+  { categoryKey: 'nav.tiketing', items: [
+    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
+  ]},
+  { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
     { labelKey: 'nav.download', href: 'download-applicativi.html' },
     { labelKey: 'nav.about', href: 'about.html' },
@@ -289,46 +302,20 @@ const NAV_BY_ROLE = {
     { labelKey: 'nav.protocolli', href: 'protocolli.html' },
     { labelKey: 'nav.normative', href: 'normative.html' },
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
+    { labelKey: 'nav.ai', href: 'ai.html' },
     { labelKey: 'nav.contatti', href: 'contact.html' }
-  ],
-  base: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.compressione', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-    { labelKey: 'nav.contatti', href: 'contact.html' }
-  ],
-  pro: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.compressione', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-    { labelKey: 'nav.contatti', href: 'contact.html' }
-  ],
-  admin: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.compressione', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-    { labelKey: 'nav.contatti', href: 'contact.html' }
-  ]
-};
+  ]}
+];
 
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
 
-function renderNavigation(currentPage, currentRole) {
+function generateDownloadToken() {
+  const user = getCurrentUser();
+  if (!user) return '';
+  return btoa(user.email + '|' + user.role + '|' + new Date().toISOString().slice(0, 10));
+}
+
+function renderNavigation(currentPage) {
   const overlayMenu = document.getElementById('overlay-menu');
   if (!overlayMenu) {
     return;
@@ -337,18 +324,29 @@ function renderNavigation(currentPage, currentRole) {
   if (!menuList) {
     return;
   }
-  const links = NAV_BY_ROLE[currentRole] || NAV_BY_ROLE.guest;
   menuList.innerHTML = '';
-  links.forEach(linkData => {
-    const li = document.createElement('li');
-    const link = document.createElement('a');
-    link.href = linkData.href;
-    link.textContent = t(linkData.labelKey);
-    if (currentPage && linkData.href.includes(currentPage)) {
-      link.setAttribute('aria-current', 'page');
-    }
-    li.appendChild(link);
-    menuList.appendChild(li);
+  NAV_STRUCTURE.forEach(group => {
+    const catLi = document.createElement('li');
+    catLi.className = 'nav-category';
+    const span = document.createElement('span');
+    span.className = 'nav-cat-label';
+    span.dataset.i18nCat = group.categoryKey;
+    span.textContent = t(group.categoryKey);
+    catLi.appendChild(span);
+    menuList.appendChild(catLi);
+    group.items.forEach(item => {
+      const itemLi = document.createElement('li');
+      itemLi.className = 'nav-sub';
+      const link = document.createElement('a');
+      link.href = item.href;
+      link.dataset.i18nItem = item.labelKey;
+      link.textContent = t(item.labelKey);
+      if (currentPage && item.href.includes(currentPage)) {
+        link.setAttribute('aria-current', 'page');
+      }
+      itemLi.appendChild(link);
+      menuList.appendChild(itemLi);
+    });
   });
   const topNavContainer = document.querySelector('.nav-container');
   if (!topNavContainer) {
@@ -616,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   enforceRouteAccess(requiredRole);
   initI18n().then(() => {
-    renderNavigation(currentPage, getCurrentRole());
+    renderNavigation(currentPage);
     const menuToggle = document.getElementById('menu-toggle');
     const overlayMenu = document.getElementById('overlay-menu');
     if (menuToggle && overlayMenu) {
@@ -676,7 +674,8 @@ document.addEventListener('DOMContentLoaded', () => {
         detailActionsEl.innerHTML = '';
         const link = document.createElement('a');
         link.className = 'btn-download';
-        link.href = program.downloadHref;
+        const token = generateDownloadToken();
+        link.href = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.textContent = `Download ${program.title}`;
@@ -729,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectProgram(programs[0].id);
     }
     if (manualCountEl && autoCountEl && lastUpdateEl) {
-      const diagnosticsUrl = '/interface-dlms/stats.php';
+      const diagnosticsUrl = '/interface-dlms/stats.php?token=' + encodeURIComponent(generateDownloadToken());
       fetch(diagnosticsUrl, { cache: 'no-store' })
         .then(response => {
           if (!response.ok) {

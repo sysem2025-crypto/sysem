@@ -1,8 +1,22 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/auth-config.php';
+
+$user = requireAuth();
+
 $downloadUrl = 'https://sysem.it/download/InterfaceDLMS_Setup.exe';
 $storePath = __DIR__ . '/stats-store.json';
+
+$stats = loadStats($storePath);
+if ($stats !== []) {
+    $stats['manual_downloads'] = (int)($stats['manual_downloads'] ?? 0) + 1;
+    $stats['last_update'] = gmdate('Y-m-d H:i') . ' UTC';
+    saveStats($storePath, $stats);
+}
+
+header('Location: ' . $downloadUrl, true, 302);
+exit;
 
 function loadStats(string $path): array
 {
@@ -32,14 +46,3 @@ function saveStats(string $path, array $stats): bool
 
     return file_put_contents($path, $json . PHP_EOL, LOCK_EX) !== false;
 }
-
-$stats = loadStats($storePath);
-if ($stats !== []) {
-    $stats['manual_downloads'] = (int)($stats['manual_downloads'] ?? 0) + 1;
-    $stats['automatic_downloads'] = (int)($stats['automatic_downloads'] ?? 0);
-    $stats['last_update'] = gmdate('Y-m-d H:i') . ' UTC';
-    saveStats($storePath, $stats);
-}
-
-header('Location: ' . $downloadUrl, true, 302);
-exit;

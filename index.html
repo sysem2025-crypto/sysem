@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.home.metaTitle">SYSEM | Soluzioni software per utilities</title>
   <meta name="description" content="SYSEM sviluppa soluzioni software e integrazioni per il settore utilities.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260601">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260610">
 </head>
 
 <body data-page="home" data-required-role="guest">
@@ -33,8 +33,33 @@
       <h1 id="page-title" data-i18n="page.home.title">SYSEM</h1>
       <p class="hero-subtitle" data-i18n="page.home.subtitle">soluzioni digitali per telecontrollo utilities</p>
     </section>
+
+    <section class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge" id="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </section>
   </main>
 
   <script src="assets/js/main.js?v=20260601"></script>
+  <script>
+    (function () {
+      var list = document.getElementById('changelog-list');
+      if (!list) return;
+      fetch('changelog.json?v=' + Date.now())
+        .then(function (r) { return r.json(); })
+        .then(function (entries) {
+          list.innerHTML = entries.map(function (e) {
+            return '<div class="changelog-entry"><time class="changelog-date">' + e.date + '</time><span class="changelog-text">' + e.text + '</span></div>';
+          }).join('');
+        })
+        .catch(function () {
+          list.innerHTML = '<p class="changelog-empty">Nessun aggiornamento registrato.</p>';
+        });
+    })();
+  </script>
 </body>
 </html>

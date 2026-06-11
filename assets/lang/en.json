@@ -17,6 +17,11 @@
     "homeLabel": "SYSEM home"
   },
   "nav": {
+    "systema": "Systema",
+    "datacenter": "Data Communication Datacenter",
+    "tiketing": "Tiketing",
+    "ticketing": "Ticketing System",
+    "sysem": "Sysem",
     "sistemi": "Systems",
     "download": "Software Downloads",
     "about": "About",
@@ -25,6 +30,7 @@
     "protocolli": "Protocols",
     "normative": "Regulations",
     "guidaNorme": "Standards Guide",
+    "ai": "Artificial Intelligence",
     "contatti": "Contacts"
   },
   "lang": {
@@ -133,6 +139,21 @@
       "overline": "Program access",
       "title": "Program Access",
       "metaTitle": "Program Access"
+    },
+    "ai": {
+      "overline": "Innovation",
+      "title": "Artificial Intelligence",
+      "metaTitle": "AI"
+    },
+    "datacenter": {
+      "overline": "Infrastructure",
+      "title": "Data Communication Datacenter",
+      "metaTitle": "Datacenter"
+    },
+    "ticketing": {
+      "overline": "Management",
+      "title": "Ticketing System",
+      "metaTitle": "Ticketing"
     },
     "admin": {
       "overline": "Access control",
