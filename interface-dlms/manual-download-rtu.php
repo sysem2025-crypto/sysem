@@ -41,8 +41,9 @@ if ($stats !== []) {
 }
 
 $filename = basename($exeFile);
-header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
+header('Content-Description: SYSEM Software Download');
+header('Content-Type: application/x-msdownload');
+header('X-Content-Type-Options: nosniff');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
 header('Content-Length: ' . (string)filesize($exeFile));
 header('Cache-Control: no-cache, must-revalidate');
