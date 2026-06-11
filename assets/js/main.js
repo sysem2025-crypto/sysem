@@ -728,25 +728,17 @@ document.addEventListener('DOMContentLoaded', () => {
       selectProgram(programs[0].id);
     }
     if (manualCountEl && autoCountEl && lastUpdateEl) {
-      const diagnosticsUrl = '/interface-dlms/stats.php?token=' + encodeURIComponent(generateDownloadToken());
-      fetch(diagnosticsUrl, { cache: 'no-store' })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Diagnostics not available');
-          }
-          return response.json();
+      var diagUrl = '/interface-dlms/stats.php';
+      var diagToken = generateDownloadToken();
+      if (diagToken) diagUrl += '?token=' + encodeURIComponent(diagToken);
+      fetch(diagUrl, { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function (data) {
+          manualCountEl.textContent = Number.isFinite(data.manual_downloads) ? String(data.manual_downloads) : '--';
+          autoCountEl.textContent = Number.isFinite(data.automatic_downloads) ? String(data.automatic_downloads) : '--';
+          lastUpdateEl.textContent = data.last_update && data.last_update.trim() ? data.last_update : '--';
         })
-        .then(data => {
-          const manualValue = Number.isFinite(data.manual_downloads) ? data.manual_downloads : '--';
-          const autoValue = Number.isFinite(data.automatic_downloads) ? data.automatic_downloads : '--';
-          const lastUpdateValue = typeof data.last_update === 'string' && data.last_update.trim()
-            ? data.last_update
-            : '--';
-          manualCountEl.textContent = String(manualValue);
-          autoCountEl.textContent = String(autoValue);
-          lastUpdateEl.textContent = lastUpdateValue;
-        })
-        .catch(() => {
+        .catch(function () {
           manualCountEl.textContent = '--';
           autoCountEl.textContent = '--';
           lastUpdateEl.textContent = 'n/d';
