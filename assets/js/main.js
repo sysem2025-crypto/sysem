@@ -1,14 +1,79 @@
+const API_BASE = (function() {
+  const script = document.currentScript;
+  const src = script && script.src;
+  if (src) {
+    const match = src.match(/[?&]api=([^&]+)/);
+    if (match) return decodeURIComponent(match[1]);
+  }
+  return localStorage.getItem('sysem_api_base') || 'https://gianluca-ai-ten.vercel.app';
+})();
+
 const STORAGE_KEYS = {
-  users: 'sysem_users',
+  token: 'sysem_token',
   sessionEmail: 'sysem_session_email',
+  users: 'sysem_users',
   roleChanges: 'sysem_role_changes'
 };
 
 const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
-
 const LANG_KEY = 'sysem_lang';
 let currentLang = 'it';
 let translations = {};
+let apiAvailable = null;
+
+async function checkApi() {
+  if (apiAvailable !== null) return apiAvailable;
+  try {
+    const resp = await fetch(API_BASE + '/api/health', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+    apiAvailable = resp.ok;
+  } catch {
+    apiAvailable = false;
+  }
+  return apiAvailable;
+}
+
+function getApiHeaders() {
+  const token = localStorage.getItem(STORAGE_KEYS.token);
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return headers;
+}
+
+async function apiGet(path) {
+  if (!(await checkApi())) throw new Error('API non disponibile');
+  const resp = await fetch(API_BASE + path, { headers: getApiHeaders(), credentials: 'include', signal: AbortSignal.timeout(10000) });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.detail || 'Errore ' + resp.status);
+  return data;
+}
+
+async function apiPost(path, body) {
+  if (!(await checkApi())) throw new Error('API non disponibile');
+  const resp = await fetch(API_BASE + path, {
+    method: 'POST',
+    headers: getApiHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10000)
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.detail || 'Errore ' + resp.status);
+  return data;
+}
+
+async function apiPut(path, body) {
+  if (!(await checkApi())) throw new Error('API non disponibile');
+  const resp = await fetch(API_BASE + path, {
+    method: 'PUT',
+    headers: getApiHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10000)
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.detail || 'Errore ' + resp.status);
+  return data;
+}
 
 async function initI18n() {
   currentLang = localStorage.getItem(LANG_KEY) || 'it';
@@ -101,7 +166,7 @@ async function loadLang(lang) {
     return;
   }
   try {
-    const resp = await fetch(`assets/lang/${lang}.json?v=20260601`);
+    const resp = await fetch('assets/lang/' + lang + '.json?v=20260601');
     translations = await resp.json();
   } catch {
     await loadLang('it');
@@ -109,24 +174,24 @@ async function loadLang(lang) {
 }
 
 function t(key, fallback) {
-  const val = key.split('.').reduce((obj, k) => obj && obj[k], translations);
+  const val = key.split('.').reduce(function(obj, k) { return obj && obj[k]; }, translations);
   return val || fallback || key;
 }
 
 function formatT(key, vars) {
-  let val = key.split('.').reduce((obj, k) => obj && obj[k], translations);
+  var val = key.split('.').reduce(function(obj, k) { return obj && obj[k]; }, translations);
   if (!val) val = key;
-  Object.keys(vars || {}).forEach(k => { val = val.replace(`{${k}}`, vars[k]); });
+  Object.keys(vars || {}).forEach(function(k) { val = val.replace('{' + k + '}', vars[k]); });
   return val;
 }
 
 function applyTranslations() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
     const key = el.dataset.i18n;
     const finalText = t(key);
     const tag = el.tagName;
     if (tag === 'TITLE') {
-      el.textContent = `${finalText} | SYSEM`;
+      el.textContent = finalText + ' | SYSEM';
     } else if (tag === 'INPUT' && el.hasAttribute('placeholder')) {
       el.placeholder = finalText;
     } else if (tag === 'SELECT') {
@@ -141,24 +206,24 @@ function applyTranslations() {
 function renderLangSwitcher() {
   const navContainer = document.querySelector('.nav-container');
   if (!navContainer) return;
-  let switcher = document.getElementById('lang-switcher');
+  var switcher = document.getElementById('lang-switcher');
   if (!switcher) {
     switcher = document.createElement('div');
     switcher.id = 'lang-switcher';
     switcher.className = 'lang-switcher';
-    ['it', 'en'].forEach(code => {
+    ['it', 'en'].forEach(function(code) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'lang-btn';
       btn.dataset.lang = code;
       btn.textContent = code.toUpperCase();
-      btn.setAttribute('aria-label', t(`lang.${code}`, code.toUpperCase()));
-      btn.addEventListener('click', () => setLang(code));
+      btn.setAttribute('aria-label', t('lang.' + code, code.toUpperCase()));
+      btn.addEventListener('click', function() { setLang(code); });
       switcher.appendChild(btn);
     });
     navContainer.insertBefore(switcher, navContainer.firstChild);
   }
-  switcher.querySelectorAll('.lang-btn').forEach(btn => {
+  switcher.querySelectorAll('.lang-btn').forEach(function(btn) {
     btn.classList.toggle('active', btn.dataset.lang === currentLang);
   });
 }
@@ -171,19 +236,18 @@ async function setLang(lang) {
   document.documentElement.lang = lang === 'en' ? 'en' : 'it';
   applyTranslations();
   renderLangSwitcher();
-  const currentRole = getCurrentRole();
+  const currentRole = await getCurrentRole();
   updateNavLabels(currentRole);
-  updateAuthPill();
 }
 
 function updateNavLabels() {
   const menuList = document.querySelector('#overlay-menu ul');
   if (!menuList) return;
-  menuList.querySelectorAll('.nav-cat-label').forEach(el => {
+  menuList.querySelectorAll('.nav-cat-label').forEach(function(el) {
     const key = el.dataset.i18nCat;
     if (key) el.textContent = t(key);
   });
-  menuList.querySelectorAll('.nav-sub a').forEach(a => {
+  menuList.querySelectorAll('.nav-sub a').forEach(function(a) {
     const key = a.dataset.i18nItem;
     if (key) a.textContent = t(key);
   });
@@ -192,11 +256,11 @@ function updateNavLabels() {
 function updateAuthPill() {
   const authPill = document.getElementById('auth-pill');
   if (!authPill) return;
-  const currentUser = getCurrentUser();
+  const currentUser = getCachedUser();
   if (currentUser) {
     const span = authPill.querySelector('span');
     const btn = authPill.querySelector('button');
-    if (span) span.textContent = `${currentUser.email} (${currentUser.role})`;
+    if (span) span.textContent = currentUser.email + ' (' + currentUser.role + ')';
     if (btn) btn.textContent = t('common.logout');
   } else {
     const link = authPill.querySelector('a');
@@ -221,26 +285,52 @@ function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
 }
 
-function getUsers() {
-  return readJson(STORAGE_KEYS.users, []);
+function getCachedUser() {
+  return readJson('sysem_cached_user', null);
 }
 
-function setUsers(users) {
-  writeJson(STORAGE_KEYS.users, users);
+function setCachedUser(user) {
+  if (user) {
+    writeJson('sysem_cached_user', user);
+  } else {
+    localStorage.removeItem('sysem_cached_user');
+  }
 }
 
-function getCurrentUser() {
-  const email = normalizeEmail(localStorage.getItem(STORAGE_KEYS.sessionEmail));
-  if (!email) {
+async function getUsers() {
+  try {
+    const data = await apiGet('/api/auth/users');
+    return data.users || [];
+  } catch {
+    return readJson(STORAGE_KEYS.users, []);
+  }
+}
+
+async function getCurrentUser() {
+  const token = localStorage.getItem(STORAGE_KEYS.token);
+  if (token) {
+    try {
+      const data = await apiGet('/api/auth/me');
+      if (data.authenticated && data.user) {
+        setCachedUser(data.user);
+        return data.user;
+      }
+    } catch {
+      return readJson(STORAGE_KEYS.users, []).find(function(u) {
+        return u.email === normalizeEmail(localStorage.getItem(STORAGE_KEYS.sessionEmail));
+      }) || null;
+    }
     return null;
   }
-  const users = getUsers();
-  return users.find(user => user.email === email) || null;
+  const email = normalizeEmail(localStorage.getItem(STORAGE_KEYS.sessionEmail));
+  if (!email) return null;
+  const users = readJson(STORAGE_KEYS.users, []);
+  return users.find(function(u) { return u.email === email; }) || null;
 }
 
-function getCurrentRole() {
-  const currentUser = getCurrentUser();
-  return currentUser ? currentUser.role : 'guest';
+async function getCurrentRole() {
+  const user = await getCurrentUser();
+  return user ? user.role : 'guest';
 }
 
 function hasRoleAccess(currentRole, requiredRole) {
@@ -250,40 +340,31 @@ function hasRoleAccess(currentRole, requiredRole) {
 }
 
 function getAllowedLanding(role) {
-  if (role === 'admin') {
-    return 'admin.html';
-  }
-  if (role === 'pro') {
-    return 'resource.html';
-  }
-  if (role === 'base') {
-    return 'resource.html';
-  }
+  if (role === 'admin') return 'admin.html';
+  if (role === 'pro' || role === 'base') return 'resource.html';
   return 'access.html';
 }
 
-function ensureDefaultAdminUser() {
-  const users = getUsers();
-  const defaultAdminEmail = 'gianluca.piga@sysem.it';
-  const defaultAdmin = users.find(user => user.email === defaultAdminEmail);
-  const defaultAdminPassword = 'ChangeMe123!';
-  if (defaultAdmin) {
-    if (defaultAdmin.role !== 'admin') {
-      defaultAdmin.role = 'admin';
+async function ensureDefaultAdminUser() {
+  try {
+    await checkApi();
+    if (!apiAvailable) {
+      const users = readJson(STORAGE_KEYS.users, []);
+      const defaultAdminEmail = 'gianluca.piga@sysem.it';
+      const defaultAdmin = users.find(function(u) { return u.email === defaultAdminEmail; });
+      const defaultAdminPassword = 'ChangeMe123!';
+      if (defaultAdmin) {
+        if (defaultAdmin.role !== 'admin') defaultAdmin.role = 'admin';
+        if (!defaultAdmin.password) defaultAdmin.password = defaultAdminPassword;
+        writeJson(STORAGE_KEYS.users, users);
+      } else {
+        users.push({ email: defaultAdminEmail, role: 'admin', password: defaultAdminPassword, createdAt: new Date().toISOString() });
+        writeJson(STORAGE_KEYS.users, users);
+      }
     }
-    if (!defaultAdmin.password) {
-      defaultAdmin.password = defaultAdminPassword;
-    }
-    setUsers(users);
-    return;
+  } catch {
+    // API not available, ignore
   }
-  users.push({
-    email: defaultAdminEmail,
-    role: 'admin',
-    password: defaultAdminPassword,
-    createdAt: new Date().toISOString()
-  });
-  setUsers(users);
 }
 
 const NAV_STRUCTURE = [
@@ -310,22 +391,18 @@ const NAV_STRUCTURE = [
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
 
 function generateDownloadToken() {
-  const user = getCurrentUser();
+  const user = getCachedUser();
   if (!user) return '';
   return btoa(user.email + '|' + user.role + '|' + new Date().toISOString().slice(0, 10));
 }
 
 function renderNavigation(currentPage) {
   const overlayMenu = document.getElementById('overlay-menu');
-  if (!overlayMenu) {
-    return;
-  }
+  if (!overlayMenu) return;
   const menuList = overlayMenu.querySelector('ul');
-  if (!menuList) {
-    return;
-  }
+  if (!menuList) return;
   menuList.innerHTML = '';
-  NAV_STRUCTURE.forEach(group => {
+  NAV_STRUCTURE.forEach(function(group) {
     const catLi = document.createElement('li');
     catLi.className = 'nav-category';
     const span = document.createElement('span');
@@ -334,14 +411,14 @@ function renderNavigation(currentPage) {
     span.textContent = t(group.categoryKey);
     catLi.appendChild(span);
     menuList.appendChild(catLi);
-    group.items.forEach(item => {
+    group.items.forEach(function(item) {
       const itemLi = document.createElement('li');
       itemLi.className = 'nav-sub';
       const link = document.createElement('a');
       link.href = item.href;
       link.dataset.i18nItem = item.labelKey;
       link.textContent = t(item.labelKey);
-      if (currentPage && item.href.includes(currentPage)) {
+      if (currentPage && item.href.indexOf(currentPage) !== -1) {
         link.setAttribute('aria-current', 'page');
       }
       itemLi.appendChild(link);
@@ -349,37 +426,33 @@ function renderNavigation(currentPage) {
     });
   });
   const topNavContainer = document.querySelector('.nav-container');
-  if (!topNavContainer) {
-    return;
-  }
-  const oldAuth = document.getElementById('auth-pill');
-  if (oldAuth) {
-    oldAuth.remove();
-  }
-  const currentUser = getCurrentUser();
-  const authPill = document.createElement('div');
+  if (!topNavContainer) return;
+  var oldAuth = document.getElementById('auth-pill');
+  if (oldAuth) oldAuth.remove();
+  var currentUser = getCachedUser();
+  var authPill = document.createElement('div');
   authPill.id = 'auth-pill';
   authPill.className = 'auth-pill';
   if (currentUser) {
-    authPill.innerHTML = `<span>${currentUser.email} (${currentUser.role})</span><button type="button" id="logout-btn">${t('common.logout')}</button>`;
+    authPill.innerHTML = '<span>' + currentUser.email + ' (' + currentUser.role + ')</span><button type="button" id="logout-btn">' + t('common.logout') + '</button>';
   } else {
-    authPill.innerHTML = `<a href="access.html">${t('common.login')}</a>`;
+    authPill.innerHTML = '<a href="access.html">' + t('common.login') + '</a>';
   }
   topNavContainer.appendChild(authPill);
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', function() {
+      localStorage.removeItem(STORAGE_KEYS.token);
       localStorage.removeItem(STORAGE_KEYS.sessionEmail);
+      setCachedUser(null);
       window.location.href = 'index.html';
     });
   }
 }
 
-function enforceRouteAccess(requiredRole) {
-  const currentRole = getCurrentRole();
-  if (requiredRole === 'guest') {
-    return;
-  }
+async function enforceRouteAccess(requiredRole) {
+  const currentRole = await getCurrentRole();
+  if (requiredRole === 'guest') return;
   if (!hasRoleAccess(currentRole, requiredRole)) {
     var dest = getAllowedLanding(currentRole);
     var returnUrl = window.location.pathname + window.location.search;
@@ -398,51 +471,57 @@ function initAccessPage() {
   const registerForm = document.getElementById('register-form');
   const loginForm = document.getElementById('login-form');
   const loginEmailField = document.getElementById('login-email');
-  const loginEmailList = document.getElementById('login-email-list');
   const loginPasswordInput = document.getElementById('login-password');
   const changePasswordCard = document.getElementById('change-password-card');
   const changePasswordForm = document.getElementById('change-password-form');
   const feedback = document.getElementById('auth-feedback');
-  if (!loginForm || !loginEmailField || !loginPasswordInput || !feedback) {
-    return;
-  }
-  const currentUser = getCurrentUser();
-  if (changePasswordCard && currentUser) {
+  if (!loginForm || !loginEmailField || !loginPasswordInput || !feedback) return;
+  const cachedUser = getCachedUser();
+  if (changePasswordCard && cachedUser) {
     changePasswordCard.hidden = false;
   }
-  const refreshLoginOptions = () => {
-    const users = getUsers();
+  const refreshLoginOptions = function() {
     if (loginEmailField instanceof HTMLSelectElement) {
-      loginEmailField.innerHTML = '';
-      users.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user.email;
-        option.textContent = `${user.email} (${user.role})`;
-        loginEmailField.appendChild(option);
+      getUsers().then(function(users) {
+        loginEmailField.innerHTML = '';
+        users.forEach(function(user) {
+          const option = document.createElement('option');
+          option.value = user.email;
+          option.textContent = user.email + ' (' + user.role + ')';
+          loginEmailField.appendChild(option);
+        });
+        if (users.length === 0) {
+          const option = document.createElement('option');
+          option.value = '';
+          option.textContent = 'Nessun utente registrato';
+          loginEmailField.appendChild(option);
+        }
       });
-      if (users.length === 0) {
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'Nessun utente registrato';
-        loginEmailField.appendChild(option);
-      }
-      return;
     }
-    if (loginEmailList instanceof HTMLDataListElement) {
-      loginEmailList.innerHTML = '';
-      users.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user.email;
-        loginEmailList.appendChild(option);
+    if (loginEmailField instanceof HTMLInputElement) {
+      getUsers().then(function(users) {
+        var list = document.getElementById('login-email-list');
+        if (!list) {
+          list = document.createElement('datalist');
+          list.id = 'login-email-list';
+          loginEmailField.parentNode.appendChild(list);
+          loginEmailField.setAttribute('list', 'login-email-list');
+        }
+        list.innerHTML = '';
+        users.forEach(function(user) {
+          const option = document.createElement('option');
+          option.value = user.email;
+          list.appendChild(option);
+        });
       });
     }
   };
   if (registerForm) {
-    registerForm.addEventListener('submit', event => {
+    registerForm.addEventListener('submit', function(event) {
       event.preventDefault();
-      const formData = new FormData(registerForm);
-      const email = normalizeEmail(formData.get('email'));
-      const password = String(formData.get('password') || '');
+      var formData = new FormData(registerForm);
+      var email = normalizeEmail(formData.get('email'));
+      var password = String(formData.get('password') || '');
       if (!email) {
         feedback.textContent = tFeedback('auth.invalidEmail');
         return;
@@ -451,43 +530,47 @@ function initAccessPage() {
         feedback.textContent = tFeedback('auth.passwordLength');
         return;
       }
-      const users = getUsers();
-      const existing = users.find(user => user.email === email);
-      if (existing) {
-        feedback.textContent = tFeedback('auth.emailExists');
-        return;
-      }
-      users.push({ email, password, role: 'base', createdAt: new Date().toISOString() });
-      setUsers(users);
-      refreshLoginOptions();
-      registerForm.reset();
-      feedback.textContent = tFeedback('auth.registered', { email });
+      apiPost('/api/auth/signup', { email: email, password: password, name: email.split('@')[0] })
+        .then(function() {
+          registerForm.reset();
+          feedback.textContent = tFeedback('auth.registered', { email: email });
+          refreshLoginOptions();
+        })
+        .catch(function(err) {
+          feedback.textContent = err.message || 'Errore registrazione';
+        });
     });
   }
-  loginForm.addEventListener('submit', event => {
+  loginForm.addEventListener('submit', function(event) {
     event.preventDefault();
     const formData = new FormData(loginForm);
     const email = normalizeEmail(formData.get('email'));
     const password = String(formData.get('password') || '');
-    const users = getUsers();
-    const user = users.find(item => item.email === email);
-    if (!user) {
-      feedback.textContent = tFeedback('auth.userNotFound');
+    if (!email) {
+      feedback.textContent = tFeedback('auth.invalidEmail');
       return;
     }
-    if (user.password !== password) {
-      feedback.textContent = tFeedback('auth.wrongPassword');
+    if (password.length < 8) {
+      feedback.textContent = tFeedback('auth.passwordLength');
       return;
     }
-    localStorage.setItem(STORAGE_KEYS.sessionEmail, user.email);
-    var params = new URLSearchParams(window.location.search);
-    var returnUrl = params.get('return');
-    window.location.href = returnUrl || getAllowedLanding(user.role);
+    apiPost('/api/auth/token-login', { email: email, password: password })
+      .then(function(data) {
+        localStorage.setItem(STORAGE_KEYS.token, data.access_token);
+        setCachedUser(data.user);
+        localStorage.setItem(STORAGE_KEYS.sessionEmail, data.user.email);
+        var params = new URLSearchParams(window.location.search);
+        var returnUrl = params.get('return');
+        window.location.href = returnUrl || getAllowedLanding(data.user.role);
+      })
+      .catch(function(err) {
+        feedback.textContent = err.message || 'Credenziali non valide';
+      });
   });
   if (changePasswordForm) {
-    changePasswordForm.addEventListener('submit', event => {
+    changePasswordForm.addEventListener('submit', function(event) {
       event.preventDefault();
-      const user = getCurrentUser();
+      const user = getCachedUser();
       if (!user) {
         feedback.textContent = tFeedback('auth.mustLogin');
         return;
@@ -496,10 +579,6 @@ function initAccessPage() {
       const currentPassword = String(formData.get('currentPassword') || '');
       const newPassword = String(formData.get('newPassword') || '');
       const confirmPassword = String(formData.get('confirmPassword') || '');
-      if (user.password !== currentPassword) {
-        feedback.textContent = tFeedback('auth.wrongCurrentPassword');
-        return;
-      }
       if (newPassword.length < 8) {
         feedback.textContent = tFeedback('auth.passwordLength');
         return;
@@ -508,16 +587,24 @@ function initAccessPage() {
         feedback.textContent = tFeedback('auth.passwordMismatch');
         return;
       }
-      const users = getUsers();
-      const target = users.find(item => item.email === user.email);
-      if (!target) {
-        feedback.textContent = tFeedback('auth.userNotFound');
-        return;
+      try {
+        var users = readJson(STORAGE_KEYS.users, []);
+        var target = users.find(function(u) { return u.email === user.email; });
+        if (!target) {
+          feedback.textContent = tFeedback('auth.userNotFound');
+          return;
+        }
+        if (target.password !== currentPassword) {
+          feedback.textContent = tFeedback('auth.wrongCurrentPassword');
+          return;
+        }
+        target.password = newPassword;
+        writeJson(STORAGE_KEYS.users, users);
+        changePasswordForm.reset();
+        feedback.textContent = tFeedback('auth.passwordUpdated');
+      } catch {
+        feedback.textContent = 'API cambio password non ancora disponibile';
       }
-      target.password = newPassword;
-      setUsers(users);
-      changePasswordForm.reset();
-      feedback.textContent = tFeedback('auth.passwordUpdated');
     });
   }
   refreshLoginOptions();
@@ -528,111 +615,123 @@ function initAdminPage() {
   const searchInput = document.getElementById('admin-search');
   const roleFilter = document.getElementById('admin-role-filter');
   const feedback = document.getElementById('admin-feedback');
-  if (!usersBody || !searchInput || !roleFilter || !feedback) {
-    return;
-  }
-  const trackRoleChange = (targetUserEmail, oldRole, newRole, changedBy) => {
+  if (!usersBody || !searchInput || !roleFilter || !feedback) return;
+  const trackRoleChange = function(targetUserEmail, oldRole, newRole, changedBy) {
     const roleChanges = readJson(STORAGE_KEYS.roleChanges, []);
-    roleChanges.push({
-      targetUserEmail,
-      oldRole,
-      newRole,
-      changedBy,
-      changedAt: new Date().toISOString()
-    });
+    roleChanges.push({ targetUserEmail: targetUserEmail, oldRole: oldRole, newRole: newRole, changedBy: changedBy, changedAt: new Date().toISOString() });
     writeJson(STORAGE_KEYS.roleChanges, roleChanges);
   };
-  const saveRole = (email, newRole) => {
-    const users = getUsers();
-    const currentUser = getCurrentUser();
-    const idx = users.findIndex(user => user.email === email);
-    if (idx < 0) {
-      return;
+  const saveRole = function(email, uid, newRole) {
+    var cachedUser = getCachedUser();
+    var doSave = function() {
+      apiPut('/api/auth/users/' + uid + '/role', { role: newRole })
+        .then(function() {
+          feedback.textContent = tFeedback('admin.roleUpdated', { email: email, newRole: newRole });
+          renderTable();
+        })
+        .catch(function(err) {
+          feedback.textContent = err.message || 'Errore aggiornamento';
+        });
+    };
+    if (newRole === 'admin' && !window.confirm(tFeedback('admin.confirmPromotion', { email: email }))) return;
+    // Try API first, fallback to localStorage
+    if (uid && uid.indexOf('-') > 0) {
+      doSave();
+    } else {
+      var users = readJson(STORAGE_KEYS.users, []);
+      var idx = users.findIndex(function(u) { return u.email === email; });
+      if (idx < 0) {
+        feedback.textContent = tFeedback('admin.noChange', { email: email });
+        return;
+      }
+      var oldRole = users[idx].role;
+      if (oldRole === newRole) {
+        feedback.textContent = tFeedback('admin.noChange', { email: email });
+        return;
+      }
+      users[idx].role = newRole;
+      writeJson(STORAGE_KEYS.users, users);
+      trackRoleChange(email, oldRole, newRole, cachedUser ? cachedUser.email : 'system');
+      feedback.textContent = tFeedback('admin.roleUpdated', { email: email, newRole: newRole });
+      renderTable();
     }
-    const oldRole = users[idx].role;
-    if (oldRole === newRole) {
-      feedback.textContent = tFeedback('admin.noChange', { email });
-      return;
-    }
-    if (newRole === 'admin' && !window.confirm(tFeedback('admin.confirmPromotion', { email }))) {
-      return;
-    }
-    users[idx].role = newRole;
-    setUsers(users);
-    trackRoleChange(email, oldRole, newRole, currentUser ? currentUser.email : 'system');
-    feedback.textContent = tFeedback('admin.roleUpdated', { email, newRole });
-    renderTable();
   };
-  const renderTable = () => {
-    const search = searchInput.value.trim().toLowerCase();
-    const filter = roleFilter.value;
-    const filteredUsers = getUsers().filter(user => {
-      const matchesSearch = user.email.includes(search);
-      const matchesRole = filter === 'all' || user.role === filter;
-      return matchesSearch && matchesRole;
-    });
-    usersBody.innerHTML = '';
-    filteredUsers.forEach(user => {
-      const row = document.createElement('tr');
-      const emailTd = document.createElement('td');
-      emailTd.textContent = user.email;
-      const roleTd = document.createElement('td');
-      const roleSelect = document.createElement('select');
-      ROLE_OPTIONS.forEach(role => {
-        const opt = document.createElement('option');
-        opt.value = role;
-        opt.textContent = role;
-        opt.selected = user.role === role;
-        roleSelect.appendChild(opt);
+  const renderTable = function() {
+    var search = searchInput.value.trim().toLowerCase();
+    var filter = roleFilter.value;
+    getUsers().then(function(allUsers) {
+      var filtered = allUsers.filter(function(user) {
+        return user.email.indexOf(search) !== -1 && (filter === 'all' || user.role === filter);
       });
-      roleTd.appendChild(roleSelect);
-      const createdTd = document.createElement('td');
-      createdTd.textContent = new Date(user.createdAt).toLocaleString('it-IT');
-      const actionTd = document.createElement('td');
-      const saveBtn = document.createElement('button');
-      saveBtn.type = 'button';
-      saveBtn.className = 'btn-download admin-save-btn';
-      saveBtn.textContent = t('admin.saveBtn');
-      saveBtn.addEventListener('click', () => saveRole(user.email, roleSelect.value));
-      actionTd.appendChild(saveBtn);
-      row.appendChild(emailTd);
-      row.appendChild(roleTd);
-      row.appendChild(createdTd);
-      row.appendChild(actionTd);
-      usersBody.appendChild(row);
-    });
-    if (filteredUsers.length === 0) {
+      usersBody.innerHTML = '';
+      filtered.forEach(function(user) {
+        var row = document.createElement('tr');
+        var emailTd = document.createElement('td');
+        emailTd.textContent = user.email;
+        var roleTd = document.createElement('td');
+        var roleSelect = document.createElement('select');
+        ROLE_OPTIONS.forEach(function(role) {
+          var opt = document.createElement('option');
+          opt.value = role;
+          opt.textContent = role;
+          opt.selected = user.role === role;
+          roleSelect.appendChild(opt);
+        });
+        roleTd.appendChild(roleSelect);
+        var createdTd = document.createElement('td');
+        createdTd.textContent = user.created_at ? new Date(user.created_at).toLocaleString('it-IT') : '--';
+        var actionTd = document.createElement('td');
+        var saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className = 'btn-download admin-save-btn';
+        saveBtn.textContent = t('admin.saveBtn');
+        saveBtn.addEventListener('click', function() { saveRole(user.email, user.id, roleSelect.value); });
+        actionTd.appendChild(saveBtn);
+        row.appendChild(emailTd);
+        row.appendChild(roleTd);
+        row.appendChild(createdTd);
+        row.appendChild(actionTd);
+        usersBody.appendChild(row);
+      });
+      if (filtered.length === 0) {
+        usersBody.innerHTML = '<tr><td colspan="4">' + t('admin.noUsers') + '</td></tr>';
+      }
+    }).catch(function() {
       usersBody.innerHTML = '<tr><td colspan="4">' + t('admin.noUsers') + '</td></tr>';
-    }
+    });
   };
   searchInput.addEventListener('input', renderTable);
   roleFilter.addEventListener('change', renderTable);
   renderTable();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   ensureDefaultAdminUser();
   const body = document.body;
   const currentPage = body.dataset.page || '';
   const requiredRole = body.dataset.requiredRole || 'base';
-  if (currentPage === 'access' && getCurrentUser()) {
+  if (currentPage === 'access' && getCachedUser()) {
     window.location.replace('index.html');
     return;
   }
-  enforceRouteAccess(requiredRole);
-  initI18n().then(() => {
+  enforceRouteAccess(requiredRole).then(function() {
+    return initI18n();
+  }).then(function() {
+    return getCurrentUser().then(function(user) {
+      if (user) setCachedUser(user);
+    });
+  }).then(function() {
     renderNavigation(currentPage);
     const menuToggle = document.getElementById('menu-toggle');
     const overlayMenu = document.getElementById('overlay-menu');
     if (menuToggle && overlayMenu) {
-      menuToggle.addEventListener('click', () => {
+      menuToggle.addEventListener('click', function() {
         menuToggle.classList.toggle('active');
         overlayMenu.classList.toggle('active');
         body.style.overflow = overlayMenu.classList.contains('active') ? 'hidden' : '';
       });
-      const menuLinks = overlayMenu.querySelectorAll('a');
-      menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
+      overlayMenu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
           menuToggle.classList.remove('active');
           overlayMenu.classList.remove('active');
           body.style.overflow = '';
@@ -652,32 +751,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const lastUpdateEl = document.getElementById('diag-last-update');
     if (resourceSelectEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
       const programs = [
-        {
-          id: 'genius-monitor',
-          title: 'GeniusMonitor',
-          description: '',
-          meta: [
-            ['Tipologia', 'Software desktop'],
-            ['Formato', 'Installer .exe'],
-            ['Compatibilita', 'Windows 10/11'],
-            ['Canale', 'Release stabile']
-          ],
-          downloadHref: 'interface-dlms/manual-download-gm.php'
-        },
-        {
-          id: 'rtu-terminal',
-          title: 'RTU Terminal',
-          description: '',
-          meta: [
-            ['Tipologia', 'Software desktop'],
-            ['Formato', 'Installer .exe'],
-            ['Compatibilita', 'Windows 10/11'],
-            ['Canale', 'Release stabile']
-          ],
-          downloadHref: 'interface-dlms/manual-download-rtu.php'
-        }
+        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php' },
+        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php' }
       ];
-      const renderActions = program => {
+      const renderActions = function(program) {
         detailActionsEl.innerHTML = '';
         const link = document.createElement('a');
         link.className = 'btn-download';
@@ -685,17 +762,17 @@ document.addEventListener('DOMContentLoaded', () => {
         link.href = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
-        link.textContent = `Download ${program.title}`;
+        link.textContent = 'Download ' + program.title;
         detailActionsEl.appendChild(link);
       };
-      const renderMeta = program => {
+      const renderMeta = function(program) {
         detailMetaEl.innerHTML = '';
-        program.meta.forEach(entry => {
+        program.meta.forEach(function(entry) {
           const row = document.createElement('p');
           row.className = 'resource-meta-line';
           const label = document.createElement('span');
           label.className = 'resource-meta-label';
-          label.textContent = `${entry[0]}:`;
+          label.textContent = entry[0] + ':';
           const value = document.createElement('strong');
           value.className = 'resource-meta-value';
           value.textContent = entry[1];
@@ -705,11 +782,9 @@ document.addEventListener('DOMContentLoaded', () => {
           detailMetaEl.appendChild(row);
         });
       };
-      const selectProgram = programId => {
-        const selected = programs.find(item => item.id === programId);
-        if (!selected) {
-          return;
-        }
+      const selectProgram = function(programId) {
+        const selected = programs.find(function(item) { return item.id === programId; });
+        if (!selected) return;
         const description = typeof selected.description === 'string' ? selected.description.trim() : '';
         detailTitleEl.textContent = selected.title;
         detailDescriptionEl.textContent = description;
@@ -719,17 +794,15 @@ document.addEventListener('DOMContentLoaded', () => {
         renderActions(selected);
         resourceSelectEl.value = selected.id;
       };
-      programs.forEach(program => {
+      programs.forEach(function(program) {
         const option = document.createElement('option');
         option.value = program.id;
         option.textContent = program.title;
         resourceSelectEl.appendChild(option);
       });
-      resourceSelectEl.addEventListener('change', event => {
+      resourceSelectEl.addEventListener('change', function(event) {
         const target = event.target;
-        if (!(target instanceof HTMLSelectElement)) {
-          return;
-        }
+        if (!(target instanceof HTMLSelectElement)) return;
         selectProgram(target.value);
       });
       selectProgram(programs[0].id);
@@ -739,13 +812,13 @@ document.addEventListener('DOMContentLoaded', () => {
       var diagToken = generateDownloadToken();
       if (diagToken) diagUrl += '?token=' + encodeURIComponent(diagToken);
       fetch(diagUrl, { cache: 'no-store' })
-        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-        .then(function (data) {
+        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function(data) {
           manualCountEl.textContent = Number.isFinite(data.manual_downloads) ? String(data.manual_downloads) : '--';
           autoCountEl.textContent = Number.isFinite(data.automatic_downloads) ? String(data.automatic_downloads) : '--';
           lastUpdateEl.textContent = data.last_update && data.last_update.trim() ? data.last_update : '--';
         })
-        .catch(function () {
+        .catch(function() {
           manualCountEl.textContent = '--';
           autoCountEl.textContent = '--';
           lastUpdateEl.textContent = 'n/d';

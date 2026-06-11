@@ -41,13 +41,25 @@
           <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nell'area riservata.</p>
           <form id="login-form" class="auth-form">
             <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
-            <input id="login-email" name="email" type="text" placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
+            <input id="login-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
             <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
             <input id="login-password" name="password" type="password">
             <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
           </form>
           <p class="auth-hint" data-i18n="auth.authorizedOnly">Solo utenti autorizzati.</p>
           <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="auth-card" id="register-section">
+          <h2 data-i18n="auth.registerTitle">Registrazione</h2>
+          <p data-i18n="auth.registerDesc">Crea un account per accedere all'area riservata.</p>
+          <form id="register-form" class="auth-form">
+            <label for="register-email" data-i18n="auth.loginLabel">Email</label>
+            <input id="register-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="email" data-i18n="auth.emailPlaceholder">
+            <label for="register-password" data-i18n="auth.passwordLabel">Password</label>
+            <input id="register-password" name="password" type="password">
+            <button type="submit" class="btn-download" data-i18n="auth.registerBtn">Registrati</button>
+          </form>
         </article>
       </div>
     </section>

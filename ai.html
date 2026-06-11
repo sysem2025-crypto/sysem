@@ -43,7 +43,7 @@
             <li>Ricerca normativa e documentazione tecnica</li>
             <li>Supporto alla parametrizzazione e configurazione</li>
           </ul>
-          <p><a class="btn-download" href="https://gianluca-ai-ten.vercel.app" target="_blank" rel="noopener noreferrer">Accedi all'assistente AI</a></p>
+          <p><a class="btn-download" id="ai-clone-link" href="https://gianluca-ai-ten.vercel.app" target="_blank" rel="noopener noreferrer">Accedi all'assistente AI</a></p>
         </article>
 
         <article class="auth-card">
@@ -72,5 +72,21 @@
   </main>
 
   <script src="assets/js/main.js?v=20260615"></script>
+  <script>
+    (function() {
+      var link = document.getElementById('ai-clone-link');
+      if (!link) return;
+      try {
+        var userData = JSON.parse(localStorage.getItem('sysem_cached_user') || 'null');
+        var token = localStorage.getItem('sysem_token');
+        if (token && userData) {
+          var url = new URL(link.href);
+          url.searchParams.set('token', token);
+          url.searchParams.set('email', userData.email);
+          link.href = url.toString();
+        }
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
