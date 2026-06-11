@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const currentPage = body.dataset.page || '';
   const requiredRole = body.dataset.requiredRole || 'base';
-  if (currentPage === 'access') {
+  if (currentPage === 'access' && getCurrentUser()) {
     window.location.replace('index.html');
     return;
   }

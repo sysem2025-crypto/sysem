@@ -1,4 +1,5 @@
 [
+  { "date": "2026-06-11", "text": "Fix pagina login: rimossi redirect forzati che bloccavano accesso" },
   { "date": "2026-06-11", "text": "Sistema di autenticazione download: token validation e protezione area riservata" },
   { "date": "2026-06-11", "text": "Path download spostati su directory remota downloads/ con .htaccess" },
   { "date": "2026-06-10", "text": "Ristrutturazione menu: nuove sezioni Systema, Tiketing e Intelligenza Artificiale" },
