@@ -967,7 +967,20 @@ a {
 .auth-hint {
   margin-top: 14px;
   font-size: 0.86rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(31, 26, 22, 0.82);
+}
+
+.auth-card .auth-form input,
+.auth-card .auth-form select {
+  background: rgba(252, 250, 244, 0.9);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.auth-card .auth-form label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .admin-panel {
