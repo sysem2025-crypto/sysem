@@ -1,4 +1,8 @@
 [
+  { "date": "2026-06-13", "text": "Unificazione login/register: TicketWeb ora usa autenticazione Sysem" },
+  { "date": "2026-06-13", "text": "Link ticketing spostati su Vercel (sf-service-web.vercel.app)" },
+  { "date": "2026-06-13", "text": "Changelog spostato in basso a sinistra e ridotto" },
+  { "date": "2026-06-13", "text": "AI page incapsulata in iframe con cornice dedicata" },
   { "date": "2026-06-11", "text": "Fix pagina login: rimossi redirect forzati che bloccavano accesso" },
   { "date": "2026-06-11", "text": "Sistema di autenticazione download: token validation e protezione area riservata" },
   { "date": "2026-06-11", "text": "Path download spostati su directory remota downloads/ con .htaccess" },
