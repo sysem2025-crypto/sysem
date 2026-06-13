@@ -34,7 +34,7 @@
       <p data-i18n="page.ticketing.overline">Gestione</p>
       <h1 id="page-title" data-i18n="page.ticketing.title">Sistema di Ticketing</h1>
 
-      <div class="auth-grid">
+      <div class="auth-grid" id="ticketStatsGrid">
         <article class="auth-card">
           <h2>Apri un ticket</h2>
           <p>Segnala un problema, richiedi assistenza tecnica o proponi un miglioramento. Il team SYSEM prenderà in carico la tua richiesta.</p>
@@ -43,7 +43,7 @@
             <li>Segnalazione anomalie software e hardware</li>
             <li>Richiesta interventi e configurazioni</li>
           </ul>
-          <p><a class="btn-download" href="http://192.168.1.190:3000/ticket/nuovo" target="_blank" rel="noopener noreferrer">Apri un ticket</a></p>
+          <p><a class="btn-download" id="linkNuovoTicket" href="http://192.168.1.190:3000/ticket/nuovo" target="_blank" rel="noopener noreferrer">Apri un ticket</a></p>
         </article>
 
         <article class="auth-card">
@@ -54,7 +54,7 @@
             <li>Tracciamento stato e priorità</li>
             <li>Download report e documentazione intervento</li>
           </ul>
-          <p><a class="btn-download" href="http://192.168.1.190:3000/login" target="_blank" rel="noopener noreferrer">Visualizza storico</a></p>
+          <p><a class="btn-download" id="linkStorico" href="http://192.168.1.190:3000/my-tickets" target="_blank" rel="noopener noreferrer">Visualizza storico</a></p>
         </article>
 
         <article class="auth-card">
@@ -65,12 +65,32 @@
             <li>Procedure di diagnostica e ripristino</li>
             <li>FAQ su normative e protocolli</li>
           </ul>
-          <p><a class="btn-download" href="http://192.168.1.190:3000/procedure" target="_blank" rel="noopener noreferrer">Accedi alla knowledge base</a></p>
+          <p><a class="btn-download" id="linkKnowledgeBase" href="http://192.168.1.190:3000/procedure" target="_blank" rel="noopener noreferrer">Accedi alla knowledge base</a></p>
         </article>
       </div>
     </section>
   </main>
 
   <script src="assets/js/main.js?v=20260615"></script>
+  <script>
+    (function() {
+      var baseUrl = 'http://192.168.1.190:3000';
+      var ssoPath = '/api/auth/sso';
+      var token = localStorage.getItem('sysem_token');
+      if (token) {
+        var links = [
+          document.getElementById('linkNuovoTicket'),
+          document.getElementById('linkStorico'),
+          document.getElementById('linkKnowledgeBase')
+        ];
+        links.forEach(function(link) {
+          if (!link) return;
+          var href = link.getAttribute('href');
+          var redirect = href.replace(baseUrl, '');
+          link.href = baseUrl + ssoPath + '?token=' + encodeURIComponent(token) + '&redirect=' + encodeURIComponent(redirect);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
