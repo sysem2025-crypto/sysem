@@ -385,42 +385,36 @@ a {
 
 /* --- Changelog / Log window --- */
 .changelog-section {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  z-index: 999;
-  width: min(320px, calc(100% - 32px));
+  width: min(640px, calc(100% - 40px));
+  margin: 60px auto 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .changelog-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .changelog-badge {
   display: inline-block;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border: 1px solid var(--line);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(31, 26, 22, 0.6);
-  background: rgba(250, 246, 235, 0.85);
-  backdrop-filter: blur(6px);
-  border-radius: 4px;
+  color: rgba(31, 26, 22, 0.7);
 }
 
 .changelog-list {
   border: 1px solid var(--line);
-  border-radius: 6px;
-  background: rgba(250, 246, 235, 0.85);
-  backdrop-filter: blur(6px);
-  padding: 8px 12px;
-  max-height: 120px;
+  border-radius: 8px;
+  background: rgba(250, 246, 235, 0.6);
+  padding: 12px 16px;
+  max-height: 200px;
   overflow-y: auto;
-  font-size: 0.78rem;
 }
 
 .changelog-entry {
@@ -501,13 +495,11 @@ a {
   }
 
   .changelog-section {
-    bottom: 10px;
-    left: 10px;
-    width: min(260px, calc(100% - 20px));
+    margin: 40px auto 30px;
   }
 
   .changelog-list {
-    max-height: 100px;
+    max-height: 150px;
   }
 
   .changelog-entry {

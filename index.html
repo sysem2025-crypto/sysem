@@ -47,6 +47,8 @@
     </section>
   </main>
 
+  <footer class="site-footer"></footer>
+
   <script src="assets/js/main.js?v=20260615"></script>
   <script>
     (function () {
@@ -55,7 +57,8 @@
       fetch('changelog.json?v=' + Date.now())
         .then(function (r) { return r.json(); })
         .then(function (entries) {
-          list.innerHTML = entries.map(function (e) {
+          var lastThree = entries.slice(-3).reverse();
+          list.innerHTML = lastThree.map(function (e) {
             return '<div class="changelog-entry"><time class="changelog-date">' + e.date + '</time><span class="changelog-text">' + e.text + '</span></div>';
           }).join('');
         })
