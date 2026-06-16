@@ -95,7 +95,7 @@ async function loadLang(lang) {
       },
       "nav": {
         "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
-        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
+        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
         "sysem": "Sysem",
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
         "sensori": "Sensori", "compressione": "Compressione", "protocolli": "Protocolli",
@@ -372,7 +372,8 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.datacenter', href: 'datacenter.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
-    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
+    { labelKey: 'nav.ticketing', href: 'ticketing.html' },
+    { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
@@ -418,7 +419,10 @@ function renderNavigation(currentPage) {
       link.href = item.href;
       link.dataset.i18nItem = item.labelKey;
       link.textContent = t(item.labelKey);
-      if (currentPage && item.href.indexOf(currentPage) !== -1) {
+      if (item.href.indexOf('://') !== -1) {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      } else if (currentPage && item.href.indexOf(currentPage) !== -1) {
         link.setAttribute('aria-current', 'page');
       }
       itemLi.appendChild(link);

@@ -143,6 +143,12 @@
       "overline": "Get in touch",
       "title": "Contact",
       "metaTitle": "Contact"
+    },
+    "ai": {
+      "overline": "Innovazione",
+      "title": "Intelligenza Artificiale",
+      "subtitle": "Il mio clone digitale",
+      "metaTitle": "AI"
     }
   },
   "auth": {
