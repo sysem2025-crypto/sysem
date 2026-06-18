@@ -1,6 +1,6 @@
 @echo off
 set GIT_PATH="C:\Program Files\Git\bin\git.exe"
-set PROJECT_DIR="E:\02_ProgettiPersonali\06_Sysem"
+set PROJECT_DIR="F:\Life_OS\02_ProgettiPersonali\06_Sysem"
 
 echo --------------------------------------------------
 echo SYSEM - PUBBLICAZIONE SITO
