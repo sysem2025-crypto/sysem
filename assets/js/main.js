@@ -95,6 +95,7 @@ async function loadLang(lang) {
       },
       "nav": {
         "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
+        "volumeCorrector": "Correttore Volumi",
         "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
         "sysem": "Sysem",
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
@@ -369,7 +370,8 @@ async function ensureDefaultAdminUser() {
 
 const NAV_STRUCTURE = [
   { categoryKey: 'nav.systema', items: [
-    { labelKey: 'nav.datacenter', href: 'datacenter.html' }
+    { labelKey: 'nav.datacenter', href: 'datacenter.html' },
+    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' },
