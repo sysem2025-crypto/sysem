@@ -343,23 +343,32 @@ a {
 }
 
 .under-construction-badge {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 6px 14px;
-  border: 1px dashed var(--aqua);
-  border-radius: 999px;
-  background: rgba(47, 74, 69, 0.08);
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 8px 0;
+  border: none;
+  border-top: 1px dashed var(--aqua);
+  border-bottom: 1px dashed var(--aqua);
+  background: rgba(47, 74, 69, 0.06);
   color: var(--aqua);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  animation: pulse-badge 2s ease-in-out infinite;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-@keyframes pulse-badge {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+.under-construction-badge span {
+  display: inline-block;
+  animation: scroll-left 12s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
 }
 
 .home-quick-links {
