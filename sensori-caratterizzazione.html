@@ -64,6 +64,21 @@
             <li>Piano manutentivo con soglie e azioni correttive predefinite</li>
           </ul>
         </article>
+
+        <article class="auth-card">
+          <h2>Caratterizzazione sensori pressione</h2>
+          <p>La caratterizzazione metrologica del sensore di pressione assoluta è cruciale per il calcolo del volume corretto. Definisce la curva di risposta reale del trasduttore.</p>
+          <ul class="normative-list">
+            <li>Punti di taratura: minimo 5 punti (0%, 25%, 50%, 75%, 100% FS)</li>
+            <li>Offset (zero): deviazione a pressione nulla, compensabile via software</li>
+            <li>Linearità: scostamento max dalla retta ideale (es. ±0.075% FS)</li>
+            <li>Isteresi: differenza tra curva salita e discesa</li>
+            <li>Deriva termica: coefficiente %FS/°C (zero e span)</li>
+            <li>Stabilità a lungo termine: drift annuo dichiarato dal costruttore</li>
+            <li>Tabella di linearizzazione: coppie (lettura grezza, pressione reale) per interpolazione nel correttore</li>
+            <li>Incertezza estesa (k=2): somma contributi taratura + risoluzione + deriva + interpolazione</li>
+          </ul>
+        </article>
       </div>
     </section>
   </main>
