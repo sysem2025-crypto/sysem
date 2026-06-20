@@ -371,7 +371,8 @@ async function ensureDefaultAdminUser() {
 const NAV_STRUCTURE = [
   { categoryKey: 'nav.systema', items: [
     { labelKey: 'nav.datacenter', href: 'datacenter.html' },
-    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' }
+    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' },
+    { labelKey: 'nav.embedded', href: 'embedded.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' },

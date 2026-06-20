@@ -26,7 +26,8 @@
     "normative": "Normative",
     "guidaNorme": "Guida norme",
     "contatti": "Contatti",
-    "volumeCorrector": "Correttore Volumi"
+    "volumeCorrector": "Correttore Volumi",
+    "embedded": "Sistemi Embedded"
   },
   "lang": {
     "it": "Italiano",
@@ -145,13 +146,19 @@
       "title": "Contact",
       "metaTitle": "Contact"
     },
-    "ai": {
-      "overline": "Innovazione",
-      "title": "Intelligenza Artificiale",
-      "subtitle": "Il mio clone digitale",
-      "metaTitle": "AI"
-    }
-  },
+      "ai": {
+        "overline": "Innovazione",
+        "title": "Intelligenza Artificiale",
+        "subtitle": "Il mio clone digitale",
+        "metaTitle": "AI"
+      },
+      "embedded": {
+        "overline": "Embedded & Microcontroller",
+        "title": "Sistemi Embedded",
+        "subtitle": "Famiglie 8-bit e progetti embedded per applicazioni industriali",
+        "metaTitle": "Embedded"
+      }
+    },
   "auth": {
     "loginTitle": "Login",
     "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",

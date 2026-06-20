@@ -32,7 +32,8 @@
     "guidaNorme": "Standards Guide",
     "ai": "Artificial Intelligence",
     "contatti": "Contacts",
-    "volumeCorrector": "Volume Corrector"
+    "volumeCorrector": "Volume Corrector",
+    "embedded": "Embedded Systems"
   },
   "lang": {
     "it": "Italian",
@@ -141,10 +142,23 @@
       "title": "Program Access",
       "metaTitle": "Program Access"
     },
-    "ai": {
-      "overline": "Innovation",
-      "title": "Artificial Intelligence",
-      "metaTitle": "AI"
+      "ai": {
+        "overline": "Innovation",
+        "title": "Artificial Intelligence",
+        "metaTitle": "AI"
+      },
+      "embedded": {
+        "overline": "Embedded & Microcontroller",
+        "title": "Embedded Systems",
+        "subtitle": "8-bit microcontroller families and embedded projects for industrial applications",
+        "metaTitle": "Embedded"
+      }
+    },
+      "embedded": {
+        "overline": "Embedded & Microcontroller",
+        "title": "Embedded Systems",
+        "metaTitle": "Embedded"
+      }
     },
     "datacenter": {
       "overline": "Infrastructure",
