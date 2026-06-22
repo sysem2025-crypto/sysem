@@ -145,52 +145,78 @@
       </div>
     </section>
 
-    <section id="projects" class="home">
+      <section id="projects" class="home">
       <h2>Progetti Implementati</h2>
       <div class="auth-grid">
         <article class="auth-card">
           <h3>MIDI Entry</h3>
-          <p><strong>Obiettivo:</strong> Implementare un'interfaccia MIDI a 5 pin per generare note musicali</p>
-          <p><strong>Hardware:</strong> PIC18F2520, potenziometro per transpose, display LCD 16x2, buzzer</p>
-          <p><strong>Software:</strong> decoder note MIDI, gestione polifonica a 16 canali, gestione interrupt UART</p>
-          <p><strong>Caratteristiche:</strong> 4 pollici per ottava, sustain, pitch bend, controllo di modulazione</p>
-          <p><strong>Applicazioni:</strong> strumenti musicali digitali, controller MIDI per software</p>
+          <p>Obiettivo: Implementare un'interfaccia MIDI a 5 pin per generare note musicali</p>
+          <p>Hardware: PIC18F2520, potenziometro per transpose, display LCD 16x2, buzzer</p>
+          <p>Software: decoder note MIDI, gestione polifonica a 16 canali, gestione interrupt UART</p>
+          <p>Caratteristiche: 4 pollici per ottava, sustain, pitch bend, controllo di modulazione</p>
+          <p>Applicazioni: strumenti musicali digitali, controller MIDI per software</p>
         </article>
 
         <article class="auth-card">
           <h3>Controllo Motore Lavatrice</h3>
-          <p><strong>Obiettivo:</strong> Sviluppare un sistema di controllo per motore asincrono monofase con PWM per velocità</p>
-          <p><strong>Hardware:</strong> PIC16F877A, driver MOSFET IRFZ44N, sensore Hall, potenziometro</p>
-          <p><strong>Software:</strong> PWM a 10-bit, controllo closed-loop per velocità, protezione sovraccarico</p>
-          <p><strong>Caratteristiche:</strong> controllo velocità variabile, avvio graduale, protezione da sovraccarico, indicatori LED</p>
-          <p><strong>Applicazioni:</strong> lavatrici domestiche, lavaggio industriale, controllo velocità motori</p>
+          <p>Obiettivo: Sviluppare un sistema di controllo per motore asincrono monofase con PWM per velocità</p>
+          <p>Hardware: PIC16F877A, driver MOSFET IRFZ44N, sensore Hall, potenziometro</p>
+          <p>Software: PWM a 10-bit, controllo closed-loop per velocità, protezione sovraccarico</p>
+          <p>Caratteristiche: controllo velocità variabile, avvio graduale, protezione da sovraccarico, indicatori LED</p>
+          <p>Applicazioni: lavatrici domestiche, lavaggio industriale, controllo velocità motori</p>
         </article>
 
         <article class="auth-card">
           <h3>Forno Mono-Zona</h3>
-          <p><strong>Obiettivo:</strong> Sistema di controllo temperatura per forno elettrico monozona con PID</p>
-          <p><strong>Hardware:</strong> PIC18F2520, termistore NTC, relay driver, display LCD, pulsanti</p>
-          <p><strong>Software:</strong> algoritmo PID, gestione temperatura di sicurezza, controllo relay, logging temperatura</p>
-          <p><strong>Caratteristiche:</strong> impostazione temperatura, modalità manuale/auto, allarme temperatura alta, protezione surriscaldamento</p>
-          <p><strong>Applicazioni:</strong> forni industriali, forni domestici, controllo temperatura in generale</p>
+          <p>Obiettivo: Sistema di controllo temperatura per forno elettrico monozona con PID</p>
+          <p>Hardware: PIC18F2520, termistore NTC, relay driver, display LCD, pulsanti</p>
+          <p>Software: algoritmo PID, gestione temperatura di sicurezza, controllo relay, logging temperatura</p>
+          <p>Caratteristiche: impostazione temperatura, modalità manuale/auto, allarme temperatura alta, protezione surriscaldamento</p>
+          <p>Applicazioni: forni industriali, forni domestici, controllo temperatura in generale</p>
         </article>
 
         <article class="auth-card">
           <h3>Termostato CNT</h3>
-          <p><strong>Obiettivo:</strong> Sistema di misurazione temperatura con termocoppia e visualizzazione</p>
-          <p><strong>Hardware:</strong> PIC16F1789, termocoppia K-type, ADC, display LCD, sensore umidità</p>
-          <p><strong>Software:</strong> misurazione temperatura, compensazione umidità, allarme temperatura, visualizzazione in tempo reale</p>
-          <p><strong>Caratteristiche:</strong> misurazione ±0.5°C, allarme +100°C/-50°C, visualizzazione °C/F, memoria dati</p>
-          <p><strong>Applicazioni:</strong> monitoraggio temperatura ambiente, controllo HVAC, monitoraggio industriale</p>
+          <p>Obiettivo: Sistema di misurazione temperatura con termocoppia e visualizzazione</p>
+          <p>Hardware: PIC16F1789, termocoppia K-type, ADC, display LCD, sensore umidità</p>
+          <p>Software: misurazione temperatura, compensazione umidità, allarme temperatura, visualizzazione in tempo reale</p>
+          <p>Caratteristiche: misurazione ±0.5°C, allarme +100°C/-50°C, visualizzazione °C/F, memoria dati</p>
+          <p>Applicazioni: monitoraggio temperatura ambiente, controllo HVAC, monitoraggio industriale</p>
         </article>
 
         <article class="auth-card">
           <h3>Applicazioni OS-based</h3>
-          <p><strong>FreeRTOS:</strong> Sviluppo di un sistema operativo real-time per PIC32MX</p>
-          <p><strong>ChibiOS:</strong> RTOS leggero per microcontroller 8-bit, sensori, comunicazione</p>
-          <p><strong>Bare-metal:</strong> Bootloader USB, programming in-circuit, gestione firmware</p>
-          <p><strong>Caratteristiche:</strong> scheduler real-time, gestione dei task, semafori, code messaggi</p>
-          <p><strong>Applicazioni:</strong> sistemi embedded real-time, controllo di automazione, comunicazione periferica</p>
+          <p>FreeRTOS: Sviluppo di un sistema operativo real-time per PIC32MX</p>
+          <p>ChibiOS: RTOS leggero per microcontroller 8-bit, sensori, comunicazione</p>
+          <p>Bare-metal: Bootloader USB, programming in-circuit, gestione firmware</p>
+          <p>Caratteristiche: scheduler real-time, gestione dei task, semafori, code messaggi</p>
+          <p>Applicazioni: sistemi embedded real-time, controllo di automazione, comunicazione periferica</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="sensori-caratterizzazione" class="home">
+      <h2>Sensori e Caratterizzazione</h2>
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h3>Panoramica sensori</h3>
+          <p>Approfondimento tecnico sui sensori di pressione e temperatura utilizzati nei sistemi embedded.</p>
+          <p>Include: tipi di sensori, interfacce di misura, criteri di caratterizzazione e best practice di implementazione.</p>
+          <p><a class="btn-download" href="sensori-caratterizzazione.html">Vai alla documentazione completa →</a></p>
+        </article>
+
+        <article class="auth-card">
+          <h3>Caratterizzazione sensori pressione</h3>
+          <p>Approfondimento tecnico specifico sulla caratterizzazione dei sensori di pressione assoluta.</p>
+          <p>Includes: taratura a punti multipli, linearità, isteresi, deriva termica e incertezza estesa.</p>
+          <p><a class="btn-download" href="sensori-caratterizzazione.html#pressure">Dettagli tecnici →</a></p>
+        </article>
+
+        <article class="auth-card">
+          <h3>Caratterizzazione sensori temperatura</h3>
+          <p>Approfondimento tecnico specifico sulla caratterizzazione dei sensori di temperatura.</p>
+          <p>Includes: tipi di termocoppie, junczione, linearità, stabilità, incertezza di misura.</p>
+          <p><a class="btn-download" href="sensori-caratterizzazione.html#temperature">Dettagli tecnici →</a></p>
         </article>
       </div>
     </section>
