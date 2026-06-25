@@ -9,6 +9,9 @@
   <title data-i18n="page.programAccess.metaTitle">Program Access | SYSEM</title>
   <meta name="description" content="Accesso ai programmi SYSEM.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js?v=20260615"></script>
+  <script src="assets/js/auth-supabase.js?v=20260615"></script>
 </head>
 <body data-page="program-access" data-required-role="guest">
   <main class="home">
@@ -54,5 +57,29 @@
     </section>
   </main>
   <script src="assets/js/main.js?v=20260615"></script>
+  <script>
+    (function () {
+      const loginForm = document.getElementById('login-form');
+      const feedback = document.getElementById('auth-feedback');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          feedback.textContent = '';
+          const email = document.getElementById('login-email').value.trim().toLowerCase();
+          const password = document.getElementById('login-password').value;
+          if (!email || password.length < 8) {
+            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
+            return;
+          }
+          try {
+            await window.supabaseLogin(email, password);
+            window.location.href = 'resource.html';
+          } catch (err) {
+            feedback.textContent = err.message || 'Credenziali non valide';
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

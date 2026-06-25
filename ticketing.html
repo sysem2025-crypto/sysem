@@ -9,6 +9,9 @@
   <title data-i18n="page.ticketing.metaTitle">Ticketing | SYSEM</title>
   <meta name="description" content="Sistema di ticketing SYSEM: gestione richieste di supporto, segnalazioni e interventi tecnici.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js?v=20260615"></script>
+  <script src="assets/js/auth-supabase.js?v=20260615"></script>
 </head>
 
 <body data-page="ticketing" data-required-role="guest">
@@ -76,20 +79,31 @@
     (function() {
       var baseUrl = 'https://sf-service-web.vercel.app';
       var ssoPath = '/api/auth/sso';
-      var token = localStorage.getItem('sysem_token');
-      if (token) {
-        var links = [
-          document.getElementById('linkNuovoTicket'),
-          document.getElementById('linkStorico'),
-          document.getElementById('linkKnowledgeBase')
-        ];
-        links.forEach(function(link) {
-          if (!link) return;
-          var href = link.getAttribute('href');
-          var redirect = href.replace(baseUrl, '');
-          link.href = baseUrl + ssoPath + '?token=' + encodeURIComponent(token) + '&redirect=' + encodeURIComponent(redirect);
-        });
-      }
+      // Usa token Supabase se disponibile
+      var getToken = async function() {
+        var sb = window.supabaseClient;
+        if (sb) {
+          var { data: { session } } = await sb.auth.getSession();
+          return session?.access_token;
+        }
+        return localStorage.getItem('sysem_token');
+      };
+
+      getToken().then(function(token) {
+        if (token) {
+          var links = [
+            document.getElementById('linkNuovoTicket'),
+            document.getElementById('linkStorico'),
+            document.getElementById('linkKnowledgeBase')
+          ];
+          links.forEach(function(link) {
+            if (!link) return;
+            var href = link.getAttribute('href');
+            var redirect = href.replace(baseUrl, '');
+            link.href = baseUrl + ssoPath + '?token=' + encodeURIComponent(token) + '&redirect=' + encodeURIComponent(redirect);
+          });
+        }
+      });
     })();
   </script>
 </body>

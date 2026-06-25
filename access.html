@@ -9,6 +9,9 @@
   <title data-i18n="page.access.metaTitle">Accesso | SYSEM</title>
   <meta name="description" content="Registrazione e accesso alla documentazione SYSEM.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js?v=20260615"></script>
+  <script src="assets/js/auth-supabase.js?v=20260615"></script>
 </head>
 <body data-page="access" data-required-role="guest">
   <main class="home">
@@ -65,5 +68,54 @@
     </section>
   </main>
   <script src="assets/js/main.js?v=20260615"></script>
+  <script>
+    (function () {
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const feedback = document.getElementById('auth-feedback');
+
+      if (loginForm) {
+        loginForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          feedback.textContent = '';
+          const email = document.getElementById('login-email').value.trim().toLowerCase();
+          const password = document.getElementById('login-password').value;
+          if (!email || password.length < 8) {
+            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
+            return;
+          }
+          try {
+            await window.supabaseLogin(email, password);
+            const params = new URLSearchParams(window.location.search);
+            const returnUrl = params.get('return') || 'index.html';
+            window.location.href = returnUrl;
+          } catch (err) {
+            feedback.textContent = err.message || 'Credenziali non valide';
+          }
+        });
+      }
+
+      if (registerForm) {
+        registerForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          feedback.textContent = '';
+          const name = document.getElementById('register-email').value.split('@')[0]; // uso parte email come nome
+          const email = document.getElementById('register-email').value.trim().toLowerCase();
+          const password = document.getElementById('register-password').value;
+          if (!email || password.length < 8) {
+            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
+            return;
+          }
+          try {
+            await window.supabaseRegister(email, password, name);
+            feedback.textContent = 'Registrazione inviata. Controlla la tua email per confermare.';
+            registerForm.reset();
+          } catch (err) {
+            feedback.textContent = err.message || 'Errore registrazione';
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

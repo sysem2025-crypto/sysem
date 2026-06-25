@@ -9,6 +9,9 @@
   <title data-i18n="page.ai.metaTitle">AI | SYSEM</title>
   <meta name="description" content="Assistente AI SYSEM per supporto tecnico su utility, normative e diagnostica.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js?v=20260615"></script>
+  <script src="assets/js/auth-supabase.js?v=20260615"></script>
 </head>
 
 <body data-page="ai" data-required-role="guest">
@@ -46,16 +49,17 @@
     (function() {
       var iframe = document.getElementById('ai-iframe');
       if (!iframe) return;
-      try {
-        var token = localStorage.getItem('sysem_token');
-        var userData = JSON.parse(localStorage.getItem('sysem_cached_user') || 'null');
-        if (token && userData) {
-          var url = new URL(iframe.src);
-          url.searchParams.set('token', token);
-          url.searchParams.set('email', userData.email);
-          iframe.src = url.toString();
-        }
-      } catch(e) {}
+      var sb = window.supabaseClient;
+      if (sb) {
+        sb.auth.getSession().then(function(res) {
+          if (res.data.session) {
+            var url = new URL(iframe.src);
+            url.searchParams.set('token', res.data.session.access_token);
+            url.searchParams.set('email', res.data.session.user.email);
+            iframe.src = url.toString();
+          }
+        });
+      }
     })();
   </script>
 </body>
