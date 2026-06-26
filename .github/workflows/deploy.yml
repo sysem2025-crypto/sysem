@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps-legacy
           port: 21
-          passive: true
+          security: loose
           timeout: 120
           local-dir: ./
           server-dir: ./public_html/
