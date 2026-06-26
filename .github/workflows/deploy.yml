@@ -7,21 +7,21 @@ on:
 
 jobs:
   deploy:
-    name: Upload via SFTP
+    name: Upload via FTPS
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: SFTP Deploy
+      - name: FTPS Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: sftp
-          port: 22
+          protocol: ftps-legacy
+          port: 21
           local-dir: ./
           server-dir: ./public_html
           exclude: |
