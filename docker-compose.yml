@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  modus-api:
+    build:
+      context: F:/Life_OS/01_Lavoro/02_ProgettiClienti/20_RemoteModusClient/src-cs
+      dockerfile: F:/Life_OS/02_ProgettiPersonali/06_Sysem/Dockerfile
+    container_name: modus-api
+    ports:
+      - "5000:8080"
+      - "4059:4059"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    restart: unless-stopped
+    networks:
+      - modus-net
+
+  ddns-updater:
+    image: ghcr.io/qdm12/ddns-updater:latest
+    container_name: ddns-updater
+    volumes:
+      - F:/Life_OS/02_ProgettiPersonali/06_Sysem/ddns-config.json:/updater/data/config.json:ro
+    restart: unless-stopped
+    networks:
+      - modus-net
+
+networks:
+  modus-net:
+    driver: bridge

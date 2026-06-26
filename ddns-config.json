@@ -1,0 +1,12 @@
+{
+  "settings": [
+    {
+      "provider": "duckdns",
+      "domain": "sysem-modus.duckdns.org",
+      "token": "58a62b62-4ef4-4ffb-8b3e-e1fe6819091e",
+      "ipv4": "auto",
+      "ipv6": "disable",
+      "period": "300s"
+    }
+  ]
+}
