@@ -23,7 +23,7 @@ jobs:
           protocol: ftps-legacy
           port: 21
           security: loose
-          timeout: 120
+          timeout: 120000
           local-dir: ./
           server-dir: ./public_html/
           exclude: |
