@@ -7,30 +7,20 @@ on:
 
 jobs:
   deploy:
-    name: Upload via FTPS
+    name: Upload via SFTP
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: FTPS Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: SFTP Deploy
+        uses: wangyucode/sftp-upload-action@v3
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          host: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          security: loose
-          timeout: 120000
-          local-dir: ./
-          server-dir: ./public_html/
-          exclude: |
-            **/.git*
-            **/.github/**
-            **/README.md
-            docker-compose.yml
-            Dockerfile
-            ddns-config.json
-            apps/modus/**
+          port: 22
+          localDir: '.'
+          remoteDir: './public_html/'
+          exclude: '**/.git*,**/.github/**,**/README.md,docker-compose.yml,Dockerfile,ddns-config.json,apps/modus/**'
