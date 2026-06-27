@@ -100,7 +100,17 @@ async function loadLang(lang) {
         "sysem": "Sysem",
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
         "sensori": "Sensori", "compressione": "Compressione", "protocolli": "Protocolli",
-        "normative": "Normative", "guidaNorme": "Guida norme", "ai": "Intelligenza Artificiale", "contatti": "Contatti"
+        "normative": "Normative", "guidaNorme": "Guida norme", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
+        "embedded": "Embedded", "architetturaModulare": "Architettura Modulare PIC",
+        "osCooperativo": "Sistema Operativo Cooperativo",
+        "gestioneInterrupt": "Gestione Interrupt",
+        "letturaNtc": "Lettura NTC a Condensatore",
+        "macchinaStati": "Macchina a Stati",
+        "controlloTriac": "Controllo Triac",
+        "letturaTacho": "Lettura Tachimetrica",
+        "protocolloTlc": "Protocollo TLC",
+        "gestioneEeprom": "Gestione EEPROM",
+        "debugProduzione": "Debug & Produzione"
       },
       "auth": {
         "loginTitle": "Login", "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",
@@ -372,7 +382,17 @@ const NAV_STRUCTURE = [
   { categoryKey: 'nav.systema', items: [
     { labelKey: 'nav.datacenter', href: 'datacenter.html' },
     { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' },
-    { labelKey: 'nav.embedded', href: 'embedded.html' }
+    { labelKey: 'nav.embedded', href: 'embedded.html' },
+    { labelKey: 'nav.architetturaModulare', href: 'embedded/architettura-modulare.html' },
+    { labelKey: 'nav.osCooperativo', href: 'embedded/sistema-operativo-cooperativo.html' },
+    { labelKey: 'nav.gestioneInterrupt', href: 'embedded/gestione-interrupt.html' },
+    { labelKey: 'nav.letturaNtc', href: 'embedded/lettura-ntc.html' },
+    { labelKey: 'nav.macchinaStati', href: 'embedded/macchina-a-stati.html' },
+    { labelKey: 'nav.controlloTriac', href: 'embedded/controllo-triac.html' },
+    { labelKey: 'nav.letturaTacho', href: 'embedded/lettura-tachimetrica.html' },
+    { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
+    { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
+    { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' },

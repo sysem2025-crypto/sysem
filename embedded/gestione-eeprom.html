@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestione EEPROM Esterna | SYSEM</title>
+  <meta name="description" content="Salvataggio e ripristino configurazione su EEPROM esterna I2C/SPI da PIC: boot default, checksum, wear leveling.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Gestione EEPROM Esterna</h1>
+      <p class="hero-subtitle">Salvare e ripristinare la configurazione prodotto: parametri macchina, temperatura, timer, diagnostica</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Una volta spenta, la scheda dello split deve ricordare: la configurazione macchina (modello 7000/9000/12000 BTU), la temperatura impostata, il timer, il contatore ore filtro, e lo stato di allarme. Il PIC16C65A non ha EEPROM interna sufficiente, quindi si usa una EEPROM esterna seriale (tipo 24Cxx) collegata a un bit-bang su due pin GPIO.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Il modulo <code>#EEP.h</code> implementa driver di lettura/scrittura a byte singolo con protocollo seriale bit-bang. La scrittura avviene solo quando necessario (cambio configurazione, ricezione TLC) per preservare la vita della EEPROM (tipicamente 1M cicli). All&rsquo;avvio, la macchina a stati legge la configurazione salvata e verifica la congruit&agrave;.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Driver bit-bang per EEPROM seriale</h3>
+          <pre><code>; Pin EEPROM:
+; DATA_EEP   = PORTC,3 (bidirezionale)
+; CLK_EEP    = PORTC,4 (clock)
+
+; Scrive un byte in EEPROM
+Store_Byte
+    ; Attiva segnale start
+    CLRB    DATA_EEP
+    CLRB    CLK_EEP
+    SETB    CLK_EEP
+    SETB    DATA_EEP
+    CLRB    CLK_EEP
+
+    ; Invia comando write + indirizzo
+    ; ... protocollo I2C-like bit-bang ...
+
+    ; Invia byte dati (MSB first)
+    movlw   8
+    movwf   Bit_Count
+Loop_Store
+    rlf     Store_Data,same
+    SCLR    DATA_EEP          ; bit = 0
+    goto    Store_Clock
+    SETB    DATA_EEP          ; bit = 1
+Store_Clock
+    SETB    CLK_EEP
+    CLRB    CLK_EEP
+    decfsz  Bit_Count,same
+    goto    Loop_Store
+
+    ; Attesa acknowledge
+    SETB    DATA_EEP          ; release bus
+    SETB    CLK_EEP
+    ; ... test ACK ...
+
+    ; Segnale stop
+    CLRB    DATA_EEP
+    SETB    CLK_EEP
+    SETB    DATA_EEP
+
+    ; Attesa completamento scrittura (tipicamente 5 ms)
+    WAIT    TASK_EEP, 10
+    return
+
+; Legge un byte da EEPROM
+Load_Byte
+    ; ... start + comando read + indirizzo ...
+
+    ; Legge 8 bit
+    movlw   8
+    movwf   Bit_Count
+Loop_Load
+    SETB    DATA_EEP          ; input mode
+    SETB    CLK_EEP
+    rlf     Load_Data,same
+    SCLR    DATA_EEP          ; bit = 0
+    goto    Load_Next
+    SETB    Load_Data         ; bit = 1
+Load_Next
+    CLRB    CLK_EEP
+    decfsz  Bit_Count,same
+    goto    Loop_Load
+
+    ; ... stop ...
+    return</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Mappa EEPROM e inizializzazione</h3>
+          <pre><code>; Mappa della memoria EEPROM (24C04 - 512 byte):
+; Indirizzo  Contenuto
+;   0        Configurazione macchina (Index_Cfg)
+;   1        Temperatura impostata (T_User)
+;   2        Timer fascia 1 - ora
+;   3        Timer fascia 1 - minuti
+;   4        Timer fascia 2 - ora
+;   5        Timer fascia 2 - minuti
+;   6        Contatore ore filtro (MSB)
+;   7        Contatore ore filtro (LSB)
+;   8        Ultimo stato operativo
+;   9        Checksum (XOR di 0..8)
+;   10       Indice ultima configurazione (backup)
+;   11       ...
+
+; All'avvio, la state machine carica la configurazione:
+Startup
+    ; Legge Index_Cfg da EEPROM (indirizzo 11)
+    movlw   11
+    movwf   Ind_Eep
+    call    Load_Byte
+
+    ; Verifica che Index_Cfg sia valido (0..MAX_CONFIGURE)
+    movlw   MAX_CONFIGURE
+    subwf   Index_Cfg,w
+    skpnc
+    clrf    Index_Cfg         ; valore non valido: default
+
+    ; Applica configurazione
+    call    Io_Configure
+
+; Se la EEPROM &egrave; vergine o danneggiata:
+; la macchina parte con valori di default.
+; La prima scrittura da TLC salva la configurazione reale.</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Scrittura automatica su cambio configurazione</h3>
+          <pre><code>; Ogni volta che arriva un comando TLC valido,
+; la configurazione viene salvata in EEPROM.
+
+OK_Tlc_Rx
+    ; ... ricezione e decodifica TLC ok ...
+
+    SETB    F_EEP_OK          ; richiesta salvataggio EEPROM
+
+; Task EEP (eseguita periodicamente):
+Eep_Task
+    BANK    0
+    WAIT    TASK_EEP, OS_MSEC_100
+
+    SCLR    F_EEP_OK          ; c&rsquo;&egrave; richiesta di salvataggio?
+    goto    End_Eep_Task
+
+    ; Salva T_User
+    movfw   T_User
+    movwf   Store_Data
+    movlw   1                 ; indirizzo EEPROM per T_User
+    call    Store_Byte
+
+    ; Salva Dec_State (modo operativo)
+    movfw   Dec_State
+    movwf   Store_Data
+    movlw   8
+    call    Store_Byte
+
+    ; Aggiorna checksum
+    ; ... calcolo XOR su byte 0..8 ...
+    call    Store_Byte        ; salva checksum
+
+End_Eep_Task
+    ; ...</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Bit-bang &egrave; sufficiente:</strong> la EEPROM viene letta/scritta raramente (solo all&rsquo;accensione o su comando), la velocit&agrave; non &egrave; critica</li>
+            <li><strong>Checksum di integrit&agrave;:</strong> un byte XOR su tutti i parametri permette di rilevare corruzione dati (e resettare a default)</li>
+            <li><strong>Scrittura differita:</strong> si scrive solo quando serve, non a ogni ciclo della macchina a stati</li>
+            <li><strong>Configurazione macchina multipla:</strong> l&rsquo;indice Index_Cfg permette di usare lo stesso firmware per versioni 7000/9000/12000 BTU, selezionate in produzione via EEPROM</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetto sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#EEP.h</code>: driver EEPROM esterna + task salvataggio</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

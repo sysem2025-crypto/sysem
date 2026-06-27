@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lettura Tachimetrica | SYSEM</title>
+  <meta name="description" content="Lettura velocit&agrave; motore tramite sensore Hall su PIC: interrupt on-change, accumulo periodi, filtro mobile, protezione rotore bloccato.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Lettura Tachimetrica</h1>
+      <p class="hero-subtitle">Rilevare la velocit&agrave; del motore con un sensore Hall e un pin di interrupt on-change</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Per regolare la velocit&agrave; di una ventola AC con triac serve un feedback. Un sensore Hall sul rotore genera un impulso ogni giro (o ogni frazione di giro). Il PIC deve misurare il periodo tra impulsi successivi con risoluzione adeguata, mediare per eliminare fluttuazioni meccaniche, e fornire il valore alla logica di controllo PID. Inoltre deve rilevare condizioni di rotore bloccato o tachimetro guasto per attivare le protezioni.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>L&rsquo;impulso tachimetrico arriva su un pin di PORTB configurato per interrupt on-change. Il gestore cattura il timestamp corrente da Timer1 (16 bit) e lo accumula in un buffer circolare a 4 campioni. Una task periodica (ogni 250 ms) calcola la velocit&agrave; media e la mette a disposizione del controllore PID. Se non arrivano impulsi per un tempo massimo (<code>FS_ROT_LOCK</code>), scatta la protezione rotore bloccato.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Interrupt handler per il fronte tachimetrico</h3>
+          <pre><code>; Decode_Tacho: chiamato dall'interrupt on-change
+; quando il pin TACHO cambia stato (fronte sensore Hall)
+
+Decode_Tacho
+    ; Salva il timestamp corrente (Timer1 16 bit)
+    movfw   TMR1L
+    movwf   Tacho_Timestamp_Lo
+    movfw   TMR1H
+    movwf   Tacho_Timestamp_Hi
+
+    ; Segnala alla task che un nuovo impulso &egrave; arrivato
+    SETB    F_TACHO_OK
+
+    goto    End_Test_On_Change
+
+; Nel loop principale dello scheduler, il flag F_TACHO_OK
+; viene usato dalle task per sapere se aggiornare la velocit&agrave;.</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Buffer circolare e filtro mobile</h3>
+          <pre><code>; V_Tacho &egrave; un buffer di 4 byte in RAM generale.
+; Ogni nuovo periodo tachimetrico viene inserito,
+; shiftando i precedenti. La somma dei 4 campioni
+; rappresenta il periodo medio su 4 giri.
+
+; Struttura buffer:
+; V_Tacho+0: periodo giro corrente
+; V_Tacho+1: periodo giro -1
+; V_Tacho+2: periodo giro -2
+; V_Tacho+3: periodo giro -3
+
+; Task #Tacho.h (eseguita dallo scheduler ogni 250 ms):
+; Calcola la somma dei 4 periodi
+    movlw   V_Tacho
+    movwf   FSR
+
+    movfw   INDF              ; periodo corrente
+    incf    FSR,same
+    addwf   INDF,w            ; + periodo -1
+    incf    FSR,same
+    addwf   INDF,w            ; + periodo -2
+    incf    FSR,same
+    addwf   INDF,w            ; + periodo -3 = somma 4 periodi
+
+    movwf   RB0_0             ; velocit&agrave; normalizzata
+
+; Il valore &egrave; inversamente proporzionale alla velocit&agrave;
+; (pi&ugrave; alto = pi&ugrave; lento). La conversione in RPM
+; avviene nel modulo PID (vedi Controllo Triac).</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Protezione rotore bloccato</h3>
+          <pre><code>; Nella task Triac_Power (eseguita ogni 1 sec):
+; Se la somma tachimetrica &egrave; troppo alta (rotore lento o fermo),
+; si incrementa un timer dedicato T_Rot_Lock.
+; Se T_Rot_Lock raggiunge FS_ROT_LOCK, scatta allarme.
+
+Test_Rotore
+    movlw   VEL_MIN_ROT_LOCK
+    subwf   RB0_0,w           ; confronto velocit&agrave; con soglia
+    skpc
+    goto    Test_Rot_Lock     ; troppo lento
+
+    ; Velocit&agrave; OK: reset timer protezione
+    BANK    1
+    clrf    T_Rot_Lock
+    BANK    0
+    goto    Test_Vel_Ventola
+
+Test_Rot_Lock
+    BANK    1
+    movlw   FS_ROT_LOCK
+    xorwf   T_Rot_Lock,w
+    BANK    0
+    skpnz
+    SETB    ALARM_NTC         ; allarme rotore bloccato!
+    ; L'allarme ferma la macchina e accende led di errore</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema del sistema di misura</h3>
+          <pre><code>+----------+     impulsi      +-------------------+
+|  Motore  |----+----------->| PORTB (RB7)       |
+|  Ventola |    |             | Interrupt On-     |
+|  + Hall  |    |             | Change            |
++----------+    |             |                   |
+                |             +-------------------+
+                |                      |
+                |                      v
+                |             +-------------------+
+                |             | Decode_Tacho      |
+                |             |   salva Timer1    |
+                |             |   set F_TACHO_OK  |
+                |             +-------------------+
+                |                      |
+                |          ogni 250ms  v
+                |             +-------------------+
+                |             | Task Tacho        |
+                |             |   media 4 campioni |
+                |             |   aggiorna RB0_0  |
+                |             +-------------------+
+                |                      |
+                |          ogni 1 sec  v
+                |             +-------------------+
+                |             | Triac_Power       |
+                |             |   PID da RB0_0    |
+                |             |   protezione      |
+                |             |   rotore bloccato |
+                |             +-------------------+
+                |                      |
+                v                      v
+           Pw_State2            ALARM_NTC
+           (ritardo triac)      (led errore)</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Media mobile a 4 campioni:</strong> smorza le fluttuazioni meccaniche della ventola senza ritardare eccessivamente la risposta del PID</li>
+            <li><strong>Timer1 a 16 bit:</strong> risoluzione di ~1 &micro;s sul periodo, sufficiente per discriminare velocit&agrave; da 200 a 1500 RPM</li>
+            <li><strong>Protezione integrata:</strong> il rotore bloccato viene rilevato in ~4 secondi e ferma la macchina (non si surriscalda il motore)</li>
+            <li><strong>Ereditariet&agrave; tra progetti:</strong> lo stesso identico approccio &egrave; usato nell&rsquo;Antisbilanciamento (I200026) per rilevare lo sbilanciamento in centrifugaLettura Tachimetrica</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetti sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#Tacho.h</code>, <code>#Inter.h</code></li>
+            <li><strong>Antisbilanciamento I200026</strong> &mdash; <code>TASK_1.H</code>: protezione rotore bloccato e tacho in corto</li>
+            <li><strong>Split Ferroli I200036</strong> &mdash; <code>#Tacho.h</code></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

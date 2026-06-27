@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestione Interrupt su PIC | SYSEM</title>
+  <meta name="description" content="Salvataggio contesto, interrupt on-change, gestione timer multipli, decoder a cascata per PIC16Cxx in Assembly.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Gestione Interrupt su PIC16Cxx</h1>
+      <p class="hero-subtitle">Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Su un PIC16C65A, un singolo vettore interrupt all&rsquo;indirizzo <code>0x004</code> serve tutte le periferiche: cambio stato su PORTB, overflow timer0, timer1, timer2. Ogni fonte deve essere identificata e servita in tempi strettissimi, senza perdere eventi. Inoltre il salvataggio del contesto (W, STATUS, PCLATH, FSR) deve essere completo ma velocissimo, e bisogna gestire l&rsquo;annidamento implicito tra interrupt e task dello scheduler.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Il modulo <code>#Inter.h</code> implementa un <strong>decoder a cascata</strong> che identifica la fonte dell&rsquo;interrupt e instrada il controllo al gestore appropriato, il tutto in meno di 10 cicli macchina. Il salvataggio contesto usa <code>SWAPF</code> per preservare STATUS senza alterarlo.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Salvataggio contesto (prologo interrupt)</h3>
+          <pre><code>;----------------------------------------------------------------------
+; Prologo interrupt: salva contesto in 4 istruzioni
+;----------------------------------------------------------------------
+Interrupt
+PUSH
+    movwf   Reg_w              ; salva W (nessun effetto su STATUS)
+    swapf   STATUS,w           ; scambia nibble per salvare STATUS
+    BANK    0
+    movwf   Reg_Status         ; Reg_Status = STATUS preservato
+
+    movfw   PCLATH
+    movwf   Save_PCLATH        ; salva pagina ROM corrente
+    movfw   FSR
+    movwf   Save_FSR           ; salva puntatore indiretto
+
+    clrf    PCLATH             ; forza pagina 0 per i gestori
+                               ; (i gestori sono tutti in pagina 0)</code></pre>
+          <p>Nota tecnica: l&rsquo;uso di <code>SWAPF</code> per salvare STATUS non &egrave; casuale. <code>SWAPF</code> non modifica alcun flag di STATUS, a differenza di <code>MOVWF</code>. Questo &egrave; cruciale perch&eacute; l&rsquo;interrupt pu&ograve; accadere in qualsiasi momento e dobbiamo preservare il contesto esatto.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Decoder a cascata (fonti interrupt)</h3>
+          <pre><code>;----------------------------------------------------------------------
+; Le fonti vengono testate in ordine di priorit&agrave; implicita:
+; 1. PORTB change (TLC, SYNC, TACHO, NTC) - pi&ugrave; veloci
+; 2. Timer2 overflow (timeout ricezione TLC)
+; 3. Timer1 overflow (timeout lettura NTC)
+; 4. Timer0 overflow (step OS, innesco triac)
+;----------------------------------------------------------------------
+
+; --- Fonte 1: PORTB On-Change ---
+    btfss   INTCON,RBIF        ; interrupt on change?
+    goto    Test_Ovf_Timer     ; no: passa a Timer2
+
+    bcf     INTCON,RBIF        ; resetta flag
+
+Next_Interrupt
+    movfw   Last_Pb
+    xorwf   PORTB,w            ; quali bit sono cambiati?
+    movwf   Save_Port
+
+; Decodifica a catena: ogni gestore pu&ograve; "prendersi" l'interrupt
+    SCLR    FL_TLC             ; linea telecomando ?
+    goto    Decode_Tlc
+End_Test_Tlc
+
+    SCLR    FL_SYNC            ; fronte di sincronismo rete ?
+    goto    Decode_Sync
+
+    SCLR    FL_TACHO           ; fronte tachimetrico ?
+    goto    Decode_Tacho
+
+    SCLR    FL_NTC             ; fine carica condensatore NTC ?
+    goto    Decode_Ntc
+
+End_Test_On_Change
+
+; --- Fonte 2: Timer2 Overflow ---
+Test_Ovf_Timer
+    btfss   PIR1,TMR2IF        ; overflow timer2 (TLC timeout)?
+    goto    Test_Timer1
+    ; ... gestione timeout TLC ...
+
+; --- Fonte 3: Timer1 Overflow ---
+Test_Timer1
+    btfss   PIR1,TMR1IF        ; overflow timer1 (NTC timeout)?
+    goto    Test_Timer0
+    ; ... gestione timeout NTC ...
+
+; --- Fonte 4: Timer0 Overflow ---
+Test_Timer0
+    btfss   INTCON,T0IF        ; overflow timer0 (OS step)?
+    goto    End_Interrupt
+    bcf     INTCON,T0IF
+
+    ; Innesco triac a tempo (zippillo)
+    ; ... vedi sezione triac ...</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Innesco triac via interrupt (zippillo a tempo)</h3>
+          <p>L&rsquo;interrupt Timer0 viene usato anche per generare l&rsquo;impulso di gate del triac con temporizzazione precisa:</p>
+          <pre><code>; Dallo stesso interrupt Timer0:
+; Diamo lo zippillo al triac richiesto,
+; solo se la ventola relativa deve essere accesa.
+
+Test_V_Int_On
+    SSET    V_INT              ; test consenso ventola interna
+    goto    Test_V_Ext_On
+    SSET    V_INT_REQ          ; test richiesta attivazione
+    goto    Test_V_Ext_On
+    SETB    OK_V_INT           ; consenso attivazione da task!
+    CLRB    IO_V_INT           ; azionamento triac (pin basso = ON)
+
+Test_V_Ext_On
+    SSET    V_EXT              ; test consenso ventola esterna
+    goto    Fire_On_Triac
+    SSET    V_EXT_REQ
+    goto    Fire_On_Triac
+    SETB    OK_V_EXT
+    CLRB    IO_V_EXT
+
+Fire_On_Triac
+    movlw   7
+    movwf   Wait_Rit_Triac     ; attesa 21 us (3 cicli * 7)
+Loop_V_xx
+    decfsz  Wait_Rit_Triac,same
+    goto    Loop_V_xx
+
+    SETB    IO_V_INT           ; disattiva triac (fine impulso)
+    SETB    IO_V_EXT</code></pre>
+          <p>L&rsquo;impulso di gate di circa 21 &micro;s &egrave; generato interamente via software, senza timer hardware dedicato.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema dei flussi interrupt</h3>
+          <pre><code>+-----------------------+
+| Vettore INT (0x004)   |
++-----------------------+
+         |
+         v
++-----------------------+
+| PUSH: salva contesto  |
+| W, STATUS, PCLATH, FSR|
++-----------------------+
+         |
+         v
++-----------------------+
+| PORTB change?         |---SI---> Decode_Tlc
+|                       |         Decode_Sync
+|                       |         Decode_Tacho
+|                       |         Decode_Ntc
++-----------------------+         (catena SCLR/goto)
+         |
+         NO
+         v
++-----------------------+
+| Timer2 overflow?      |---SI---> TLC timeout
++-----------------------+         (fine ricezione seriale)
+         |
+         NO
+         v
++-----------------------+
+| Timer1 overflow?      |---SI---> NTC timeout
++-----------------------+         (fine carica condensatore)
+         |
+         NO
+         v
++-----------------------+
+| Timer0 overflow?      |---SI---> OS step
+|                       |         + innesco triac
++-----------------------+         (zippillo a tempo)
+         |
+         NO
+         v
++-----------------------+
+| Epilogo: ripristina    |
+| contesto, ritorno     |
++-----------------------+</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Priorit&agrave; per latenza:</strong> PORTB change in cima (eventi veloci: TLC, sincronismo), timer overflow in fondo</li>
+            <li><strong>Decoder a catena SCLR/goto:</strong> ogni gestore "consuma" l&rsquo;interrupt con <code>SCLR</code> (skip se clear) + <code>goto</code>, realizzando una cascata senza tabelle</li>
+            <li><strong>Zero cicli persi su lettura PORTB:</strong> il confronto <code>xorwf PORTB,w</code> col <code>Last_Pb</code> identifica al volo quali pin sono cambiati</li>
+            <li><strong>Epilogi impliciti:</strong> non esiste una routine di epilogo centralizzata; ogni gestore termina con <code>retfie</code> dopo aver ripristinato il contesto, o passa al prossimo test</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetto sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#Inter.h</code>: 453 righe, gestione completa interrupt per PIC16C65A (TLC, SYNC, TACHO, NTC, triac, scheduler)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Macchina a Stati per Prodotto | SYSEM</title>
+  <meta name="description" content="Progettazione di macchine a stati per sistemi embedded: diagramma a palle per il cliente, transizioni a tempo/evento, output istantanei.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Macchina a Stati per Prodotto</h1>
+      <p class="hero-subtitle">Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Uno split system ha molti modi di funzionamento (Cool, Heat, Dry, Fan, Night, Defrost, Thermo Off, ecc.). Ognuno richiede una combinazione specifica di attuatori: compressore acceso/spento, ventola interna a velocit&agrave; X, ventola esterna, deflettore in posizione A o B. Il cliente deve poter capire cosa sta facendo la macchina in ogni istante, e il team di sviluppo deve poter aggiungere o modificare stati senza rischiare regressioni. Un tradizionale flow chart non basta: serve un modello che separi chiaramente <strong>stato istantaneo delle utenze</strong> (output) dalle <strong>condizioni di transizione</strong> (eventi/tempo).</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione: Diagramma a Palle</h2>
+          <p>Ogni stato &egrave; rappresentato da un <strong>cerchio (&ldquo;palla&rdquo;)</strong> che contiene la configurazione istantanea di tutte le utenze: compressore, ventole, deflettore, led. Le frecce tra i cerchi rappresentano le <strong>transizioni</strong>, etichettate con la condizione che le innesca: un evento esterno (es. arriva un comando dal telecomando), un timeout (es. &ldquo;dopo 2 minuti&rdquo;), o una condizione sui sensori (es. &ldquo;T_amb &lt; T_set&rdquo;).</p>
+          <p>Il cliente vede un diagramma a bolle e capisce subito: &ldquo;Ah, in questo stato il compressore &egrave; acceso e la ventola &egrave; al minimo&rdquo;. Lo sviluppatore traduce ogni cerchio in una subroutine Assembly che restituisce il numero dello stato successivo.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Implementazione: la tabella degli stati (table1.h)</h3>
+          <pre><code>; Ogni stato &egrave; un'etichetta nella jump table.
+; La funzione M_State_Table prende Index_M_S in W
+; e salta allo stato corrispondente.
+; Ogni stato restituisce in W il prossimo stato.
+
+M_State_Table
+    addwf   PCL,same                ; jump table
+    nop                             ; parto da 1
+    goto    S_1                     ; STOP
+    goto    S_2                     ; COOL
+    goto    S_3                     ; DRY
+    goto    S_4                     ; FAN
+    goto    S_5                     ; ...
+    goto    S_6                     ; Thermo Off Cool
+    goto    S_7                     ; ...
+    goto    S_8                     ; Thermo Off Dry
+    ...
+    goto    S_20                    ; Allarme Hot Battery
+    goto    S_23                    ; Allarme NTC
+    goto    S_25                    ; Diagnostica ICA
+    goto    S_26                    ; Defrost Heat
+    goto    S_27                    ; Defrost Heat Night</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Anatomia di uno stato: S_2 (COOL)</h3>
+          <p>Ogni stato ha tre sezioni ben distinte, che corrispondono esattamente agli elementi del diagramma a palle:</p>
+          <pre><code>S_2
+; ====================================================================
+; 1. CONDIZIONI DI TRANSIZIONE (frecce del diagramma)
+;    Codice "on the fly": testa le condizioni di uscita dallo stato.
+;    Ogni freccia &egrave; un test con goto allo stato destinazione.
+; ====================================================================
+
+    ; Freccia: Thermo Off se T_amb raggiunge T_set da 2 minuti
+    #ifreg _T_Amb < T_Set
+        #ifreg Sat_Timer2 > @SAT_TIMER_1_MIN
+            goto    Thermo_Off_Cool_S_6
+        #endif
+    #endif
+
+    ; Freccia: esci dal COOL se non pi&ugrave; in modalit&agrave; Cool
+    SSET    DS_COOL
+    goto    Thermo_Off_Cool_S_6
+
+    ; Freccia: protezione antibrinamento dopo 8 minuti
+    #ifreg _T_Bat < @T_BAT_NEG_1
+        #ifreg Sat_Timer2 > @SAT_TIMER_7_MIN
+            goto    Thermo_Off_Cool_S_6
+        #endif
+    #endif
+
+    ; Freccia: passa a Night se timer notte scaduto
+    SSET    DS_NIGHT
+    goto    End33
+    #ifreg Night_Timer >= @NIGHT_TIMER_1_H
+        goto    Cool_Night_S_17
+    #endif
+
+    ; Freccia: allarme NTC
+    SCLR    ALARM_NTC
+    goto    Alarm_Ntc_S_23
+
+; ====================================================================
+; 2. STAND CODE (azioni continue nello stato)
+; ====================================================================
+    clrf    Compr_Timer         ; compressore acceso, reset timer
+
+; ====================================================================
+; 3. OUTPUT (stato istantaneo delle utenze - il contenuto del cerchio)
+;    Definisce quali attuatori sono ON/OFF in questo stato
+; ====================================================================
+    SETB    COMPR               ; compressore ON
+    ; Ventola esterna: dopo 3 secondi dalla partenza
+    #ifreg !Sat_Timer2
+        #ifreg Sat_Timer1 >= @3
+            SETB    V_EXT
+        #endif
+    #else
+        SETB    V_EXT
+    #endif
+
+    SCLR    END_OPEN_FLAP
+    SETB    V_INT               ; ventola interna ON
+
+    SCLR    DS_RIC_ARIA
+    SETB    RIC_ARIA             ; ricircolo aria ON
+
+    ; Velocit&agrave; ventola in base alla temperatura
+    movlw   V_INT_MIN
+    movwf   V_Def
+    #ifreg _T_Amb > T_Set + @T_1
+        movlw   V_INT_MED
+        movwf   V_Def
+    #endif
+    #ifreg _T_Amb > T_Set + @T_2
+        movlw   V_INT_MAX
+        movwf   V_Def
+    #endif
+
+    SETB    OPEN_FLAP           ; deflettore aperto
+
+    call    Config_Led          ; aggiorna led pannello
+
+    movlw   2                   ; ritorna S_2 (resta in questo stato)
+    return</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Diagramma a palle: rappresentazione grafica</h3>
+          <pre><code>            +-------------------+
+            |      S_1 STOP     |
+            | Compressore: OFF  |
+            | V.int.: OFF       |
+            | V.est.: OFF       |
+            | Deflettore: HOME  |
+            +-------------------+
+              |          |
+              | Comando  | Comando
+              | COOL     | HEAT
+              v          v
+    +-------------------+   +-------------------+
+    |   S_2 COOL        |   |   S_10 HEAT       |
+    | Compressore: ON   |   | Compressore: ON   |
+    | V.int.: AUTO(*t)  |   | V.int.: AUTO(*t)  |
+    | V.est.: ON(3s)    |   | V.est.: ON        |
+    | Deflettore: COOL  |   | Deflettore: HEAT  |
+    +-------------------+   +-------------------+
+      |          |               |          |
+      | T_amb    | T_bat <      | T_amb    | Defrost
+      | >= T_set | -1°C x 8'    | >= T_set | timer
+      | x 2'     |               | x 2'     |
+      v          v               v          v
+    +-------------------+   +-------------------+
+    | S_6 THERMO OFF    |   | S_26 DEFROST      |
+    | Compressore: OFF  |   | Compressore: ON   |
+    | V.int.: MIN       |   | V.int.: OFF       |
+    | V.est.: OFF       |   | V.est.: ON        |
+    | Deflettore: COOL  |   | Deflettore: COOL  |
+    +-------------------+   +-------------------+
+              |                         |
+              | T_Set - T_amb > 2°     | fine defrost
+              v                         v
+           S_2 COOL                   S_10 HEAT
+
+    Legenda frecce:
+    ---> transizione a evento (comando utente o allarme)
+    - - > transizione a tempo (dopo N secondi/minuti)
+    ... > transizione su condizione sensori (temperatura)</code></pre>
+          <p>Ogni cerchio dice esattamente cosa accade alle utenze in quello stato. Le frecce dicono quando e perch&eacute; si passa a un altro cerchio. Il cliente pu&ograve; verificare la logica semplicemente seguendo le frecce. Lo sviluppatore implementa ogni cerchio come subroutine indipendente.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Il ciclo della macchina a stati</h3>
+          <pre><code>; La state machine &egrave; una task dello scheduler OS,
+; eseguita ogni 250 ms.
+
+State_Machine_Loop_1
+    BANK    0
+    bcf     INTCON,GIE          ; disabilita interrupt
+    EVENT   TASK_M_STATE, MSEC_250
+    CLRB    F_MSEC_250
+
+    ; ... lettura configurazione da EEPROM ...
+
+State_Machine_Loop_2
+    EVENT   TASK_M_STATE, MSEC_250
+
+    ; ... aggiornamento timer interni ...
+
+    ; Chiamata alla macchina a stati
+    movlw   HIGH M_State_Table
+    movwf   PCLATH
+    movfw   Index_M_S           ; indice stato corrente
+    call    M_State_Table       ; esegue stato, torna prossimo stato
+    movwf   Index_M_S           ; aggiorna stato corrente
+
+    goto    State_Machine_Loop_1</code></pre>
+          <p>Il ciclo &egrave; semplice: ogni 250 ms lo scheduler risveglia la task, che chiama lo stato corrente. Lo stato esamina le condizioni, eventualmente aggiorna le utenze, e restituisce il nuovo indice. Se le condizioni non cambiano, lo stato restituisce se stesso (stato invariato).</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Vantaggi del modello a cerchi/frecce</h3>
+          <ul class="normative-list">
+            <li><strong>Leggibile dal cliente:</strong> il diagramma a palle mostra esattamente cosa fa la macchina in ogni stato, senza dettagli implementativi</li>
+            <li><strong>Modificabile dal cliente:</strong> &ldquo;aggiungi una freccia da S_2 a S_6 se T_bat &lt; -1&deg;C per 8 minuti&rdquo; &mdash; il cliente pu&ograve; specificare nuove transizioni in linguaggio naturale</li>
+            <li><strong>Isolamento degli stati:</strong> ogni stato &egrave; una subroutine indipendente; modificare S_2 non impatta S_10</li>
+            <li><strong>Output autodocumentato:</strong> la sezione OUTPUT di ogni stato elenca esplicitamente tutti gli attuatori, rendendo immediato verificare cosa accende/spegne</li>
+            <li><strong>Timer interni per stato:</strong> ogni stato ha timer (<code>Sat_Timer1</code>, <code>Sat_Timer2</code>, <code>Roll_Timer</code>) resettati all&rsquo;ingresso, che permettono transizioni temporizzate senza variabili globali aggiuntive</li>
+            <li><strong>Diagnostica integrata:</strong> lo stato corrente viene inviato in seriale per autodiagnosi e debug</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Esempio di modifica richiesta dal cliente</h3>
+          <p>Il cliente dice: <em>&ldquo;Nello stato COOL, se la batteria scende sotto -1&deg;C per 8 minuti, voglio che la macchina vada in Thermo Off invece di continuare a raffreddare.&rdquo;</em></p>
+          <p>Si aggiunge una freccia nel diagramma a palle da S_2 a S_6 con condizione <code>T_bat &lt; -1&deg;C AND timer &gt; 8 min</code>. Nel codice, si aggiungono poche righe nella sezione delle condizioni di S_2:</p>
+          <pre><code>; Freccia: protezione antibrinamento
+#ifreg _T_Bat < @T_BAT_NEG_1
+    #ifreg Sat_Timer2 > @SAT_TIMER_7_MIN
+        goto    Thermo_Off_Cool_S_6
+    #endif
+#endif</code></pre>
+          <p>Nessuna modifica agli altri stati. Il cliente vede la nuova freccia sul diagramma e la verifica sul prodotto reale.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetto sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#M_State.h</code>: 2690 righe, 27 stati (S_1..S_27), di cui 15 operativi + 12 di servizio/diagnostica/allarme</li>
+            <li><strong>Split Ferroli I200036</strong> &mdash; <code>#SM.h</code>: 267 righe, 14 stati (Dry, PreDry, Cool, PreCool, Stop, Defrost, Heat, ecc.) con tabelle Next/Prev e wait stati</li>
+          </ul>
+          <p>Entrambi i progetti usano lo stesso modello grafico: cerchi = stati, frecce = transizioni a tempo o evento.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

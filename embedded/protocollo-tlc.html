@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Protocollo TLC Seriale | SYSEM</title>
+  <meta name="description" content="Protocollo di comunicazione seriale TLC tra termostato e fan coil: encoding/decoding bit-bang, ricezione da interrupt on-change.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Protocollo TLC Seriale</h1>
+      <p class="hero-subtitle">Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Il telecomando (termostato) comunica con la scheda elettronica dello split via cavo a 2 fili (alimentazione + dati). Non c&rsquo;&egrave; una UART dedicata: il protocollo TLC utilizza un singolo pin di PORTB con interrupt on-change per ricevere i bit, e un timer (Timer2) per il timeout di fine trasmissione. Il formato &egrave; proprietario, con encoding a finestra temporale: ogni bit &egrave; un impulso di larghezza variabile che codifica 0, 1, o start.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>La ricezione &egrave; interamente gestita dall&rsquo;interrupt on-change di PORTB. Ogni fronte del segnale TLC genera un interrupt che cattura lo stato e incrementa un contatore di bit. Timer2 funge da watchdog: se non arrivano fronti per un tempo superato, la trasmissione &egrave; considerata terminata e viene attivata la decodifica.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Ricezione TLC da interrupt</h3>
+          <pre><code>; Decode_Tlc: chiamato dall'interrupt on-change
+; quando il pin TLC cambia stato (RB4)
+
+Decode_Tlc
+    ; Confronto con ultimo stato per determinare il fronte
+    movfw   Last_Pb
+    xorwf   PORTB,w
+    movwf   Save_Port
+
+    ; Bit 4 del cambio = linea TLC
+    btfss   Save_Port,4
+    goto    End_Test_Tlc
+
+    ; Se &egrave; un fronte alto, avvio/continuo la ricezione
+    btfsc   PORTB,4           ; TLC HIGH?
+    goto    Tlc_High
+
+; Fronte di discesa: fine bit
+    ; Timer2 gi&agrave; partito: carica il valore di timeout
+    BANK    1
+    bsf     PIE1 & 0x7f,TMR2IE   ; abilita interrupt Timer2
+    BANK    0
+
+    incf    Bit_Count,same
+    goto    End_Test_Tlc
+
+Tlc_High
+; Fronte di salita: inizio bit (o start)
+    ; Primo fronte dopo un periodo di silenzio
+    btfsc   START_TLC
+    goto    End_Test_Tlc
+    SETB    START_TLC         ; prima volta: segnala inizio
+
+    ; Resetta contatori per la nuova ricezione
+    clrf    I_Byte_Tlc
+    clrf    Bit_Count
+    clrf    TMR2L
+    clrf    TMR2H
+
+    ; Avvia Timer2 (timeout per fine trasmissione)
+    BANK    1
+    bsf     PIE1 & 0x7f,TMR2IE
+    BANK    0
+    goto    End_Test_Tlc
+
+; Timer2 overflow -> fine trasmissione
+Test_Ovf_Timer
+    btfss   PIR1,TMR2IF
+    goto    Test_Timer1
+    BANK    1
+    btfss   PIE1 & 0x7f,TMR2IE
+    goto    Test_Timer1
+    BANK    0
+    bcf     PIR1,TMR2IF
+    BANK    1
+    bcf     PIE1 & 0x7f,TMR2IE   ; disabilita Timer2
+
+    ; Verifica numero bit ricevuti
+    movlw   MAX_RX_BYTES
+    xorwf   I_Byte_Tlc,w
+    skpnz
+    goto    OK_Tlc_Rx
+
+    BANK    0
+    SETB    TLC_ERROR         ; errore: bit errati
+    goto    End_Test_Ovf
+
+OK_Tlc_Rx
+    BANK    0
+    CLRB    TLC_ERROR         ; ricezione ok
+    SETB    F_TLC_EXE         ; consenso buzzer
+    SETB    F_OK_DECODE       ; consenso decodifica comando
+    SETB    F_EEP_OK          ; salva su EEPROM
+
+End_Test_Ovf
+    BANK    1
+    clrf    I_Byte_Tlc
+    clrf    Bit_Count
+    BANK    0
+    CLRB    START_TLC
+
+    goto    End_Test_Ovf_Int</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Decodifica del comando TLC</h3>
+          <pre><code>; Dopo la ricezione completa, il task #Dcm.h (Decodifica Comando)
+; interpreta i byte ricevuti.
+; Il formato TLC &egrave; un flusso di 8 byte:
+;   Byte 0: indirizzo/start
+;   Byte 1: temperatura impostata (T_User)
+;   Byte 2: modalit&agrave; (Cool, Heat, Dry, Fan, ecc.)
+;   Byte 3: velocit&agrave; ventola
+;   Byte 4: deflettore (posizione/sweep)
+;   Byte 5: timer on/off
+;   Byte 6-7: checksum e conferma
+
+; Esempio di decodifica temperatura impostata:
+Dcm_Task
+    BANK    0
+    WAIT    TASK_DCM, OS_MSEC_100
+
+    ; Aggiorna T_User dal buffer TLC ricevuto
+    movfw   Tlc_Buffer+1       ; byte temperatura
+    movwf   T_User
+
+    ; Aggiorna modalit&agrave;
+    movfw   Tlc_Buffer+2
+    andlw   B'00000111'        ; maschera modo
+    movwf   Dec_State          ; stato richiesto
+    ; ...</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema della comunicazione</h3>
+          <pre><code>+------------------+         cavo 2 fili        +------------------+
+|  Telecomando      |---- TLC (singolo filo) --->|  Scheda Split    |
+|  (termostato)     |---- GND ------------------>|  PIC16C65A       |
++------------------+                             |  RB4 (TLC IN)   |
+                                                  +------------------+
+
+Segnale TLC (encoding a finestra):
+                    _______         _______
+  START       ____|       |_______|       |______
+                    |   |   |       |   |   |
+                    |<->|   |       |<->|   |
+                  bit 0   bit 1   bit 2   bit 3
+                  (200 us)       (400 us)
+                  = '0' logico   = '1' logico
+
+  Timer2 watchdog: se nessun fronte per > 2 ms,
+  la trasmissione &egrave; completa (max 8 byte).
+
+Flusso completo:
+  [START] [BIT0] [BIT1] ... [BIT7] [STOP] -> ogni byte
+  max 8 byte per comando</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Ricezione senza UART:</strong> interrupt on-change + timer watchdog simulano una UART completa in 50 righe di Assembly</li>
+            <li><strong>Timeout watchdog:</strong> Timer2 garantisce che la ricezione si concluda anche se il telecomando viene scollegato a met&agrave; trasmissione</li>
+            <li><strong>Salvataggio su EEPROM:</strong> al termine di ogni comando valido, la configurazione ricevuta viene salvata in EEPROM esterna per ripristino dopo blackout</li>
+            <li><strong>Buzzer di conferma:</strong> il flag <code>F_TLC_EXE</code> attiva un buzzer per feedback acustico all&rsquo;utente</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetti sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#Inter.h</code> (ricezione TLC), <code>#Dcm.h</code> (decodifica comando)</li>
+            <li><strong>Progetti I200170 / I200171</strong> &mdash; varianti del protocollo TLC per termostati e fan coil</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

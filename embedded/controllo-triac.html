@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controllo Triac e Utenze | SYSEM</title>
+  <meta name="description" content="Controllo di carichi AC con triac su PIC: taglio di fase, sincronismo di rete, finestra di innesco, zippillo a tempo da interrupt.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Controllo Triac e Utenze</h1>
+      <p class="hero-subtitle">Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>In uno split system, le ventole interna ed esterna sono motori AC monofase la cui velocit&agrave; viene regolata tramite <strong>taglio di fase</strong> (phase-cut). Un triac, innescato a un ritardo variabile dopo lo zero crossing della rete, conduce solo per una frazione della semi-onda. Pi&ugrave; piccolo &egrave; il ritardo, pi&ugrave; potenza arriva al carico. Servono: sincronismo con la rete (50 Hz), generazione dell&rsquo;impulso di gate (zippillo) con durata precisa, e aggiornamento continuo del ritardo in base alla velocit&agrave; desiderata.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Due meccanismi distinti e complementari:</p>
+          <ul class="normative-list">
+            <li><strong>Interrupt on-change su SYNC:</strong> il fronte di zero crossing della rete (rilevato da un optoaccoppiatore) genera un interrupt che resetta i timer di innesco</li>
+            <li><strong>Interrupt Timer0:</strong> viene usato come base dei tempi per lo scheduler OS e per generare lo zippillo del triac con temporizzazione di 21 &micro;s</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Rivelazione sincronismo di rete</h3>
+          <pre><code>; Interrupt on-change su PORTB rileva il fronte di SYNC
+; (pin RB5 collegato a optoaccoppiatore rete)
+
+Decode_Sync
+    ; Salva il ritardo triac corrente come punto di partenza
+    ; per il prossimo semiperiodo
+    movfw   Pw_State2
+    movwf   Sync_Reg          ; ritardo triac per questo semiperiodo
+
+    ; Resetta contatori per innesco
+    clrf    TMR0              ; timer0 riparte da 0 per il nuovo semiperiodo
+    bcf     INTCON,T0IF
+
+    ; Segnala allo scheduler che il sincronismo &egrave; avvenuto
+    SETB    F_SYNC_OK
+    goto    End_Test_On_Change</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Innesco triac (zippillo) da interrupt Timer0</h3>
+          <pre><code>; L'interrupt Timer0 serve sia come passo dello scheduler OS
+; sia per generare l'impulso di gate del triac.
+; Quando Timer0 raggiunge il valore programmato (ritardo),
+; il triac viene acceso e mantenuto per 21 us (zippillo).
+
+Test_Timer0
+    btfss   INTCON,T0IF
+    goto    End_Interrupt
+    bcf     INTCON,T0IF
+
+    ; Test richiesta ventola interna
+Test_V_Int_On
+    SSET    V_INT             ; consenso ventola interna acceso?
+    goto    Test_V_Ext_On
+    SSET    V_INT_REQ         ; richiesta attivazione?
+    goto    Test_V_Ext_On
+    SETB    OK_V_INT          ; impulso di gate consentito
+    CLRB    IO_V_INT          ; pin basso = triac ON (innesco)
+
+Test_V_Ext_On
+    SSET    V_EXT             ; consenso ventola esterna?
+    goto    Fire_On_Triac
+    SSET    V_EXT_REQ
+    goto    Fire_On_Triac
+    SETB    OK_V_EXT
+    CLRB    IO_V_EXT
+
+; Impulso di gate: 21 microsecondi esatti
+Fire_On_Triac
+    movlw   7
+    movwf   Wait_Rit_Triac
+
+Loop_V_xx
+    decfsz  Wait_Rit_Triac,same
+    goto    Loop_V_xx         ; 3 cicli * 7 = 21 us a 4 MHz
+
+    SETB    IO_V_INT          ; fine impulso: triac OFF
+    SETB    IO_V_EXT
+
+    ; ... prossimo passo scheduler OS ...
+
+    goto    End_Interrupt</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema temporale del taglio di fase</h3>
+          <pre><code>Rete 50 Hz (10 ms per semiperiodo):
+  +---+     +---+     +---+
+  |   |     |   |     |   |
+--+   +-----+   +-----+   +-----
+  |   |     |   |     |   |
+  |   |     |   |     |   |
+  ^         ^         ^
+  |         |         |
+ SYNC      SYNC      SYNC     (fronte di zero crossing)
+  |         |         |
+  |<-------->|<------->|
+  | ritardo  | ritardo  |      (tempo prima dell'innesco)
+  |   _      |   _      |
+  +--+ +-----+--+ +-----+--   (impulso gate 21 us)
+  |  | |     |  | |     |
+  +--+ +-----+--+ +-----+--   (conduzione triac - tratteggiato)
+
+  |<------------->|
+   periodo di conduzione
+   maggiore ritardo = minore conduzione = minore potenza</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Calcolo del ritardo in base alla velocit&agrave; (PID software)</h3>
+          <pre><code>; Il ritardo triac viene calcolato ogni secondo
+; con un algoritmo proporzionale-integrale software.
+
+Triac_Power
+    ; Legge velocit&agrave; tachimetrica (4 campioni sommati)
+    movlw   V_Tacho
+    movwf   FSR
+    movfw   INDF
+    incf    FSR,same
+    addwf   INDF,w
+    incf    FSR,same
+    addwf   INDF,w
+    incf    FSR,same
+    addwf   INDF,w
+    movwf   RB0_0             ; somma 4 letture tacho
+
+    ; Protezione rotore bloccato
+    movlw   VEL_MIN_ROT_LOCK
+    subwf   RB0_0,w
+    skpc
+    goto    Test_Rotore       ; velocit&agrave; troppo bassa
+
+    ; Limita tra START_RIT e END_RIT
+    DEC_BIN_OVF  Integr_Term, END_RIT
+    INC_BIN_OVF  Integr_Term, START_RIT
+
+    ; Aggiorna ritardo triac per il prossimo semiperiodo
+    movwf   Pw_State2
+
+    ; Conversione: START_RIT = massima potenza (ritardo minimo)
+    ;              END_RIT   = minima potenza (ritardo massimo)
+    ; START_RIT = 3000 us  -> ventola a fondo
+    ; END_RIT   = 7000 us  -> ventola al minimo</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Due world separati:</strong> il sincronismo rete (SYNC) vive nell&rsquo;interrupt on-change, il calcolo del ritardo vive nella macchina a stati. Si incontrano solo nel registro <code>Pw_State2</code></li>
+            <li><strong>Zippillo a 21 us:</strong> la durata dell&rsquo;impulso di gate deve essere sufficiente a innescare il triac ma non deve superare il semiperiodo. 21 us &egrave; un valore collaudato</li>
+            <li><strong>Ritardo minimo di sicurezza:</strong> il triac non viene mai innescato a meno di 3 ms dallo zero crossing, per evitare di superare il <em>di/dt</em> massimo</li>
+            <li><strong>Controllo integrale:</strong> il termine integrale compensa le variazioni di carico meccanico (filtri sporchi, ventole sbilanciate) senza intervento manuale</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetti sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#Triac.h</code>, <code>#Sync.h</code>, <code>#Inter.h</code></li>
+            <li><strong>Antisbilanciamento I200026</strong> &mdash; <code>TASK_0.H</code>: controllo finestra triac per motore lavatrice</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

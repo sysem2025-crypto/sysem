@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lettura NTC a Condensatore | SYSEM</title>
+  <meta name="description" content="Misura di temperatura con termistore NTC su PIC: metodo carica/scarica RC, normalizzazione a 130 count, lookup indiretto.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Lettura NTC a Condensatore</h1>
+      <p class="hero-subtitle">Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>In uno split system servono 3 sonde NTC (ambiente, batteria, uscita aria) e una resistenza di calibrazione R_CAL. Su PIC16C65A il numero di pin ADC &egrave; limitato. Invece di aggiungere un ADC esterno, si sfrutta il principio RC: la NTC fa parte di una rete RC, e il tempo di carica del condensatore &egrave; proporzionale alla resistenza della NTC, quindi alla temperatura. Un interrupt on-change sul pin segnala quando la soglia logica viene superata.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Il modulo <code>#Ntc.h</code> implementa una macchina a stati che cicla su 3 sonde NTC + R_CAL di riferimento. Per ogni sonda:</p>
+          <ol class="normative-list">
+            <li>Scarica il condensatore (50 ms)</li>
+            <li>Avvia carica RC e resetta Timer1</li>
+            <li>Attende l&rsquo;interrupt on-change (soglia superata)</li>
+            <li>Legge il valore del timer (proporzionale alla temperatura)</li>
+            <li>Normalizza e converte in temperatura</li>
+          </ol>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Implementazione: #NTC.H (Split Elettroplastica I200052)</h3>
+          <pre><code>;----------------------------------------------------------------------
+; Macchina a stati per lettura NTC
+; Cicla su: [R_CAL, NTC_AMB, NTC_BAT, NTC_VENT]
+;----------------------------------------------------------------------
+MAX_STATE     EQU   2
+MAX_INDEX_NTC EQU   3    ; 3 sonde + R_CAL (indice 0)
+
+NtcTask
+    WAIT    TASK_NTC, OS_MSEC_100    ; chiamata ogni 100 ms
+
+; Invia le temperature correnti al task di diagnostica / TLC
+    movfw   T_User
+    movwf   RB0_0
+    Send_8_Lo   MSG_T_USER, RB0_0
+    movfw   T_Amb
+    movwf   RB0_0
+    Send_8_Lo   MSG_T_AMB, RB0_0
+    movfw   T_Exit
+    movwf   RB0_0
+    Send_8_Lo   MSG_T_EXIT, RB0_0
+    movfw   T_Bat
+    movwf   RB0_0
+    Send_8_Lo   MSG_T_BAT, RB0_0
+
+;----------------------------------------------------------------------
+; Fase 1: Lettura R_Cal (resistenza di calibrazione)
+;----------------------------------------------------------------------
+Read_RCal
+    ; PORTB bit R_CAL = output high (carica condensatore via R_CAL)
+    movlw   1 << R_CAL
+    iorwf   PORTB,same
+
+    BANK    1
+    ; Tre-state: NTC in alta impedenza
+    movlw   1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT
+    iorwf   PORTB,same
+    movlw   ~(1 << R_CAL)
+    andwf   PORTB,same      ; solo R_CAL in output
+
+    BANK    0
+    CLRB    F_NTC_OK        ; reset flag
+    clrf    TMR1L
+    clrf    TMR1H           ; reset timer1
+
+    ; Attendi interrupt on-change (fine carica RC)
+    EVENT   TASK_NTC, NTC_OK
+
+    ; Salva count R_Cal
+    BANK    1
+    movfw   RB1_12
+    movwf   R_Cal_h
+    movfw   RB1_13
+    movwf   R_Cal_l
+
+    ; Scarica condensatore
+    BANK    0
+    movlw   ~(1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT | 1 << R_CAL)
+    andwf   PORTB,same      ; tutti output LOW
+    BANK    1
+    andwf   PORTB,same
+
+    WAIT    TASK_NTC, OS_MSEC_50    ; 50 ms di scarica
+
+;----------------------------------------------------------------------
+; Fase 2-4: Lettura NTC_Amb, NTC_Bat, NTC_Vent
+;----------------------------------------------------------------------
+Read_Ntc
+    BANK    1
+    movfw   Index_Ntc       ; indice sonda corrente (0..2)
+    call    Config_Io_Ntc   ; configura pin per la sonda selezionata
+    BANK    0
+    iorwf   PORTB,same      ; output high = inizio carica
+
+    BANK    1
+    movfw   Index_Ntc
+    call    Config_Treestate_Ntc
+    iorwf   PORTB,same      ; tre-state per le altre sonde
+
+    BANK    0
+    CLRB    F_NTC_OK
+    clrf    TMR1L
+    clrf    TMR1H           ; reset timer
+
+    EVENT   TASK_NTC, NTC_OK
+
+    BANK    1
+    movfw   RB1_12
+    movwf   Ntc_h           ; salva count Ntc
+    movfw   RB1_13
+    movwf   Ntc_l
+
+    ; Scarica condensatore
+    BANK    0
+    movlw   ~(1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT | 1 << R_CAL)
+    andwf   PORTB,same
+    BANK    1
+    andwf   PORTB,same
+
+    WAIT    TASK_NTC, OS_MSEC_50
+
+    ; Normalizzazione temperatura
+    movlw   1
+    SCLR    INIT_NTC
+    movlw   NORMALIZED_NTC  ; = 130 (fondo scala)
+    BANK    1
+    movwf   Index_Cmd_Ntc
+
+Loop_Nmz_Ntc
+    clrwdt
+    movlw   1
+    movwf   PCLATH
+    call    Cmd_Ntc         ; lookup temperatura
+    decfsz  Index_Cmd_Ntc,same
+    goto    Loop_Nmz_Ntc    ; loop di normalizzazione
+
+    ; Prossima sonda
+    BANK    1
+    incf    Index_Ntc,same
+    movfw   Index_Ntc
+    xorlw   MAX_INDEX_NTC
+    skpz
+    goto    Read_Ntc        ; ancora sonde
+    clrf    Index_Ntc       ; tutte fatte: ricomincia</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema elettrico e temporale</h3>
+          <pre><code>Schema elettrico (semplificato):
+
+    Vdd
+     |
+     R_CAL (R rif.)
+     |
+     +-----> PORTB (sense input)
+     |
+     C (condensatore esterno 100nF)
+     |
+    GND
+
+    Ogni NTC &egrave; collegata in parallelo a R_CAL tramite
+    pin tri-state. Solo una NTC alla volta &egrave; attiva.
+
+Timing della misura:
+
+    Phase 0:  [R_CAL]  carica    -> interrupt -> salva T_CAL
+              attesa scarica 50ms
+
+    Phase 1:  [NTC_AMB] carica   -> interrupt -> salva T_AMB
+              attesa scarica 50ms
+
+    Phase 2:  [NTC_BAT] carica   -> interrupt -> salva T_BAT
+              attesa scarica 50ms
+
+    Phase 3:  [NTC_VENT] carica  -> interrupt -> salva T_VENT
+              attesa scarica 50ms
+              -> normalizza tutte le temperature
+              -> ricomincia
+
+    Periodo totale: 4 x 100ms = 400ms (aggiornamento completo ogni ~0.4s)</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lookup e normalizzazione</h3>
+          <p>Il valore grezzo del timer (16 bit, count Timer1) viene normalizzato a 130 passi tramite una lookup table. La costante <code>NORMALIZED_NTC = 130</code> definisce il numero di iterazioni del loop di normalizzazione. Ad ogni iterazione viene chiamata <code>Cmd_Ntc</code> che, mediante una tabella di retlw, converte il conteggio in temperatura effettiva:</p>
+          <pre><code>; Tabella di conversione count -> temperatura
+; (tipicamente 130 entry, indicizzate dal valore normalizzato)
+Cmd_Ntc
+    addwf   Pc,Same
+    retlw   00h    ; count = 0   -> T = 0 (corto)
+    retlw   01h    ; count = 1   -> T = 1
+    retlw   02h
+    ...
+    retlw   7Fh    ; count = 130 -> T = max (circuito aperto)</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Nessun ADC necessario:</strong> il metodo RC usa solo un timer, un condensatore, e un pin digitale con interrupt on-change</li>
+            <li><strong>Calibrazione via R_CAL:</strong> una resistenza fissa di riferimento compensa derive termiche del condensatore e del clock</li>
+            <li><strong>Multiplexing a tre-state:</strong> le sonde inattive sono in alta impedenza; solo quella attiva partecipa alla carica RC</li>
+            <li><strong>Aggiornamento in background:</strong> la lettura NTC &egrave; una task cooperativa che non blocca mai il sistema</li>
+            <li><strong>Risoluzione 16 bit:</strong> Timer1 a 16 bit fornisce una risoluzione teorica di ~0.1&deg;C</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetto sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#Ntc.h</code>: 187 righe, gestione NTC per split parete 96</li>
+            <li><strong>Antisbilanciamento I200026</strong> &mdash; <code>TASK_2.H</code>: variante per lettura potenziometri (stesso principio RC)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

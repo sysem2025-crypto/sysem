@@ -56,16 +56,21 @@
         </article>
 
         <article class="auth-card">
-          <h2>Progetti Implementati</h2>
-          <p>Progetti embedded reali sviluppati in ambito professionale e accademico.</p>
+          <h2>Tutorial di Progettazione Firmware</h2>
+          <p>Serie di articoli tecnici basati su progetti firmware PIC Assembly reali, con codice commentato, schema a blocchi e lezioni apprese.</p>
           <ul class="normative-list">
-            <li><strong>MIDI Entry:</strong> interfaccia MIDI a 5 pin, decoder note, display LCD, gestione polifonica</li>
-            <li><strong>Controllo Motore Lavatrice:</strong> PWM per velocità, sensore Hall, controllo closed-loop, gestione inverter</li>
-            <li><strong>Forno Mono-Zona:</strong> termostato digitale, PID per temperatura, controllo relay, sicurezza termica</li>
-            <li><strong>Termostato CNT:</strong> termocoppia + ADC, misurazione temperatura ambiente, allarmi, interfaccia utente LCD</li>
-            <li><strong>Applicazioni OS-based:</strong> FreeRTOS, ChibiOS, Bare-metal, scheduler real-time</li>
+            <li><a href="embedded/architettura-modulare.html"><strong>Architettura Modulare per PIC</strong></a> &mdash; organizzazione codice su pagine ROM, #include modulari, controllo dimensionale</li>
+            <li><a href="embedded/sistema-operativo-cooperativo.html"><strong>Sistema Operativo Cooperativo</strong></a> &mdash; scheduler round-robin con task a tempo e a evento</li>
+            <li><a href="embedded/gestione-interrupt.html"><strong>Gestione Interrupt su PIC</strong></a> &mdash; salvataggio contesto, decoder a cascata, innesco triac</li>
+            <li><a href="embedded/lettura-ntc.html"><strong>Lettura NTC a Condensatore</strong></a> &mdash; misura temperatura senza ADC, metodo carica RC</li>
+            <li><a href="embedded/macchina-a-stati.html"><strong>Macchina a Stati per Prodotto</strong></a> &mdash; diagramma a palle con transizioni a tempo/evento</li>
+            <li><a href="embedded/controllo-triac.html"><strong>Controllo Triac e Utenze</strong></a> &mdash; taglio di fase, sincronismo rete, zippillo a tempo</li>
+            <li><a href="embedded/lettura-tachimetrica.html"><strong>Lettura Tachimetrica</strong></a> &mdash; sensore Hall, media mobile, protezione rotore bloccato</li>
+            <li><a href="embedded/protocollo-tlc.html"><strong>Protocollo TLC Seriale</strong></a> &mdash; comunicazione termostato-split bit-bang</li>
+            <li><a href="embedded/gestione-eeprom.html"><strong>Gestione EEPROM Esterna</strong></a> &mdash; salvataggio configurazione e checksum</li>
+            <li><a href="embedded/debug-produzione.html"><strong>Debug e Messa in Produzione</strong></a> &mdash; flag di simulazione, diagnostica, 19 versioni</li>
           </ul>
-          <p><a class="btn-download" href="#projects">Visualizza progetti</a></p>
+          <p><a class="btn-download" href="#projects">Tutti i progetti &rarr;</a></p>
         </article>
       </div>
 

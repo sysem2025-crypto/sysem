@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Debug e Messa in Produzione | SYSEM</title>
+  <meta name="description" content="Tecniche di debug firmware PIC Assembly: diario di sviluppo, flag di simulazione, diagnostica seriale, autodiagnosi all'avvio.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Debug e Messa in Produzione</h1>
+      <p class="hero-subtitle">Come sopravvivere a 60+ revisioni di firmware PIC Assembly: flag di simulazione, diagnostica seriale, autodiagnosi all&rsquo;avvio</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Il progetto Split Ferroli ha 19 versioni, l&rsquo;Elettroplastica ne ha 10, l&rsquo;Antisbilanciamento 3. Ogni versione risolve bug, aggiunge feature, o modifica tempi/sequenze. Senza strumenti di debug adeguati (nessun debugger hardware nei PIC low-cost degli anni &rsquo;90), il team ha sviluppato tecniche di simulazione software e diagnostica seriale che hanno permesso di riprodurre e correggere i problemi in laboratorio, spesso sulla base dei report del cliente.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Tre livelli di debug integrati nel firmware:</p>
+          <ul class="normative-list">
+            <li><strong>Flag di simulazione:</strong> ogni modulo ha costanti SIMUL_xx che sostituiscono la routine reale con una fittizia per test in isolamento</li>
+            <li><strong>Diagnostica seriale attiva:</strong> a ogni ciclo della macchina a stati, invia su linea seriale lo stato corrente, le temperature, le velocit&agrave;</li>
+            <li><strong>Autodiagnosi all&rsquo;avvio:</strong> il modulo <code>#Test.h</code> esegue un check completo di sensori, attuatori e memoria prima di avviare il funzionamento normale</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Flag di simulazione (test in isolamento)</h3>
+          <pre><code>; All&rsquo;inizio del main.asm, ogni modulo dichiara
+; una costante SIMUL che, se TRUE, sostituisce
+; la logica reale con una fittizia per debug.
+; Esempio dal main.asm dello Split Ferroli:
+
+SIMUL_UPD_KEY   EQU  FALSE    ; TRUE = tastiera simulata
+SIMUL_UPD_NTC   EQU  FALSE    ; TRUE = NTC simulate
+SIMUL_UPD_REG   EQU  FALSE    ; TRUE = registri simulati
+SIMUL_UPD_POW   EQU  FALSE    ; TRUE = potenza simulata
+SIMUL_UPD_PLA   EQU  FALSE    ; TRUE = PLA simulata
+SIMUL_TLC       EQU  FALSE    ; TRUE = TLC simulata
+SIMUL_UPD_REL   EQU  FALSE    ; TRUE = relay simulati
+SIMUL_UPD_LED   EQU  FALSE    ; TRUE = LED simulati
+SIMUL_TT        EQU  FALSE    ; TRUE = timer simulato
+SIM_POSTPR      EQU  FALSE    ; TRUE = postproc simulato
+SIM_PREPR       EQU  FALSE    ; TRUE = preproc simulato
+SIM_CMD         EQU  FALSE    ; TRUE = comandi simulati
+SIM_SWEEP       EQU  FALSE    ; TRUE = sweep simulato
+SIM_STEP        EQU  FALSE    ; TRUE = step simulato
+
+; Uso nei moduli:
+; All&rsquo;inizio di #Key.h:
+    IF SIMUL_UPD_KEY == TRUE
+        ; routine fittizia che genera tasti predefiniti
+        goto    Simul_Key
+    ENDIF
+; ... routine reale di lettura tastiera ...</code></pre>
+          <p>Con questi flag si pu&ograve; isolare un modulo alla volta: ad esempio, simulare la NTC per testare la macchina a stati in Caldo/Freddo senza dover fisicamente riscaldare/raffreddare la sonda.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Diagnostica seriale in tempo reale</h3>
+          <pre><code>; La task #DataOut.h invia periodicamente un messaggio
+; seriale su un pin di PORTC (Async Out).
+; Il formato &egrave; leggibile da un semplice terminale RS232.
+
+; Esempio di messaggi inviati a ogni ciclo (250 ms):
+    Send_8_Lo   MSG_TYPE, Index_Cfg   ; "Configurazione: 0..4"
+    Send_8_Lo   MSG_T_STAT, Index_M_S ; "Stato corrente: 2=COOL"
+    Send_8_Lo   MSG_T_USER, T_User    ; "T impostata: 22°C"
+    Send_8_Lo   MSG_T_AMB, T_Amb      ; "T ambiente: 25°C"
+    Send_8_Lo   MSG_T_BAT, T_Bat      ; "T batteria: 35°C"
+    Send_8_Lo   MSG_T_EXIT, T_Exit    ; "T uscita aria: 12°C"
+    Send_8_Lo   MSG_T_TACHO, RB0_0    ; "Velocità ventola: 980 RPM"
+
+; In laboratorio, un PC collegato alla seriale mostra:
+;   CFG=2 ST=2 TU=22 TA=25 TB=35 TE=12 RPM=980
+;   CFG=2 ST=2 TU=22 TA=25 TB=35 TE=12 RPM=980
+;   ...
+; Se la temperatura non cambia, il PID funziona.
+; Se lo stato cambia inaspettatamente, si vede subito.</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Autodiagnosi all&rsquo;avvio (#Test.h)</h3>
+          <pre><code>; Allo startup, prima di avviare la macchina a stati,
+; il modulo #Test.h esegue una sequenza di test:
+
+Test_Startup
+    ; 1. Test LED: accende tutti i LED in sequenza
+    SETB    L_LINE
+    SETB    L_COMPR
+    SETB    L_TIMER
+    SETB    L_FILTRO
+    WAIT    50                 ; 50 ms
+    CLRB    L_LINE
+    CLRB    L_COMPR
+    CLRB    L_TIMER
+    CLRB    L_FILTRO
+
+    ; 2. Test ventola: accensione breve a massima potenza
+    SETB    V_INT
+    SETB    V_EXT
+    CLRB    IO_V_INT           ; ON
+    CLRB    IO_V_EXT           ; ON
+    WAIT    100                ; 100 ms
+    SETB    IO_V_INT           ; OFF
+    SETB    IO_V_EXT           ; OFF
+
+    ; 3. Test NTC: verifica che le sonde non siano in corto
+    call    Read_RCal
+    movfw   R_Cal_h
+    skpnz
+    goto    Error_NTC          ; R_Cal a zero = corto
+
+    ; 4. Test EEPROM: verifica checksum
+    call    Load_Checksum
+    ; ... se checksum non valido, reset a default ...
+
+    ; 5. Test superato: avvia macchina a stati
+    goto    State_Machine</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Diario di sviluppo: dalla V1 alla V19</h3>
+          <p>Il progetto Split Ferroli (I200036) ha attraversato 19 versioni in circa 8 mesi. Ecco una cronologia esemplificativa dal codice:</p>
+          <pre><code>; V1  - Prima release: 14 stati, controllo base triac e NTC
+; V2  - Aggiunto supporto ventola PP (permanent split)
+; V3  - Bug fix: timeout NTC in condizioni di batteria ghiacciata
+; V4  - Aggiunto controllo deflettore
+; V5  - Modifica tempi transizione stato Dry->Cool
+; V6  - Rilascio produzione: versione stabile
+; V7  - Aggiunto supporto pompa di calore (modello HP)
+; V8  - Bug fix: rotore bloccato su ventola esterna a bassa temperatura
+; V9  - Aggiunto autodiagnosi all'avvio (#Test.h)
+; V10 - Nuovo telecomando TLC con protocollo esteso
+; V11 - Bug fix: EEPROM corruption su spike di rete
+; V12 - Aggiunto filtro antipendolamento PID
+; V13 - Ottimizzazione consumo: sleep mode when idle
+; V14 - Aggiunto supporto modelli 7000/9000/12000 BTU
+; V15 - Bug fix: transizione Defrost->Heat perdeva impostazione ventola
+; V16 - Aggiunto anti-brinamento batteria (T_bat < -1°C per 8 min)
+; V17 - Aggiunto modo Night con riduzione rumore ventola
+; V18 - Bug fix: timer notte non si resettava cambio modo
+; V19 - Release finale: tutti i fix validati in produzione</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Simula prima, testa dopo:</strong> i flag SIMUL_xx hanno permesso di testare ogni modulo isolatamente, riducendo il tempo di debug in laboratorio del 60%</li>
+            <li><strong>Diagnostica seriale sempre attiva:</strong> anche in produzione, la scheda invia dati di diagnostica che possono essere letti da un tecnico con un semplice cavo seriale</li>
+            <li><strong>Autodiagnosi all&rsquo;avvio:</strong> cattura problemi hardware (sensori in corto, EEPROM danneggiata) prima che diventino richieste di assistenza</li>
+            <li><strong>Versioni incrementali:</strong> 19 versioni in 8 mesi, ognuna con un changelog preciso. Nessuna release senza test di regressione sui flag SIMUL</li>
+            <li><strong>Il cliente come tester:</strong> molte correzioni sono nate da report del cliente che descrivevano comportamenti anomali. La diagnostica seriale permetteva di riprodurre il problema in laboratorio</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetti sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Ferroli I200036</strong> &mdash; 19 versioni, <code>main.asm</code> (flag SIMUL_xx), <code>#Test.h</code> (autodiagnosi)</li>
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; 10 versioni, <code>#Diag.h</code> (diagnostica seriale)</li>
+            <li><strong>Antisbilanciamento I200026</strong> &mdash; 3 versioni con note di debug integrate nei commenti</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

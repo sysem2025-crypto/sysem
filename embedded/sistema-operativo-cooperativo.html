@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema Operativo Cooperativo Round-Robin | SYSEM</title>
+  <meta name="description" content="Scheduler cooperativo per PIC16Cxx con task a tempo e a evento, wake-up table, implementazione in Assembly.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Sistema Operativo Cooperativo Round-Robin</h1>
+      <p class="hero-subtitle">Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Un sistema embedded per climatizzazione deve eseguire periodicamente una serie di attivit&agrave;: leggere temperature, controllare tasti, aggiornare display, gestire il triac, comunicare via seriale. Su PIC16Cxx senza RTOS, il codice rischia di diventare un loop monolitico dove ogni attivit&agrave; blocca le altre. Serve un <strong>scheduler cooperativo</strong> che garantisca a ogni task un timeslice regolare, senza overhead di un RTOS completo.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione</h2>
+          <p>Entrambi i progetti Split (Ferroli I200036 e Elettroplastica I200052) implementano un <strong>sistema operativo cooperativo round-robin</strong> in circa 100 righe di Assembly. Ogni task pu&ograve; essere risvegliata:</p>
+          <ul class="normative-list">
+            <li><strong>A tempo:</strong> dopo un certo numero di passi dello scheduler (timeout decrementante)</li>
+            <li><strong>A evento:</strong> quando un flag globale viene attivato (es. interrupt su cambio porta)</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Implementazione: OS.H (Split Elettroplastica I200052)</h3>
+          <pre><code>;----------------------------------------------------------------------
+; Scheduler cooperativo round-robin
+;----------------------------------------------------------------------
+#define     MAX_TASK    11            ; numero massimo di task
+#define     MSEC_05_OS  16            ; attesa base ~0.5 msec
+
+Operative_System
+
+Loop_OS_Step
+    BANK    0
+    movfw   Old_Timer0
+    subwf   TMR0,w
+; Se sono passati almeno MSEC_05_OS tick dal ciclo precedente,
+; eseguo un passo dello scheduler
+    clrc
+    sublw   MSEC_05_OS
+    skpnc
+    goto    Loop_OS_Step              ; non ancora: aspetto
+
+    movfw   TMR0
+    movwf   Old_Timer0                ; aggiorno riferimento
+
+Loop_OS_Task
+    BANK    0
+    clrwdt                            ; reset watchdog
+
+    incf    Curr_Task,same            ; task successiva
+    movlw   MAX_TASK
+    xorwf   Curr_Task,W               ; ho superato l'ultima?
+    clrc
+    skpnz
+    clrf    Curr_Task                 ; se s&igrave;, riparto da 0
+
+    rlf     Curr_Task,w               ; indice * 2 (tabella 16 bit)
+    addlw   Ret_Add + 1               ; puntatore alla tabella ritorni
+    movwf   FSR
+    movfw   INDF                      ; leggo MSB del return address
+    andlw   0x80                      ; MSB=1 significa "wake a evento"
+    skpz
+    goto    Test_Conditional_Flag     ; task a evento
+
+; Task a tempo: decremento contatore
+    movfw   Curr_Task
+    addlw   Wake_Up
+    movwf   FSR
+    tstf    INDF
+    skpz
+    decfsz  INDF,same                 --contatore; se 0, esegui task
+    goto    Next_Task
+    goto    Esegui_Task               ; scade il timer: esegui!
+
+Test_Conditional_Flag
+; Task a evento: controllo flag di risveglio
+    movfw   Curr_Task
+    addlw   Wake_Up
+    movwf   FSR
+    movfw   Flag_Task
+    andwf   INDF,w
+    skpnz
+    goto    Next_Task                 ; evento non accaduto: salta
+
+Esegui_Task
+    rlf     Curr_Task,w
+    addlw   Ret_Add + 1
+    movwf   FSR
+    movfw   INDF                      ; MSB indirizzo
+    movwf   PCLATH
+    decf    FSR,same
+    movfw   INDF                      ; LSB indirizzo
+    movwf   PCL                       ; salto alla task!
+
+Next_Task
+    bsf     INTCON,GIE
+    BANK    0
+    tstf    Curr_Task
+    skpnz
+    goto    Operative_System          ; giro completato
+    goto    Loop_OS_Task              ; prossima task</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Struttura dati dello scheduler</h3>
+          <pre><code>; Tabella Wake_Up: per ogni task, il contatore di timeout
+; Se MSB di Ret_Add = 0, il task &egrave; a tempo (contatore decrementato)
+; Se MSB di Ret_Add = 1, il task &egrave; a evento (flag testato)
+Wake_Up     DS  MAX_TASK     ; contatori indipendenti per ogni task
+
+; Tabella Ret_Add: indirizzi di rientro per ogni task
+; Se il MSB ha il bit 7 = 1, lo scheduler usa la modalit&agrave; evento
+Ret_Add     DS  MAX_TASK*2   ; 2 byte per indirizzo (PCLATH + PCL)
+
+; Le task dichiarano la loro periodicit&agrave; con le macro:
+;   WAIT  TASK_NTC, OS_MSEC_100    ; risveglio dopo 100 passi
+;   EVENT TASK_NTC, NTC_OK         ; risveglio su evento
+;
+; La macro WAIT inizializza il contatore nella tabella Wake_Up.
+; La macro EVENT programna il flag di risveglio in Flag_Task.</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema a blocchi</h3>
+          <pre><code>+-------------------+
+| RESET             |
+| GOTO Startup      |
++-------------------+
+         |
+         v
++-------------------+
+| Startup           |
+| Init HW & Var     |
++-------------------+
+         |
+         v
++-------------------+
+| Operative_System  |<-------------------+
+|   attesa ~0.5ms   |                    |
+|   (poll TMR0)     |                    |
++-------------------+                    |
+         |                               |
+         v                               |
++-------------------+                    |
+| Loop_OS_Task      |                    |
+|   Curr_Task++     |                    |
+|   se == MAX_TASK  |                    |
+|     Curr_Task = 0 |                    |
++-------------------+                    |
+         |                               |
+         +--> Task a tempo?              |
+         |      SI: decrementa cont.     |
+         |          se 0 -> esegui       |
+         |      NO: Task a evento?       |
+         |          SI: flag attivo?     |
+         |              se SI -> esegui  |
+         |          NO: prox task        |
+         |                               |
+         +--> Esegui_Task                |
+              carica PCLATH, PCL         |
+              da Ret_Add[Curr_Task]      |
+              -> esecuzione task         |
+         |                               |
+         v                               |
++-------------------+                    |
+| Next_Task         |--------------------+
+| se Curr_Task == 0 |
+|   goto OS_Step    |
+| altrimenti        |
+|   goto Loop_Task  |
++-------------------+</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Esempio pratico: task NTC</h3>
+          <pre><code>; La task NTC usa WAIT per essere eseguita ogni 100 ms
+; e EVENT per sincronizzarsi con l'interrupt di carica condensatore
+
+NtcTask
+    WAIT    TASK_NTC, OS_MSEC_100    ; 100 ms di timeout
+
+; ... configurazione pin, avvio carica RC ...
+
+    EVENT   TASK_NTC, NTC_OK         ; aspetta che l'interrupt segnali
+                                     ; il completamento della carica
+; ... lettura timer, calcolo temperatura ...</code></pre>
+          <p>Questa combinazione di <strong>polling periodico</strong> e <strong>wake su evento</strong> permette a tutte le 11 task di convivere in pochi KB di ROM, con latenze deterministiche e un consumo CPU minimo.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>11 task in ~100 righe:</strong> lo scheduler &egrave; estremamente compatto: circa 95 word di ROM</li>
+            <li><strong>Due modalit&agrave; di risveglio:</strong> tempo (polling) ed evento (interrupt-driven) si combinano per coprire ogni esigenza</li>
+            <li><strong>Zero overhead di contesto:</strong> le task collaborano volontariamente (nessun preemption), non serve salvare/ripristinare registri</li>
+            <li><strong>Watchdog integrato:</strong> <code>clrwdt</code> a ogni passo dello scheduler protegge da crash</li>
+            <li><strong>Frequenza regolabile:</strong> la costante <code>MSEC_05_OS</code> definisce il passo base (tipicamente 0.5-2 ms)</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Progetti sorgente</h3>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; <code>#OS.H</code>: scheduler a 11 task, PIC16C65A</li>
+            <li><strong>Split Ferroli I200036</strong> &mdash; <code>Call_x.h</code>: organizzazione equivalente su 4 pagine ROM, PIC16C57</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>

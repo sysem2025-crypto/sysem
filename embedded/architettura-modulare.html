@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Architettura Modulare per PIC | SYSEM</title>
+  <meta name="description" content="Come organizzare il codice Assembly per PIC16Cxx su pagine ROM, con header modulari e dependency tracking.">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js?v=20260615"></script>
+  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+</head>
+<body data-page="embedded" data-required-role="guest">
+  <main class="home">
+    <header class="topbar" aria-label="Intestazione sito">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="../assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <div class="nav-container">
+        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="overlay-menu" id="overlay-menu">
+      <nav><ul></ul></nav>
+    </div>
+
+    <section class="hero auth-hero" aria-labelledby="page-title">
+      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title">Architettura Modulare per PIC16Cxx</h1>
+      <p class="hero-subtitle">Organizzare il codice Assembly su pagine ROM con moduli #include, header di dipendenza e controllo dimensionale</p>
+    </section>
+
+    <section class="home">
+      <div class="auth-grid">
+        <article class="auth-card">
+          <h2>Problema</h2>
+          <p>Nei microcontrollori PIC a 8 bit con architettura Harvard, la memoria programma &egrave; organizzata in <strong>pagine da 512 word</strong>. Saltare da una pagina all&rsquo;altra richiede la gestione esplicita del registro <code>PCLATH</code>. Senza una struttura modulare chiara, il codice diventa rapidamente ingestibile: bisogna tracciare manualmente quanta ROM occupa ogni modulo, evitare overlap tra pagine, e garantire che le chiamate tra pagine funzionino correttamente.</p>
+        </article>
+
+        <article class="auth-card">
+          <h2>Soluzione: Moduli #include con tracciamento dimensionale</h2>
+          <p>I progetti pi&ugrave; articolati dell&rsquo;archivio ICA adottano una tecnica elegante: ogni modulo funzionale &egrave; un file <code>.h</code> incluso via <code>#include</code> nel <code>main.asm</code>, separato per pagina ROM. Alla fine di ogni pagina, delle costanti calcolano automaticamente lo spazio residuo:</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Struttura del main.asm (Split Elettroplastica, I200052)</h3>
+          <pre><code>;----------------------------------------------------------------------
+; Il main.asm definisce l'ordine di inclusione e il mapping a pagina ROM
+;----------------------------------------------------------------------
+    ORG      4
+
+I_01
+    #modulo     "#Inter.h"    ; gestione interrupt
+I_02
+    include     "table.h"     ; tabelle operative
+I_03
+    include     "#Init.h"     ; general startup
+I_04
+    include     "#OS.h"       ; sistema operativo (scheduler)
+I_05
+    include     "#Triac.h"    ; innesco triac ON/OFF
+I_06
+    include     "#Timer.h"    ; timer interni
+I_07
+    include     "#Key.h"      ; lettura tasto
+I_08
+    include     "#Tacho.h"    ; lettura tachimetrica
+I_09
+    include     "#Ntc.h"      ; sonde di temperatura
+I_10
+    include     "#Buzzer.h"   ; buzzers
+I_11
+    include     "#Dcm.h"      ; decodifica comando
+I_12
+    include     "#EEP.h"      ; EEPROM esterna
+I_13
+    include     "#Flap.h"     ; controllo deflettore
+I_14
+    include     "#Diag.h"     ; diagnostica seriale
+I_15
+    ORG         0x800         ; cambio pagina ROM
+
+    include     "table1.h"    ; tabelle operative pagina 1
+I_16
+    #modulo     "#M_State.h"  ; macchina a stati (1569 righe!)
+I_17
+
+; Controllo dimensionale automatico
+General_Interrupt  SET  I_02 - I_01
+Tabelle            SET  I_03 - I_02
+Sistema_Operativo  SET  I_05 - I_04
+Innesco_Triac      SET  I_06 - I_05
+Sonode_Temperatura SET  I_10 - I_09
+Macchina_a_Stati   SET  I_17 - I_16
+
+ROM_PAGE_0  SET  0x800 - I_15    ; spazio residuo pagina 0
+ROM_PAGE_1  SET  0xfff - I_17    ; spazio residuo pagina 1</code></pre>
+          <p>Ogni etichetta <code>I_xx</code> funge da marcatore. Le costanti calcolano automaticamente la dimensione di ogni modulo e lo spazio residuo per pagina. Se un modulo cresce troppo e sfora la pagina, l&rsquo;assemblatore segnala un errore in fase di compilazione.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>La direttiva #modulo</h3>
+          <p>I progetti pi&ugrave; recenti introducono una macro <code>#modulo</code> che funge da header decorativo con nome del modulo, e le direttive <code>#if</code>/<code>#endif</code> per escludere moduli non necessari a seconda della configurazione hardware:</p>
+          <pre><code>#modulo     "#M_State.h"
+; Il nome del modulo viene stampato nel listato .lst
+; rendendo immediata la navigazione del codice assemblato.
+
+DECODE_MACRO    EQU  1
+TLC_FERROLI     EQU  0    ; Telecomando Elettroplastica
+
+    IF TLC_FERROLI == 1
+        include  "#Tlc_Ferroli.h"
+    ELSE
+        include  "#Tlc_Elettroplastica.h"
+    ENDIF</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Gestione pagine con GOTO_P e CALL_P</h3>
+          <p>Saltare tra pagine ROM richiede la gestione di <code>PCLATH</code>. I progetti usano macro come <code>GOTO_P</code> e <code>CALL_P</code> per astrarre questo dettaglio:</p>
+          <pre><code>; Esempio da TASK_1.H (Antisbilanciamento I200026)
+    BSF     STATUS,PA0
+    BSF     STATUS,PA1
+    GOTO_P  STATE_0       ; salto a pagina opportuna
+
+; La macro GOTO_P si occupa di:
+; 1. Caricare PCLATH con la pagina di destinazione
+; 2. Eseguire il GOTO
+
+; Moduli organizzati per pagina:
+; Pagina 0: Init, NTC, Tacho
+; Pagina 1: SM (state machine), Key, Sync, Triac, Sweep, Step
+; Pagina 2: Cmd, Prepr, Postpr, Usr, DataOut, Test
+; Pagina 3: Reg, Pla, Tlc</code></pre>
+          <p>L&rsquo;organizzazione segue un criterio logico: inizializzazione e lettura sensori in pagina 0, logica di controllo e attuatori in pagina 1 e 2, comunicazione e diagnostica in pagina 3.</p>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Schema a blocchi</h3>
+          <pre><code>main.asm
+  |
+  +-- Pagina 0 (0x000 - 0x1FF)
+  |     #Inter.h    Gestione interrupt (salvataggio contesto, decoder)
+  |     #Init.h     Inizializzazione periferiche e variabili
+  |     #OS.h       Scheduler cooperativo round-robin
+  |     #Triac.h    Innesco triac a tempo
+  |     #Timer.h    Timer software interni
+  |     #Key.h      Lettura e debounce tastiera
+  |     #Tacho.h    Lettura tachimetrica (sensore Hall)
+  |     #Ntc.h      Lettura temperatura NTC (metodo RC)
+  |
+  +-- Pagina 1 (0x200 - 0x3FF)
+  |     #SM.h       Macchina a stati del prodotto
+  |     #Key.h      Controllo pulsanti (copia pagina 0 se serve)
+  |     #Sync.h     Sincronismo di rete
+  |     #Triac.h    Innesco triac (continuazione)
+  |     #Sweep.h    Controllo motore PP alto livello
+  |     #Step.h     Controllo motore PP basso livello
+  |
+  +-- Pagina 2 (0x400 - 0x5FF)
+  |     #Cmd.h      Decodifica comandi utente
+  |     #Prepr.h    Preprocessing dati
+  |     #Postpr.h   Postprocessing
+  |     #Usr.h      Controllo compressore/utenze
+  |     #DataOut.h  Trasmissione dati e autodiagnosi
+  |     #Test.h     Diagnostica iniziale all'avvio
+  |
+  +-- Pagina 3 (0x600 - 0x7FF)
+        #Reg.h      Registri timing
+        #Pla.h      PLA (Programmable Logic Array)
+        #Tlc.h      Controllo TLC (telecomando)</code></pre>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Lezioni apprese</h3>
+          <ul class="normative-list">
+            <li><strong>Separazione netta per pagina:</strong> ogni pagina ROM contiene moduli logicamente coerenti (sensori, controllo, comunicazione)</li>
+            <li><strong>Controllo dimensionale automatico:</strong> le costanti derivate da etichette marcatore rilevano overlap in compilazione</li>
+            <li><strong>Modularit&agrave; fisica:</strong> ogni file .h = un modulo funzionale, con header commentato che dichiara dipendenze, risorse e allocazione</li>
+            <li><strong>Macro di navigazione:</strong> GOTO_P e CALL_P rendono il cambio pagina trasparente</li>
+            <li><strong>Direttiva #modulo:</strong> decorazione del listato per debug e manutenzione</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="auth-grid">
+        <article class="auth-card" style="grid-column: 1 / -1;">
+          <h3>Codice sorgente</h3>
+          <p>I progetti completi sono disponibili nell&rsquo;archivio. I moduli citati provengono da:</p>
+          <ul class="normative-list">
+            <li><strong>Split Elettroplastica I200052</strong> &mdash; PIC16C65A, 61 file sorgente, 10 versioni</li>
+            <li><strong>Split Ferroli I200036</strong> &mdash; PIC16C57, 32 file sorgente, 19 versioni</li>
+            <li><strong>Antisbilanciamento I200026</strong> &mdash; PIC16Cxx, 21 file sorgente</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/main.js?v=20260615"></script>
+</body>
+</html>
