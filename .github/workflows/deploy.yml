@@ -7,20 +7,32 @@ on:
 
 jobs:
   deploy:
-    name: Upload via SFTP
+    name: Upload via FTP
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: SFTP Deploy
-        uses: wangyucode/sftp-upload-action@v3
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
-          host: ${{ secrets.FTP_SERVER }}
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          localDir: '.'
-          remoteDir: './public_html/'
-          exclude: '**/.git*,**/.github/**,**/README.md,docker-compose.yml,Dockerfile,ddns-config.json,apps/modus/**'
+          port: 21
+          protocol: ftp
+          local-dir: '.'
+          server-dir: './public_html/'
+          exclude: |
+            **/.git/**
+            **/.git*/**
+            **/.github/**
+            **/README.md
+            docker-compose.yml
+            Dockerfile
+            ddns-config.json
+            apps/modus/**
+            .gitignore
+          log-level: verbose
+          dangerous-clean-slate: false
