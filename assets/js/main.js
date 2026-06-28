@@ -96,12 +96,14 @@ async function loadLang(lang) {
       "nav": {
         "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
         "volumeCorrector": "Correttore Volumi",
+        "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
         "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
+        "utility": "Utility",
         "sysem": "Sysem",
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
-        "sensori": "Sensori", "compressione": "Compressione", "protocolli": "Protocolli",
+        "sensori": "Sensori", "formule": "Formule", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida norme", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
-        "embedded": "Embedded", "architetturaModulare": "Architettura Modulare PIC",
+        "architetturaModulare": "Architettura Modulare PIC",
         "osCooperativo": "Sistema Operativo Cooperativo",
         "gestioneInterrupt": "Gestione Interrupt",
         "letturaNtc": "Lettura NTC a Condensatore",
@@ -381,8 +383,10 @@ async function ensureDefaultAdminUser() {
 const NAV_STRUCTURE = [
   { categoryKey: 'nav.systema', items: [
     { labelKey: 'nav.datacenter', href: 'datacenter.html' },
-    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' },
-    { labelKey: 'nav.embedded', href: 'embedded.html' },
+    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' }
+  ]},
+  { categoryKey: 'nav.embedded', items: [
+    { labelKey: 'nav.embeddedHome', href: 'embedded.html' },
     { labelKey: 'nav.architetturaModulare', href: 'embedded/architettura-modulare.html' },
     { labelKey: 'nav.osCooperativo', href: 'embedded/sistema-operativo-cooperativo.html' },
     { labelKey: 'nav.gestioneInterrupt', href: 'embedded/gestione-interrupt.html' },
@@ -398,15 +402,17 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' },
     { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
   ]},
-  { categoryKey: 'nav.sysem', items: [
+  { categoryKey: 'nav.utility', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
     { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.compressione', href: 'formule-compressione.html' },
+    { labelKey: 'nav.formule', href: 'formule-compressione.html' },
     { labelKey: 'nav.protocolli', href: 'protocolli.html' },
     { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
+    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
+  ]},
+  { categoryKey: 'nav.sysem', items: [
+    { labelKey: 'nav.about', href: 'about.html' },
     { labelKey: 'nav.ai', href: 'ai.html' },
     { labelKey: 'nav.contatti', href: 'contact.html' }
   ]}
