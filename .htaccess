@@ -4,3 +4,12 @@ RewriteEngine On
 # inoltra al pacchetto disponibile sul server.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^download/Genius_Monitor\.exe$ /download/InterfaceDLMS_Setup.exe [R=302,L,NC]
+
+<IfModule mod_headers.c>
+  # Evita che le pagine HTML restino in cache dopo un deploy FTP.
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+</IfModule>
