@@ -35,4 +35,4 @@ jobs:
             apps/modus/**
             .gitignore
           log-level: verbose
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
