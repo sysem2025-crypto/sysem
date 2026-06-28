@@ -7,31 +7,32 @@ on:
 
 jobs:
   deploy:
-    name: Upload via FTPS
+    name: Upload via FTP
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: FTPS Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps-legacy
           port: 21
-          security: loose
-          timeout: 300
-          local-dir: ./
-          server-dir: ./public_html/
+          protocol: ftp
+          local-dir: './'
+          server-dir: './public_html/'
           exclude: |
-            **/.git*
+            **/.git/**
+            **/.git*/**
             **/.github/**
             **/README.md
             docker-compose.yml
             Dockerfile
             ddns-config.json
             apps/modus/**
+            .gitignore
           log-level: verbose
+          dangerous-clean-slate: false
