@@ -32,7 +32,6 @@ jobs:
             docker-compose.yml
             Dockerfile
             ddns-config.json
-            apps/modus/**
             .gitignore
           log-level: verbose
           dangerous-clean-slate: false
