@@ -1,20 +1,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
-COPY ModusClient.Web/ModusClient.Web.csproj ModusClient.Web/
-COPY ModusClient.Core/ModusClient.Core.csproj ModusClient.Core/
-COPY ModusClient.Contracts/ModusClient.Contracts.csproj ModusClient.Contracts/
-COPY ModusClient.Protocols/ModusClient.Protocols.csproj ModusClient.Protocols/
-COPY ModusClient.Native/ModusClient.Native.csproj ModusClient.Native/
-COPY ModusClient.App/ModusClient.App.csproj ModusClient.App/
+COPY src-cs/ModusClient.Web/ModusClient.Web.csproj src-cs/ModusClient.Web/
+COPY src-cs/ModusClient.Core/ModusClient.Core.csproj src-cs/ModusClient.Core/
+COPY src-cs/ModusClient.Contracts/ModusClient.Contracts.csproj src-cs/ModusClient.Contracts/
+COPY src-cs/ModusClient.Protocols/ModusClient.Protocols.csproj src-cs/ModusClient.Protocols/
+COPY src-cs/ModusClient.Native/ModusClient.Native.csproj src-cs/ModusClient.Native/
+COPY src-cs/ModusClient.App/ModusClient.App.csproj src-cs/ModusClient.App/
 
-RUN dotnet restore ModusClient.Web/ModusClient.Web.csproj
+RUN dotnet restore src-cs/ModusClient.Web/ModusClient.Web.csproj
 
-COPY . .
-RUN dotnet publish ModusClient.Web/ModusClient.Web.csproj -c Release -o /app/publish --no-restore
+COPY src-cs/ src-cs/
+COPY dllCTR dllCTR/
+COPY dllDLMS dllDLMS/
+COPY dllGenius dllGenius/
+RUN dotnet publish src-cs/ModusClient.Web/ModusClient.Web.csproj -c Release -o /app/publish --no-restore
 
-# wwwroot non viene inclusa automaticamente nel publish
-COPY ModusClient.Web/wwwroot /app/publish/wwwroot
+COPY src-cs/ModusClient.Web/wwwroot /app/publish/wwwroot
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS final
 WORKDIR /app

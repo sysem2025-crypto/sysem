@@ -1,0 +1,91 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "ModusClient.Web/1.0.0": {
+        "dependencies": {
+          "ModusClient.Contracts": "1.0.0",
+          "ModusClient.Core": "1.0.0",
+          "ModusClient.Protocols": "1.0.0"
+        },
+        "runtime": {
+          "ModusClient.Web.dll": {}
+        }
+      },
+      "ModusClient.Contracts/1.0.0": {
+        "runtime": {
+          "ModusClient.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "ModusClient.Core/1.0.0": {
+        "dependencies": {
+          "ModusClient.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "ModusClient.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "ModusClient.Native/1.0.0": {
+        "dependencies": {
+          "ModusClient.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "ModusClient.Native.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "ModusClient.Protocols/1.0.0": {
+        "dependencies": {
+          "ModusClient.Contracts": "1.0.0",
+          "ModusClient.Core": "1.0.0",
+          "ModusClient.Native": "1.0.0"
+        },
+        "runtime": {
+          "ModusClient.Protocols.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ModusClient.Web/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModusClient.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModusClient.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModusClient.Native/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModusClient.Protocols/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

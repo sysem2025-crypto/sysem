@@ -33,7 +33,9 @@
     "ai": "Artificial Intelligence",
     "contatti": "Contacts",
     "volumeCorrector": "Volume Corrector",
-    "embedded": "Embedded Systems"
+    "embedded": "Embedded Systems",
+    "progetti": "Projects",
+    "progettiHome": "Projects"
   },
   "lang": {
     "it": "Italian",
@@ -174,6 +176,11 @@
       "overline": "Access control",
       "title": "Access Management",
       "metaTitle": "Admin Access"
+    },
+    "progetti": {
+      "overline": "Projects",
+      "title": "Projects",
+      "metaTitle": "Projects"
     },
     "contact": {
       "overline": "Get in touch",

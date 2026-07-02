@@ -98,11 +98,10 @@ async function loadLang(lang) {
         "volumeCorrector": "Correttore Volumi",
         "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
         "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
-        "utility": "Utility",
+        "utility": "Utility", "utilityHub": "Utility",
+        "progetti": "Progetti", "progettiHome": "Progetti",
         "sysem": "Sysem",
-        "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
-        "sensori": "Sensori", "formule": "Formule", "protocolli": "Protocolli",
-        "normative": "Normative", "guidaNorme": "Guida norme", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
+        "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
         "architetturaModulare": "Architettura Modulare PIC",
         "osCooperativo": "Sistema Operativo Cooperativo",
         "gestioneInterrupt": "Gestione Interrupt",
@@ -166,6 +165,7 @@ async function loadLang(lang) {
         "guida-norme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
         "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
         "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
+        "progetti": { "overline": "Progetti", "title": "Progetti", "metaTitle": "Progetti" },
         "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
         "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
         "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
@@ -173,7 +173,8 @@ async function loadLang(lang) {
         "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },
         "programAccess": { "overline": "Program access", "title": "Accesso Programma", "metaTitle": "Program Access" },
         "admin": { "overline": "Controllo accessi", "title": "Gestione Accessi", "metaTitle": "Admin Accessi" },
-        "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" }
+        "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" },
+        "utility": { "overline": "Knowledge base", "title": "Utility", "metaTitle": "Utility" }
       }
     };
     return;
@@ -403,13 +404,10 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
   ]},
   { categoryKey: 'nav.utility', items: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
+    { labelKey: 'nav.utilityHub', href: 'utility.html' }
+  ]},
+  { categoryKey: 'nav.progetti', items: [
+    { labelKey: 'nav.progettiHome', href: 'progetti.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.about', href: 'about.html' },

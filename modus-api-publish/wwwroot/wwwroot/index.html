@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modus Client Web</title>
+    <link rel="stylesheet" href="/app.css" />
+    <script defer src="/app.js"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="session-panel" aria-label="Sessione">
+            <div class="brand-block">
+                <span class="eyebrow">Modus Client</span>
+                <h1>Listener apparati</h1>
+            </div>
+
+            <label class="field-label" for="protocol">Protocollo</label>
+            <select id="protocol" class="field"></select>
+
+            <div class="field-row">
+                <div>
+                    <label class="field-label" for="host">Host</label>
+                    <input id="host" class="field" type="text" value="127.0.0.1" />
+                </div>
+                <div>
+                    <label class="field-label" for="port">Porta</label>
+                    <input id="port" class="field" type="number" value="4059" />
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label class="field-label" for="timeoutMs">Timeout ms</label>
+                    <input id="timeoutMs" class="field" type="number" value="2000" />
+                </div>
+                <div></div>
+            </div>
+
+            <div class="status-block">
+                <span id="sessionChip" class="status-chip status-chip--idle">Disconnesso</span>
+                <strong id="sessionMessage">Pronto.</strong>
+                <dl class="session-facts">
+                    <div>
+                        <dt>Protocollo attivo</dt>
+                        <dd id="activeProtocol">Nessuno</dd>
+                    </div>
+                    <div>
+                        <dt>Sessione</dt>
+                        <dd id="connectionState">Inattiva</dd>
+                    </div>
+                    <div>
+                        <dt>Listener</dt>
+                        <dd id="socketTargetState">-</dd>
+                    </div>
+                    <div>
+                        <dt>Remote endpoint</dt>
+                        <dd id="remoteEndpointState">-</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="session-actions">
+                <button id="connectButton" class="button button--primary" type="button">Connetti</button>
+                <button id="disconnectButton" class="button" type="button">Disconnetti</button>
+            </div>
+            <div class="session-actions" style="margin-top:4px">
+                <button id="startButton" class="button" type="button">Avvia ascolto</button>
+                <button id="stopButton" class="button" type="button">Ferma ascolto</button>
+            </div>
+        </aside>
+
+        <main class="workspace-panel" aria-label="Workspace">
+            <nav id="workspaceTabs" class="workspace-tabs" aria-label="Sezioni protocollo"></nav>
+            <section id="workspaceContent" class="workspace-content" aria-live="polite"></section>
+        </main>
+
+        <aside class="monitor-panel" aria-label="Monitoraggio">
+            <div class="monitor-head">
+                <span class="eyebrow">Monitoraggio</span>
+                <button id="monitorReadButton" class="button button--compact" type="button">Leggi</button>
+            </div>
+            <div id="monitorBlocks" class="monitor-blocks"></div>
+            <div class="trace-grid">
+                <article class="trace-card">
+                    <div class="trace-title">TX</div>
+                    <pre id="txLog">Nessun comando trasmesso.</pre>
+                </article>
+                <article class="trace-card">
+                    <div class="trace-title">RX</div>
+                    <pre id="rxLog">Nessuna risposta ricevuta.</pre>
+                </article>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

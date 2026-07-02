@@ -1,0 +1,212 @@
+{
+  "profiles": [
+    {
+      "id": "Ctr",
+      "label": "CTR",
+      "apiProtocol": "Ctr",
+      "sections": [
+        {
+          "id": "configurazione",
+          "label": "Configurazione",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "cfg.device.identity", "name": "Identita apparato", "type": "record", "unit": null },
+            { "key": "cfg.communication", "name": "Parametri comunicazione", "type": "group", "unit": null },
+            { "key": "cfg.measurement", "name": "Parametri misura", "type": "group", "unit": null }
+          ]
+        },
+        {
+          "id": "sac",
+          "label": "SAC",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "sac.status", "name": "Stato SAC", "type": "status", "unit": null },
+            { "key": "sac.thresholds", "name": "Soglie SAC", "type": "group", "unit": null }
+          ]
+        },
+        {
+          "id": "tariffe",
+          "label": "Tariffe",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "tariff.plan", "name": "Piano tariffario", "type": "table", "unit": null },
+            { "key": "tariff.calendar", "name": "Calendario fasce", "type": "table", "unit": null }
+          ]
+        },
+        {
+          "id": "dati",
+          "label": "Dati",
+          "kind": "data",
+          "operations": ["read", "export"],
+          "objects": [
+            { "key": "instant.pressure.abs", "name": "Pressione assoluta di misura", "type": "instant", "unit": "bar" },
+            { "key": "instant.temperature", "name": "Temperatura di misura", "type": "instant", "unit": "degC" },
+            { "key": "instant.device_diagnostics", "name": "Diagnostica estesa corrente", "type": "diagnostic", "unit": null },
+            { "key": "event.log", "name": "Registro eventi", "type": "event-log", "unit": null },
+            { "key": "history.daily", "name": "Storici giornalieri", "type": "history", "unit": null }
+          ]
+        },
+        {
+          "id": "firmware",
+          "label": "Firmware",
+          "kind": "firmware",
+          "operations": ["prepare", "download", "verify"],
+          "objects": [
+            { "key": "fw.file", "name": "File firmware", "type": "path", "unit": null },
+            { "key": "fw.target", "name": "Target download", "type": "enum", "unit": null },
+            { "key": "fw.verify", "name": "Verifica post-download", "type": "boolean", "unit": null }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Dlms",
+      "label": "DLMS",
+      "apiProtocol": "Dlms",
+      "sections": [
+        {
+          "id": "configurazione",
+          "label": "Configurazione",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "dlms.association", "name": "Association setup", "type": "object", "obis": "0.0.40.0.0.255" },
+            { "key": "dlms.clock", "name": "Clock", "type": "object", "obis": "0.0.1.0.0.255" }
+          ]
+        },
+        {
+          "id": "sac",
+          "label": "SAC",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "sac.status", "name": "Stato SAC", "type": "status", "obis": "0.0.96.3.10.255" }
+          ]
+        },
+        {
+          "id": "tariffe",
+          "label": "Tariffe",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "dlms.activity.calendar", "name": "Activity calendar", "type": "object", "obis": "0.0.13.0.0.255" }
+          ]
+        },
+        {
+          "id": "dati",
+          "label": "Dati",
+          "kind": "data",
+          "operations": ["read", "export"],
+          "objects": [
+            { "key": "instant.pressure", "name": "Pressione", "type": "instant", "obis": "7.0.42.7.0.255", "unit": "bar" },
+            { "key": "instant.temperature", "name": "Temperatura", "type": "instant", "obis": "7.0.41.7.0.255", "unit": "degC" },
+            { "key": "event.standard", "name": "Eventi DLMS", "type": "event-log", "obis": "0.0.99.98.0.255" },
+            { "key": "history.profile", "name": "Profile generic", "type": "history", "obis": "1.0.99.1.0.255" }
+          ]
+        },
+        {
+          "id": "firmware",
+          "label": "Firmware",
+          "kind": "firmware",
+          "operations": ["prepare", "download", "verify"],
+          "objects": [
+            { "key": "fw.image.transfer", "name": "Image transfer", "type": "object", "obis": "0.0.44.0.0.255" }
+          ]
+        },
+        {
+          "id": "oggetti-dlms",
+          "label": "Oggetti DLMS",
+          "kind": "technical",
+          "advanced": true,
+          "operations": ["inspect", "map", "debug"],
+          "objects": [
+            { "key": "dlms.object.clock", "name": "Clock", "objectType": "Clock", "obis": "0.0.1.0.0.255", "functions": ["read", "set-time"] },
+            { "key": "dlms.object.profile", "name": "Profile generic", "objectType": "ProfileGeneric", "obis": "1.0.99.1.0.255", "functions": ["capture", "read-buffer"] },
+            { "key": "dlms.object.image", "name": "Image transfer", "objectType": "ImageTransfer", "obis": "0.0.44.0.0.255", "functions": ["initiate", "transfer-block", "verify", "activate"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Proprietary",
+      "label": "Proprietary",
+      "apiProtocol": "Genius",
+      "sections": [
+        {
+          "id": "configurazione",
+          "label": "Configurazione",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "cfg.machine", "name": "Configurazione macchina", "type": "group", "unit": null },
+            { "key": "cfg.protocol", "name": "Parametri protocollo proprietario", "type": "group", "unit": null }
+          ]
+        },
+        {
+          "id": "dati",
+          "label": "Dati",
+          "kind": "data",
+          "operations": ["read", "export"],
+          "objects": [
+            { "key": "instant.pressure", "name": "Pressione", "type": "instant", "unit": "bar" },
+            { "key": "instant.temperature", "name": "Temperatura", "type": "instant", "unit": "degC" },
+            { "key": "event.proprietary", "name": "Eventi proprietari", "type": "event-log", "unit": null },
+            { "key": "history.proprietary", "name": "Storici proprietari", "type": "history", "unit": null }
+          ]
+        },
+        {
+          "id": "firmware",
+          "label": "Firmware",
+          "kind": "firmware",
+          "operations": ["prepare", "download", "verify"],
+          "objects": [
+            { "key": "fw.package", "name": "Pacchetto firmware", "type": "path", "unit": null },
+            { "key": "fw.mode", "name": "Modalita operativa", "type": "enum", "unit": null }
+          ]
+        },
+        {
+          "id": "calibrazione-hw",
+          "label": "Calibrazione HW",
+          "kind": "calibration",
+          "operations": ["read", "apply", "verify"],
+          "objects": [
+            { "key": "cal.pressure", "name": "Calibrazione pressione", "type": "calibration", "unit": "bar" },
+            { "key": "cal.temperature", "name": "Calibrazione temperatura", "type": "calibration", "unit": "degC" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Modbus",
+      "label": "Modbus",
+      "apiProtocol": "Modbus",
+      "sections": [
+        {
+          "id": "configurazione",
+          "label": "Configurazione",
+          "kind": "configuration",
+          "operations": ["load", "save", "read", "write"],
+          "objects": [
+            { "key": "modbus.slave", "name": "Parametri slave", "type": "register-group", "unit": null },
+            { "key": "modbus.map", "name": "Mappa registri", "type": "register-map", "unit": null }
+          ]
+        },
+        {
+          "id": "dati",
+          "label": "Dati",
+          "kind": "data",
+          "operations": ["read", "export"],
+          "objects": [
+            { "key": "holding.pressure", "name": "Pressione", "type": "holding-register", "unit": "bar" },
+            { "key": "holding.temperature", "name": "Temperatura", "type": "holding-register", "unit": "degC" },
+            { "key": "event.registers", "name": "Registri eventi", "type": "register-range", "unit": null },
+            { "key": "history.registers", "name": "Registri storici", "type": "register-range", "unit": null }
+          ]
+        }
+      ]
+    }
+  ]
+}
