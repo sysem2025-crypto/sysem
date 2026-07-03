@@ -98,7 +98,15 @@ async function loadLang(lang) {
         "volumeCorrector": "Correttore Volumi",
         "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
         "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
-        "utility": "Utility", "utilityHub": "Utility",
+        "utility": "Utility",
+        "sistemi": "Sistemi",
+        "downloadApplicativi": "Download applicativi",
+        "sensori": "Sensori e caratterizzazione",
+        "formule": "Formule di compressione",
+        "protocolli": "Protocolli",
+        "normative": "Normative",
+        "guidaNorme": "Guida applicazione norme",
+        "utilityHub": "Utility",
         "progetti": "Progetti", "progettiHome": "Progetti",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
@@ -400,17 +408,23 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
-    { labelKey: 'nav.ticketing', href: 'ticketing.html' },
-    { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
+    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
   ]},
   { categoryKey: 'nav.utility', items: [
+    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
+    { labelKey: 'nav.downloadApplicativi', href: 'download-applicativi.html' },
+    { labelKey: 'nav.about', href: 'about.html' },
+    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
+    { labelKey: 'nav.formule', href: 'formule-compressione.html' },
+    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
+    { labelKey: 'nav.normative', href: 'normative.html' },
+    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
     { labelKey: 'nav.utilityHub', href: 'utility.html' }
   ]},
   { categoryKey: 'nav.progetti', items: [
     { labelKey: 'nav.progettiHome', href: 'progetti.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
-    { labelKey: 'nav.about', href: 'about.html' },
     { labelKey: 'nav.ai', href: 'ai.html' },
     { labelKey: 'nav.contatti', href: 'contact.html' }
   ]}
@@ -738,6 +752,27 @@ function initAdminPage() {
 
 document.addEventListener('DOMContentLoaded', function() {
   ensureDefaultAdminUser();
+
+  // --- Floating "under construction" badge ---
+  (function() {
+    var dismissed = sessionStorage.getItem('construction_dismissed');
+    if (dismissed) return;
+    var badge = document.createElement('div');
+    badge.className = 'construction-float';
+    badge.setAttribute('role', 'status');
+    badge.setAttribute('aria-label', 'Sito in costruzione');
+    badge.innerHTML = 'Site under construction<button class="construction-float-close" title="Chiudi" aria-label="Chiudi avviso">&times;</button>';
+    document.body.appendChild(badge);
+    badge.querySelector('.construction-float-close').addEventListener('click', function() {
+      badge.style.animation = 'none';
+      badge.style.opacity = '0';
+      badge.style.transform = 'translateY(20px)';
+      badge.style.transition = 'opacity 0.3s, transform 0.3s';
+      setTimeout(function() { badge.remove(); }, 300);
+      sessionStorage.setItem('construction_dismissed', '1');
+    });
+  })();
+
   const body = document.body;
   const currentPage = body.dataset.page || '';
   const requiredRole = body.dataset.requiredRole || 'base';

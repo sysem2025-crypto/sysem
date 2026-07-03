@@ -17,14 +17,8 @@
     "homeLabel": "SYSEM home"
   },
   "nav": {
-    "sistemi": "Sistemi",
-    "download": "Download applicativi",
+    "utilityHub": "Utility",
     "about": "Studio Tecnico Informatico",
-    "sensori": "Sensori",
-    "compressione": "Compressione",
-    "protocolli": "Protocolli",
-    "normative": "Normative",
-    "guidaNorme": "Guida norme",
     "contatti": "Contatti",
     "volumeCorrector": "Correttore Volumi",
     "embedded": "Sistemi Embedded",
@@ -152,6 +146,11 @@
       "overline": "Get in touch",
       "title": "Contact",
       "metaTitle": "Contact"
+    },
+    "utility": {
+      "overline": "Knowledge base",
+      "title": "Utility",
+      "metaTitle": "Utility"
     },
       "ai": {
         "overline": "Innovazione",
