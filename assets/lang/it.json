@@ -17,8 +17,13 @@
     "homeLabel": "SYSEM home"
   },
   "nav": {
-    "utilityHub": "Utility",
-    "about": "Studio Tecnico Informatico",
+    "systema": "Systema",
+    "utility": "Utility",
+    "sensori": "Sensori e caratterizzazione",
+    "compressione": "Compressione",
+    "protocolli": "Protocolli",
+    "normative": "Normative",
+    "guidaNorme": "Guida applicazione norme",
     "contatti": "Contatti",
     "volumeCorrector": "Correttore Volumi",
     "embedded": "Sistemi Embedded",

@@ -28,7 +28,7 @@ jobs:
           protocol: ftps
           security: loose
           local-dir: './'
-          server-dir: './public_html/'
+          server-dir: './'
           exclude: |
             **/.git/**
             **/.git*/**
@@ -64,7 +64,7 @@ jobs:
           protocol: ftps
           security: loose
           local-dir: './'
-          server-dir: './public_html/'
+          server-dir: './'
           exclude: |
             **/.git/**
             **/.git*/**
@@ -98,7 +98,7 @@ jobs:
           protocol: ftps
           security: loose
           local-dir: './'
-          server-dir: './public_html/'
+          server-dir: './'
           exclude: |
             **/.git/**
             **/.git*/**
