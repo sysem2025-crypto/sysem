@@ -411,14 +411,6 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' }
   ]},
   { categoryKey: 'nav.utility', items: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.downloadApplicativi', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
     { labelKey: 'nav.utilityHub', href: 'utility.html' }
   ]},
   { categoryKey: 'nav.progetti', items: [
