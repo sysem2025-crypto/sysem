@@ -188,7 +188,7 @@ async function loadLang(lang) {
     return;
   }
   try {
-    const resp = await fetch('assets/lang/' + lang + '.json?v=20260601');
+    const resp = await fetch('assets/lang/' + lang + '.json?v=20260703');
     translations = await resp.json();
   } catch {
     await loadLang('it');
