@@ -391,24 +391,11 @@ async function ensureDefaultAdminUser() {
 
 const NAV_STRUCTURE = [
   { categoryKey: 'nav.systema', items: [
-    { labelKey: 'nav.datacenter', href: 'datacenter.html' },
-    { labelKey: 'nav.volumeCorrector', href: 'volume-corrector.html' }
-  ]},
-  { categoryKey: 'nav.embedded', items: [
-    { labelKey: 'nav.embeddedHome', href: 'embedded.html' },
-    { labelKey: 'nav.architetturaModulare', href: 'embedded/architettura-modulare.html' },
-    { labelKey: 'nav.osCooperativo', href: 'embedded/sistema-operativo-cooperativo.html' },
-    { labelKey: 'nav.gestioneInterrupt', href: 'embedded/gestione-interrupt.html' },
-    { labelKey: 'nav.letturaNtc', href: 'embedded/lettura-ntc.html' },
-    { labelKey: 'nav.macchinaStati', href: 'embedded/macchina-a-stati.html' },
-    { labelKey: 'nav.controlloTriac', href: 'embedded/controllo-triac.html' },
-    { labelKey: 'nav.letturaTacho', href: 'embedded/lettura-tachimetrica.html' },
-    { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
-    { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
-    { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
+    { labelKey: 'nav.datacenter', href: 'datacenter.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
-    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
+    { labelKey: 'nav.ticketing', href: 'ticketing.html' },
+    { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
   ]},
   { categoryKey: 'nav.utility', items: [
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
@@ -417,10 +404,10 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.normative', href: 'normative.html' },
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
   ]},
-  { categoryKey: 'nav.progetti', items: [
-    { labelKey: 'nav.progettiHome', href: 'progetti.html' }
-  ]},
   { categoryKey: 'nav.sysem', items: [
+    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
+    { labelKey: 'nav.download', href: 'download-applicativi.html' },
+    { labelKey: 'nav.about', href: 'about.html' },
     { labelKey: 'nav.ai', href: 'ai.html' },
     { labelKey: 'nav.contatti', href: 'contact.html' }
   ]}
