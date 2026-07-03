@@ -21,7 +21,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftp
+          protocol: ftps
+          security: loose
           local-dir: './'
           server-dir: './public_html/'
           exclude: |
@@ -29,9 +30,14 @@ jobs:
             **/.git*/**
             **/.github/**
             **/README.md
+            **/AGGIORNAMENTO_RELEASE_WEB.md
+            **/AI_STATUS_BAR_CHANGES.md
             docker-compose.yml
             Dockerfile
             ddns-config.json
             .gitignore
+            **/*.py
+            **/*.docx
+            **/*.pdf
           log-level: verbose
           dangerous-clean-slate: false
