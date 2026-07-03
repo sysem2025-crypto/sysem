@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:          # permette rilancio manuale da GitHub Actions
 
 jobs:
   deploy:
@@ -14,15 +15,85 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: FTP Deploy
+      # Tentativo 1
+      - name: FTP Deploy (tentativo 1/3)
+        id: ftp1
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        continue-on-error: true
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: './'
+          server-dir: './public_html/'
+          exclude: |
+            **/.git/**
+            **/.git*/**
+            **/.github/**
+            **/README.md
+            **/AGGIORNAMENTO_RELEASE_WEB.md
+            **/AI_STATUS_BAR_CHANGES.md
+            docker-compose.yml
+            Dockerfile
+            ddns-config.json
+            .gitignore
+            **/*.py
+            **/*.docx
+            **/*.pdf
+          log-level: verbose
+          dangerous-clean-slate: false
+
+      # Tentativo 2 — solo se il primo è fallito
+      - name: Attesa prima del retry (15s)
+        if: steps.ftp1.outcome == 'failure'
+        run: sleep 15
+
+      - name: FTP Deploy (tentativo 2/3)
+        id: ftp2
+        if: steps.ftp1.outcome == 'failure'
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        continue-on-error: true
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: './'
+          server-dir: './public_html/'
+          exclude: |
+            **/.git/**
+            **/.git*/**
+            **/.github/**
+            **/README.md
+            **/AGGIORNAMENTO_RELEASE_WEB.md
+            **/AI_STATUS_BAR_CHANGES.md
+            docker-compose.yml
+            Dockerfile
+            ddns-config.json
+            .gitignore
+            **/*.py
+            **/*.docx
+            **/*.pdf
+          log-level: verbose
+          dangerous-clean-slate: false
+
+      # Tentativo 3 — solo se anche il secondo è fallito
+      - name: Attesa prima del terzo tentativo (30s)
+        if: steps.ftp1.outcome == 'failure' && steps.ftp2.outcome == 'failure'
+        run: sleep 30
+
+      - name: FTP Deploy (tentativo 3/3)
+        if: steps.ftp1.outcome == 'failure' && steps.ftp2.outcome == 'failure'
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftps
-          security: loose
+          protocol: ftp
           local-dir: './'
           server-dir: './public_html/'
           exclude: |
