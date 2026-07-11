@@ -87,8 +87,10 @@
           try {
             await window.supabaseLogin(email, password);
             const params = new URLSearchParams(window.location.search);
-            const returnUrl = params.get('return') || 'index.html';
-            window.location.href = returnUrl;
+            const safeReturnUrl = window.getSafeReturnUrl
+              ? window.getSafeReturnUrl(params.get('return'), 'index.html')
+              : 'index.html';
+            window.location.href = safeReturnUrl;
           } catch (err) {
             feedback.textContent = err.message || 'Credenziali non valide';
           }

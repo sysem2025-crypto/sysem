@@ -97,16 +97,11 @@ async function loadLang(lang) {
         "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
         "volumeCorrector": "Correttore Volumi",
         "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
-        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing", "ticketPortal": "Portale ticket",
+        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
         "utility": "Utility",
-        "sistemi": "Sistemi",
-        "downloadApplicativi": "Download applicativi",
-        "sensori": "Sensori e caratterizzazione",
-        "formule": "Formule di compressione",
-        "protocolli": "Protocolli",
-        "normative": "Normative",
-        "guidaNorme": "Guida applicazione norme",
-        "utilityHub": "Utility",
+        "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
+        "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
+        "normative": "Normative", "guidaNorme": "Guida applicazione norme",
         "progetti": "Progetti", "progettiHome": "Progetti",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
@@ -367,6 +362,29 @@ function getAllowedLanding(role) {
   return 'access.html';
 }
 
+function getSafeReturnUrl(candidate, fallback) {
+  if (typeof candidate !== 'string' || !candidate) {
+    return fallback;
+  }
+
+  if (!candidate.startsWith('/') || candidate.startsWith('//')) {
+    return fallback;
+  }
+
+  try {
+    const parsed = new URL(candidate, window.location.origin);
+    if (parsed.origin !== window.location.origin) {
+      return fallback;
+    }
+
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
+window.getSafeReturnUrl = getSafeReturnUrl;
+
 async function ensureDefaultAdminUser() {
   try {
     await checkApi();
@@ -394,8 +412,7 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.datacenter', href: 'datacenter.html' }
   ]},
   { categoryKey: 'nav.tiketing', items: [
-    { labelKey: 'nav.ticketing', href: 'ticketing.html' },
-    { labelKey: 'nav.ticketPortal', href: 'http://192.168.1.190:3000/ticket/nuovo' }
+    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
   ]},
   { categoryKey: 'nav.utility', items: [
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
@@ -588,8 +605,8 @@ function initAccessPage() {
         setCachedUser(data.user);
         localStorage.setItem(STORAGE_KEYS.sessionEmail, data.user.email);
         var params = new URLSearchParams(window.location.search);
-        var returnUrl = params.get('return');
-        window.location.href = returnUrl || getAllowedLanding(data.user.role);
+        var returnUrl = getSafeReturnUrl(params.get('return'), getAllowedLanding(data.user.role));
+        window.location.href = returnUrl;
       })
       .catch(function(err) {
         feedback.textContent = err.message || 'Credenziali non valide';

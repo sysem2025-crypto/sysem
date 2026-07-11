@@ -3,7 +3,7 @@ version: "3.8"
 services:
   modus-api:
     build:
-      context: F:/Life_OS/01_Lavoro/02_ProgettiClienti/20_RemoteModusClient
+      context: F:/Life_OS/02_ProgettiPersonali/06_Sysem
       dockerfile: F:/Life_OS/02_ProgettiPersonali/06_Sysem/Dockerfile
     container_name: modus-api
     ports:

@@ -1096,6 +1096,48 @@ a {
   background: var(--white);
 }
 
+.ai-gate {
+  width: 100%;
+  max-width: 720px;
+  margin-top: 20px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(252, 250, 244, 0.88);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.ai-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-gate-label {
+  margin: 0;
+  color: var(--aqua);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ai-gate-copy {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(31, 26, 22, 0.75);
+}
+
+.ai-gate-note {
+  color: rgba(31, 26, 22, 0.55);
+  font-size: 0.86rem;
+}
+
 .ai-frame iframe {
   width: 100%;
   height: 100%;

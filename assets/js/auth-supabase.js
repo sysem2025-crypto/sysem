@@ -23,7 +23,13 @@
   function normalizeEmail(e) { return String(e || '').trim().toLowerCase(); }
 
   // Supabase client
-  function getSb() { return window.supabaseClient || (window.supabaseClient = supabase.createClient('https://auzzyobxnoliswpvcvsa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNzI4MDAsImV4cCI6MjA1ODk0ODgwMH0.Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8')); }
+  function getSb() {
+    if (typeof window.getSupabase === 'function') {
+      return window.getSupabase();
+    }
+
+    return window.supabaseClient || (window.supabaseClient = supabase.createClient('https://auzzyobxnoliswpvcvsa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNzI4MDAsImV4cCI6MjA1ODk0ODgwMH0.Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8'));
+  }
 
   // Cache utente Supabase
   async function getCurrentUserSupabase() {

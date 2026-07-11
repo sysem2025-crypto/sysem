@@ -36,10 +36,22 @@
     <section class="hero auth-hero" aria-labelledby="page-title">
       <p data-i18n="page.ai.overline">Innovazione</p>
       <h1 id="page-title" data-i18n="page.ai.title">Intelligenza Artificiale</h1>
-      <p class="hero-subtitle" data-i18n="page.ai.subtitle">Il mio clone digitale</p>
+      <p class="hero-subtitle" data-i18n="page.ai.subtitle">Modalita guest disponibile, login opzionale</p>
 
-      <div class="ai-frame">
-        <iframe id="ai-iframe" src="https://gianluca-ai-ten.vercel.app" title="Assistente AI SYSEM" allow="clipboard-read; clipboard-write" loading="lazy"></iframe>
+      <div class="ai-gate" id="ai-gate">
+        <p class="ai-gate-label">Modalita guest</p>
+        <p class="ai-gate-copy">
+          Puoi usare l'assistente subito. Se accedi con l'account SYSEM, la sessione viene passata
+          automaticamente anche all'AI.
+        </p>
+        <div class="ai-gate-actions">
+          <a class="btn-download" href="access.html?return=ai.html">Accedi</a>
+          <span class="ai-gate-note">Nessuna registrazione separata</span>
+        </div>
+      </div>
+
+      <div class="ai-frame" id="ai-frame">
+        <iframe id="ai-iframe" data-src="https://gianluca-ai-ten.vercel.app" src="https://gianluca-ai-ten.vercel.app" title="Assistente AI SYSEM" allow="clipboard-read; clipboard-write" loading="lazy"></iframe>
       </div>
     </section>
   </main>
@@ -48,15 +60,20 @@
   <script>
     (function() {
       var iframe = document.getElementById('ai-iframe');
+      var gate = document.getElementById('ai-gate');
       if (!iframe) return;
-      var sb = window.supabaseClient;
+      var sb = typeof window.getSupabase === 'function' ? window.getSupabase() : window.supabaseClient;
       if (sb) {
         sb.auth.getSession().then(function(res) {
           if (res.data.session) {
-            var url = new URL(iframe.src);
+            var url = new URL(iframe.dataset.src || iframe.src, window.location.href);
             url.searchParams.set('token', res.data.session.access_token);
             url.searchParams.set('email', res.data.session.user.email);
             iframe.src = url.toString();
+            if (gate) {
+              gate.querySelector('.ai-gate-label').textContent = 'Sessione SYSEM attiva';
+              gate.querySelector('.ai-gate-copy').textContent = "L'account principale e collegato all'assistente AI.";
+            }
           }
         });
       }

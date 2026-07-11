@@ -47,33 +47,6 @@
       </div>
     </section>
 
-    <!-- DEBUG: quick-access section -->
-    <section class="quick-access" aria-label="Accesso rapido">
-      <h2>Accesso rapido</h2>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Datacenter comunicazione dati</h2>
-          <p>Infrastruttura per telecontrollo e telelettura utilities. Modus Client, API, socket listener.</p>
-          <p><a class="btn-download" href="datacenter.html">Apri Datacenter</a></p>
-        </article>
-        <article class="auth-card">
-          <h2>Virtualizzatore Correttore Volumi</h2>
-          <p>Calcolo fattore di compressibilità (C) per gruppi misura gas. Formule SGERG/AGA.</p>
-          <p><a class="btn-download" href="volume-corrector.html">Apri Virtualizzatore</a></p>
-        </article>
-        <article class="auth-card">
-          <h2>Sistema di Ticketing</h2>
-          <p>Gestione interventi, segnalazioni e manutenzioni impianti.</p>
-          <p><a class="btn-download" href="ticketing.html">Apri Ticketing</a></p>
-        </article>
-        <article class="auth-card">
-          <h2>Download Applicativi</h2>
-          <p>Area riservata per GeniusMonitor, RTU Terminal, aggiornamenti firmware.</p>
-          <p><a class="btn-download" href="download-applicativi.html">Download</a></p>
-        </article>
-      </div>
-    </section>
-    <!-- END DEBUG -->
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -88,9 +61,23 @@
         .then(function (r) { return r.json(); })
         .then(function (entries) {
           var lastThree = entries.slice(-3).reverse();
-          list.innerHTML = lastThree.map(function (e) {
-            return '<div class="changelog-entry"><time class="changelog-date">' + e.date + '</time><span class="changelog-text">' + e.text + '</span></div>';
-          }).join('');
+          list.innerHTML = '';
+          lastThree.forEach(function (entry) {
+            var row = document.createElement('div');
+            row.className = 'changelog-entry';
+
+            var time = document.createElement('time');
+            time.className = 'changelog-date';
+            time.textContent = entry.date;
+
+            var text = document.createElement('span');
+            text.className = 'changelog-text';
+            text.textContent = entry.text;
+
+            row.appendChild(time);
+            row.appendChild(text);
+            list.appendChild(row);
+          });
         })
         .catch(function () {
           list.innerHTML = '<p class="changelog-empty">Nessun aggiornamento registrato.</p>';
