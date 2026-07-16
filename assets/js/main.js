@@ -102,7 +102,7 @@ async function loadLang(lang) {
         "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
         "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida applicazione norme",
-        "progetti": "Progetti", "progettiHome": "Progetti",
+        "progetti": "Progetti", "progettiHome": "Progetti", "telecontrollo": "Telecontrollo",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
         "architetturaModulare": "Architettura Modulare PIC",
@@ -169,6 +169,7 @@ async function loadLang(lang) {
         "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
         "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
         "progetti": { "overline": "Progetti", "title": "Progetti", "metaTitle": "Progetti" },
+        "telecontrollo": { "overline": "Telecontrollo", "title": "Sistema di Telecontrollo", "subtitle": "Monitoraggio e automazione per impianti di sollevamento acque", "metaTitle": "Telecontrollo" },
         "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
         "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
         "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
@@ -420,6 +421,10 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.protocolli', href: 'protocolli.html' },
     { labelKey: 'nav.normative', href: 'normative.html' },
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
+  ]},
+  { categoryKey: 'nav.progetti', items: [
+    { labelKey: 'nav.progettiHome', href: 'progetti.html' },
+    { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
