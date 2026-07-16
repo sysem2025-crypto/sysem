@@ -431,9 +431,7 @@ const NAV_STRUCTURE = [
       { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
       { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
       { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
-    ]}
-  ]},
-  { categoryKey: 'nav.utility', items: [
+    ]},
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
     { labelKey: 'nav.formule', href: 'formule-compressione.html' },
     { labelKey: 'nav.protocolli', href: 'protocolli.html', children: [
