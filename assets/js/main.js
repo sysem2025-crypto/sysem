@@ -445,8 +445,9 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
   ]},
   { categoryKey: 'nav.telecontrollo', items: [
-    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' },
-    { labelKey: 'nav.cedam3', href: 'cedam3.html' }
+    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html', children: [
+      { labelKey: 'nav.cedam3', href: 'cedam3.html' }
+    ]}
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
