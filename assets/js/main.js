@@ -103,7 +103,8 @@ async function loadLang(lang) {
         "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida applicazione norme",
         "progetti": "Progetti", "progettiHome": "Progetti",
-        "telecontrollo": "Telecontrollo",
+        "telecontrollo": "Telecontrollo", "cedam3": "Cedam 3",
+        "ctr": "Sezione CTR", "pot": "Sezione POT", "dlms": "Sezione DLMS",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
         "architetturaModulare": "Architettura Modulare PIC",
@@ -267,7 +268,7 @@ function updateNavLabels() {
     const key = el.dataset.i18nCat;
     if (key) el.textContent = t(key);
   });
-  menuList.querySelectorAll('.nav-sub a').forEach(function(a) {
+  menuList.querySelectorAll('.nav-sub a, .nav-subitem a').forEach(function(a) {
     const key = a.dataset.i18nItem;
     if (key) a.textContent = t(key);
   });
@@ -419,12 +420,30 @@ const NAV_STRUCTURE = [
   ]},
   { categoryKey: 'nav.progetti', items: [
     { labelKey: 'nav.progettiHome', href: 'progetti.html' },
+    { labelKey: 'nav.embedded', href: 'embedded.html', children: [
+      { labelKey: 'nav.architetturaModulare', href: 'embedded/architettura-modulare.html' },
+      { labelKey: 'nav.osCooperativo', href: 'embedded/sistema-operativo-cooperativo.html' },
+      { labelKey: 'nav.gestioneInterrupt', href: 'embedded/gestione-interrupt.html' },
+      { labelKey: 'nav.letturaNtc', href: 'embedded/lettura-ntc.html' },
+      { labelKey: 'nav.macchinaStati', href: 'embedded/macchina-a-stati.html' },
+      { labelKey: 'nav.controlloTriac', href: 'embedded/controllo-triac.html' },
+      { labelKey: 'nav.letturaTacho', href: 'embedded/lettura-tachimetrica.html' },
+      { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
+      { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
+      { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
+    ]},
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
     { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
+    { labelKey: 'nav.protocolli', href: 'protocolli.html', children: [
+      { labelKey: 'nav.ctr', href: 'protocollo-ctr.html' },
+      { labelKey: 'nav.pot', href: 'protocollo-pot.html' },
+      { labelKey: 'nav.dlms', href: 'protocollo-dlms.html' }
+    ]},
     { labelKey: 'nav.normative', href: 'normative.html' },
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-    { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' }
+    { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html', children: [
+      { labelKey: 'nav.cedam3', href: 'cedam3.html' }
+    ]}
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
@@ -472,6 +491,24 @@ function renderNavigation(currentPage) {
         link.setAttribute('aria-current', 'page');
       }
       itemLi.appendChild(link);
+      if (item.children && item.children.length > 0) {
+        const nestedUl = document.createElement('ul');
+        nestedUl.className = 'nav-nested';
+        item.children.forEach(function(child) {
+          const childLi = document.createElement('li');
+          childLi.className = 'nav-subitem';
+          const childLink = document.createElement('a');
+          childLink.href = child.href;
+          childLink.dataset.i18nItem = child.labelKey;
+          childLink.textContent = t(child.labelKey);
+          if (currentPage && child.href.indexOf(currentPage) !== -1) {
+            childLink.setAttribute('aria-current', 'page');
+          }
+          childLi.appendChild(childLink);
+          nestedUl.appendChild(childLi);
+        });
+        itemLi.appendChild(nestedUl);
+      }
       menuList.appendChild(itemLi);
     });
   });

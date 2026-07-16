@@ -165,6 +165,26 @@ a {
 .overlay-menu.active nav ul li:nth-child(13) { transition-delay: 0.41s; }
 .overlay-menu.active nav ul li:nth-child(14) { transition-delay: 0.44s; }
 .overlay-menu.active nav ul li:nth-child(15) { transition-delay: 0.47s; }
+.overlay-menu.active nav ul li:nth-child(16) { transition-delay: 0.50s; }
+.overlay-menu.active nav ul li:nth-child(17) { transition-delay: 0.53s; }
+.overlay-menu.active nav ul li:nth-child(18) { transition-delay: 0.56s; }
+.overlay-menu.active nav ul li:nth-child(19) { transition-delay: 0.59s; }
+.overlay-menu.active nav ul li:nth-child(20) { transition-delay: 0.62s; }
+.overlay-menu.active nav ul li:nth-child(21) { transition-delay: 0.65s; }
+.overlay-menu.active nav ul li:nth-child(22) { transition-delay: 0.68s; }
+.overlay-menu.active nav ul li:nth-child(23) { transition-delay: 0.71s; }
+.overlay-menu.active nav ul li:nth-child(24) { transition-delay: 0.74s; }
+.overlay-menu.active nav ul li:nth-child(25) { transition-delay: 0.77s; }
+.overlay-menu.active nav ul li:nth-child(26) { transition-delay: 0.80s; }
+.overlay-menu.active nav ul li:nth-child(27) { transition-delay: 0.83s; }
+.overlay-menu.active nav ul li:nth-child(28) { transition-delay: 0.86s; }
+.overlay-menu.active nav ul li:nth-child(29) { transition-delay: 0.89s; }
+.overlay-menu.active nav ul li:nth-child(30) { transition-delay: 0.92s; }
+.overlay-menu.active nav ul li:nth-child(31) { transition-delay: 0.95s; }
+.overlay-menu.active nav ul li:nth-child(32) { transition-delay: 0.98s; }
+.overlay-menu.active nav ul li:nth-child(33) { transition-delay: 1.01s; }
+.overlay-menu.active nav ul li:nth-child(34) { transition-delay: 1.04s; }
+.overlay-menu.active nav ul li:nth-child(35) { transition-delay: 1.07s; }
 
 .overlay-menu nav ul li.nav-category {
   margin: 18px 0 4px;
@@ -196,6 +216,38 @@ a {
 }
 
 .overlay-menu nav ul li.nav-sub a:hover {
+  color: #5a3024;
+}
+
+.overlay-menu nav ul ul.nav-nested {
+  margin-top: 10px;
+  padding-left: 24px;
+  list-style: none;
+}
+
+.overlay-menu nav ul li.nav-subitem {
+  margin: 5px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease-out;
+}
+
+.overlay-menu.active nav ul li.nav-subitem {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.25s;
+}
+
+.overlay-menu nav ul li.nav-subitem a {
+  font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: color 0.3s ease;
+}
+
+.overlay-menu nav ul li.nav-subitem a:hover {
   color: #5a3024;
 }
 
