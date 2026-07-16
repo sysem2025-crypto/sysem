@@ -419,33 +419,17 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' }
   ]},
   { categoryKey: 'nav.progetti', items: [
-    { labelKey: 'nav.progettiHome', href: 'progetti.html' },
-    { labelKey: 'nav.embedded', href: 'embedded.html', children: [
-      { labelKey: 'nav.architetturaModulare', href: 'embedded/architettura-modulare.html' },
-      { labelKey: 'nav.osCooperativo', href: 'embedded/sistema-operativo-cooperativo.html' },
-      { labelKey: 'nav.gestioneInterrupt', href: 'embedded/gestione-interrupt.html' },
-      { labelKey: 'nav.letturaNtc', href: 'embedded/lettura-ntc.html' },
-      { labelKey: 'nav.macchinaStati', href: 'embedded/macchina-a-stati.html' },
-      { labelKey: 'nav.controlloTriac', href: 'embedded/controllo-triac.html' },
-      { labelKey: 'nav.letturaTacho', href: 'embedded/lettura-tachimetrica.html' },
-      { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
-      { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
-      { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
-    ]},
+    { labelKey: 'nav.progettiHome', href: 'progetti.html' }
+  ]},
+  { categoryKey: 'nav.utility', items: [
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
     { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html', children: [
-      { labelKey: 'nav.ctr', href: 'protocollo-ctr.html' },
-      { labelKey: 'nav.pot', href: 'protocollo-pot.html' },
-      { labelKey: 'nav.dlms', href: 'protocollo-dlms.html' }
-    ]},
+    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
     { labelKey: 'nav.normative', href: 'normative.html' },
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
   ]},
   { categoryKey: 'nav.telecontrollo', items: [
-    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html', children: [
-      { labelKey: 'nav.cedam3', href: 'cedam3.html' }
-    ]}
+    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
