@@ -417,15 +417,13 @@ const NAV_STRUCTURE = [
   { categoryKey: 'nav.tiketing', items: [
     { labelKey: 'nav.ticketing', href: 'ticketing.html' }
   ]},
-  { categoryKey: 'nav.utility', items: [
+  { categoryKey: 'nav.progetti', items: [
+    { labelKey: 'nav.progettiHome', href: 'progetti.html' },
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
     { labelKey: 'nav.formule', href: 'formule-compressione.html' },
     { labelKey: 'nav.protocolli', href: 'protocolli.html' },
     { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
-  ]},
-  { categoryKey: 'nav.progetti', items: [
-    { labelKey: 'nav.progettiHome', href: 'progetti.html' },
+    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
     { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
