@@ -7,7 +7,7 @@
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.telecontrollo.metaTitle">Telecontrollo | SYSEM</title>
-  <meta name="description" content="Sistema di telecontrollo per impianti di sollevamento e trattamento acque: monitoraggio livelli serbatoi, automazione pompe, allarmi, fasce orarie e diagnostica remota.">
+  <meta name="description" content="Applicazioni di telecontrollo SYSEM per utilities: automazione impianti, monitoraggio remoto e gestione acque.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260615">
 </head>
 
@@ -32,93 +32,28 @@
 
     <section class="hero auth-hero" aria-labelledby="page-title">
       <p data-i18n="page.telecontrollo.overline">Telecontrollo</p>
-      <h1 id="page-title" data-i18n="page.telecontrollo.title">Sistema di Telecontrollo</h1>
-      <p class="hero-subtitle" data-i18n="page.telecontrollo.subtitle">Monitoraggio e automazione per impianti di sollevamento acque</p>
+      <h1 id="page-title" data-i18n="page.telecontrollo.title">Applicazioni di Telecontrollo</h1>
+      <p class="hero-subtitle" data-i18n="page.telecontrollo.subtitle">Soluzioni per automazione e monitoraggio remoto di impianti utility</p>
 
       <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Panoramica</h2>
-          <p>Piattaforma software per il telecontrollo di impianti idrici: gestione serbatoi, automazione pompe, allarmi configurabili e diagnostica da remoto.</p>
+        <article class="auth-card" id="cedam3">
+          <h2>Cedam 3</h2>
+          <p><strong>Obiettivo:</strong> Sistema di automazione e telecontrollo per impianti di sollevamento e trattamento acque.</p>
+          <p><strong>Piattaforma:</strong> Windows MFC (C++), SQL Server</p>
+          <p><strong>Funzionalit&agrave;:</strong></p>
           <ul class="normative-list">
-            <li>Due modalit&agrave; operative: <strong>Automatica</strong> (controllo a volumi) e <strong>a Livelli</strong> serbatoio</li>
-            <li>Automazione gruppi pompa con timer minimi partenza/esercizio</li>
-            <li>Programmazione fasce orarie con soglie differenziate</li>
-            <li>Allarmi configurabili con soglie, isteresi e ritardi</li>
-            <li>Logger eventi e storico allarmi</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Architettura</h2>
-          <p>Applicazione Windows nativa con database SQL Server per configurazione e storicit&agrave; dati.</p>
-          <ul class="normative-list">
-            <li><strong>Frontend:</strong> interfaccia nativa Windows MFC (C++)</li>
-            <li><strong>Backend:</strong> SQL Server su rete locale</li>
-            <li><strong>Comunicazione:</strong> IP e Radio verso RTU in campo</li>
-            <li><strong>Statistiche:</strong> connettivit&agrave; IP/Radio per ogni RTU</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Impianti gestiti</h2>
-          <p>Controllo simultaneo di pi&ugrave; sistemi con logiche indipendenti.</p>
-          <ul class="normative-list">
-            <li><strong>S.Anna</strong> &mdash; 3 serbatoi, automazione a volumi/livelli</li>
-            <li><strong>Piardarossa</strong> &mdash; 1 serbatoio, automazione a volumi/livelli</li>
-            <li><strong>Frassineto</strong> &mdash; monitoraggio e statistiche</li>
-            <li><strong>Terranova</strong> &mdash; monitoraggio e statistiche</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Programmazione Fasce Orarie</h2>
-          <p>Il sistema modula le soglie di volume dei serbatoi su base oraria, con valori differenziati per feriale, sabato e festivo.</p>
-          <ul class="normative-list">
-            <li>Tabella <code>livellifasceorarie_sanna</code> / <code>livellifasceorarie_piardarossa</code> con soglie 0-23 per Feriale, Sabato, Festivi</li>
-            <li>Interpolazione lineare tra una soglia oraria e la successiva per transizioni graduali</li>
-            <li>Calcolo portata richiesta: <code>Q = (soglia_corrente - volume_attuale) / tempo_recupero</code></li>
-            <li>Accensione/spegnimento pompe per inseguire il profilo target con isteresi</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Specifica Fasce Orarie</h2>
-          <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
-            <thead>
-              <tr style="border-bottom:1px solid rgba(31,26,22,0.2);">
-                <th style="padding:4px 6px; text-align:left;">Ora</th>
-                <th style="padding:4px 6px; text-align:right;">Feriale</th>
-                <th style="padding:4px 6px; text-align:right;">Sabato</th>
-                <th style="padding:4px 6px; text-align:right;">Festivo</th>
-                <th style="padding:4px 6px; text-align:left;">Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td style="padding:2px 6px;">00-05</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px; text-align:right;">15%</td><td style="padding:2px 6px;">Notte &mdash; riserva minima</td></tr>
-              <tr><td style="padding:2px 6px;">06-07</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Inizio attivit&agrave;</td></tr>
-              <tr><td style="padding:2px 6px;">08-11</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">25%</td><td style="padding:2px 6px;">Picco consumo</td></tr>
-              <tr><td style="padding:2px 6px;">12-13</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px;">Pausa</td></tr>
-              <tr><td style="padding:2px 6px;">14-17</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px;">Secondo picco</td></tr>
-              <tr><td style="padding:2px 6px;">18-21</td><td style="padding:2px 6px; text-align:right;">70%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">35%</td><td style="padding:2px 6px;">Rientro serale</td></tr>
-              <tr><td style="padding:2px 6px;">22-23</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Chiusura</td></tr>
-            </tbody>
-          </table>
-          <p style="margin-top:8px; font-size:0.78rem; color:rgba(31,26,22,0.65);">
-          <strong>Legenda:</strong> valori % rispetto al volume massimo del serbatoio. La selezione del profilo segue la priorit&agrave;: Festivo &gt; Domenica &gt; Sabato &gt; Feriale.
-          </p>
-        </article>
-
-        <article class="auth-card">
-          <h2>Progetto Cedam 3</h2>
-          <p>Implementazione completa del sistema di telecontrollo, sviluppata in C++ MFC con SQL Server.</p>
-          <ul class="normative-list">
-            <li>Controllo fino a 5 serbatoi e 100 pompe raggruppabili</li>
-            <li>Sistema allarmi con soglie, isteresi, ritardi e tacitazione</li>
+            <li>Due modalit&agrave; operative: Automatica (controllo a volumi) e a Livelli serbatoio</li>
+            <li>Gestione fino a 5 serbatoi e 100 pompe raggruppabili</li>
+            <li>Sistema allarmi configurabile con soglie, isteresi, ritardi, tacitazione</li>
+            <li>Programmazione fasce orarie con soglie differenziate (feriali/sabato/festivi)</li>
+            <li>Interpolazione lineare tra soglie orarie per transizioni graduali</li>
             <li>Controllavaggio programmato</li>
-            <li>Fasce orarie personalizzabili</li>
-            <li>Watchdog di sistema e diagnostica comunicazioni</li>
+            <li>Statistiche comunicazione IP e Radio per ogni RTU</li>
+            <li>Logger eventi e allarmi con storico</li>
+            <li>Watchdog di sistema</li>
           </ul>
-          <p><a class="btn-download" href="progetti.html#cedam3">Vedi il progetto &rarr;</a></p>
+          <p><strong>Impianti:</strong> S.Anna (3 serbatoi), Piardarossa, Frassineto, Terranova</p>
+          <p><a class="btn-download" href="cedam3.html">Apri pagina dedicata &rarr;</a></p>
         </article>
       </div>
 
