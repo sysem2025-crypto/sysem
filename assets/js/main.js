@@ -103,7 +103,7 @@ async function loadLang(lang) {
         "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida applicazione norme",
         "progetti": "Progetti", "progettiHome": "Progetti",
-        "telecontrollo": "Telecontrollo", "telecontrolloHome": "Telecontrollo",
+        "telecontrollo": "Telecontrollo",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
         "architetturaModulare": "Architettura Modulare PIC",
@@ -425,10 +425,8 @@ const NAV_STRUCTURE = [
     { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
   ]},
   { categoryKey: 'nav.progetti', items: [
-    { labelKey: 'nav.progettiHome', href: 'progetti.html' }
-  ]},
-  { categoryKey: 'nav.telecontrollo', items: [
-    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' }
+    { labelKey: 'nav.progettiHome', href: 'progetti.html' },
+    { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
