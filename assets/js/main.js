@@ -103,7 +103,7 @@ async function loadLang(lang) {
         "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida applicazione norme",
         "progetti": "Progetti", "progettiHome": "Progetti",
-        "telecontrollo": "Telecontrollo", "cedam3": "Cedam 3",
+        "telecontrollo": "Telecontrollo", "telecontrolloHome": "Telecontrollo", "cedam3": "Cedam 3",
         "ctr": "Sezione CTR", "pot": "Sezione POT", "dlms": "Sezione DLMS",
         "sysem": "Sysem",
         "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
@@ -431,7 +431,9 @@ const NAV_STRUCTURE = [
       { labelKey: 'nav.protocolloTlc', href: 'embedded/protocollo-tlc.html' },
       { labelKey: 'nav.gestioneEeprom', href: 'embedded/gestione-eeprom.html' },
       { labelKey: 'nav.debugProduzione', href: 'embedded/debug-produzione.html' }
-    ]},
+    ]}
+  ]},
+  { categoryKey: 'nav.utility', items: [
     { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
     { labelKey: 'nav.formule', href: 'formule-compressione.html' },
     { labelKey: 'nav.protocolli', href: 'protocolli.html', children: [
@@ -440,10 +442,11 @@ const NAV_STRUCTURE = [
       { labelKey: 'nav.dlms', href: 'protocollo-dlms.html' }
     ]},
     { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-    { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html', children: [
-      { labelKey: 'nav.cedam3', href: 'cedam3.html' }
-    ]}
+    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
+  ]},
+  { categoryKey: 'nav.telecontrollo', items: [
+    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' },
+    { labelKey: 'nav.cedam3', href: 'cedam3.html' }
   ]},
   { categoryKey: 'nav.sysem', items: [
     { labelKey: 'nav.sistemi', href: 'sistemi.html' },
