@@ -492,6 +492,17 @@ function renderNavigation(currentPage) {
       }
       itemLi.appendChild(link);
       if (item.children && item.children.length > 0) {
+        itemLi.classList.add('has-children');
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'nav-sub-toggle';
+        toggleBtn.textContent = '+';
+        toggleBtn.setAttribute('aria-label', 'Espandi sottomenu');
+        toggleBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const expanded = itemLi.classList.toggle('expanded');
+          toggleBtn.textContent = expanded ? '−' : '+';
+        });
+        itemLi.appendChild(toggleBtn);
         const nestedUl = document.createElement('ul');
         nestedUl.className = 'nav-nested';
         item.children.forEach(function(child) {

@@ -219,27 +219,49 @@ a {
   color: #5a3024;
 }
 
+.overlay-menu nav ul li.nav-sub.has-children {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.overlay-menu nav ul li.nav-sub .nav-sub-toggle {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+  padding: 0 2px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.overlay-menu nav ul li.nav-sub .nav-sub-toggle:hover {
+  opacity: 1;
+}
+
 .overlay-menu nav ul ul.nav-nested {
-  margin-top: 10px;
-  padding-left: 24px;
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  padding: 0;
   list-style: none;
 }
 
-.overlay-menu nav ul li.nav-subitem {
-  margin: 5px 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s ease-out;
+.overlay-menu nav ul li.nav-sub.expanded ul.nav-nested {
+  display: block;
 }
 
-.overlay-menu.active nav ul li.nav-subitem {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.25s;
+.overlay-menu nav ul li.nav-subitem {
+  margin: 4px 0;
 }
 
 .overlay-menu nav ul li.nav-subitem a {
-  font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+  font-size: clamp(0.9rem, 2vw, 1.15rem);
   font-weight: 600;
   color: var(--ink);
   text-transform: uppercase;
