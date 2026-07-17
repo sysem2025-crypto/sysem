@@ -181,7 +181,7 @@ async function loadLang(lang) {
         "programAccess": { "overline": "Program access", "title": "Accesso Programma", "metaTitle": "Program Access" },
         "admin": { "overline": "Controllo accessi", "title": "Gestione Accessi", "metaTitle": "Admin Accessi" },
         "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" },
-        "utility": { "overline": "Knowledge base", "title": "Utility", "metaTitle": "Utility" }
+        "utility": { "overline": "Documentazione tecnica", "title": "Utility", "metaTitle": "Utility" }
       }
     };
     return;
@@ -408,20 +408,12 @@ async function ensureDefaultAdminUser() {
 }
 
 const NAV_STRUCTURE = [
-  { labelKey: 'nav.datacenter', href: 'datacenter.html' },
-  { labelKey: 'nav.ticketing', href: 'ticketing.html' },
-  { labelKey: 'nav.progettiHome', href: 'progetti.html' },
-  { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-  { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-  { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-  { labelKey: 'nav.normative', href: 'normative.html' },
-  { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
-  { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' },
-  { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-  { labelKey: 'nav.download', href: 'download-applicativi.html' },
-  { labelKey: 'nav.about', href: 'about.html' },
-  { labelKey: 'nav.ai', href: 'ai.html' },
-  { labelKey: 'nav.contatti', href: 'contact.html' }
+  { labelKey: 'nav.systema', href: 'datacenter.html' },
+  { labelKey: 'nav.tiketing', href: 'ticketing.html' },
+  { labelKey: 'nav.progetti', href: 'progetti.html' },
+  { labelKey: 'nav.utility', href: 'utility.html' },
+  { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' },
+  { labelKey: 'nav.sysem', href: 'sistemi.html' }
 ];
 
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
