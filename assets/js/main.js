@@ -99,7 +99,7 @@ async function loadLang(lang) {
         "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
         "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
         "utility": "Utility",
-        "sistemi": "Sistemi", "download": "Download applicativi", "about": "Studio Tecnico Informatico",
+        "sistemi": "Sistemi", "download": "Download applicativi",
         "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
         "normative": "Normative", "guidaNorme": "Guida applicazione norme",
         "progetti": "Progetti", "progettiHome": "Progetti",
@@ -264,11 +264,7 @@ async function setLang(lang) {
 function updateNavLabels() {
   const menuList = document.querySelector('#overlay-menu ul');
   if (!menuList) return;
-  menuList.querySelectorAll('.nav-cat-label').forEach(function(el) {
-    const key = el.dataset.i18nCat;
-    if (key) el.textContent = t(key);
-  });
-  menuList.querySelectorAll('.nav-sub a, .nav-subitem a').forEach(function(a) {
+  menuList.querySelectorAll('.nav-sub a').forEach(function(a) {
     const key = a.dataset.i18nItem;
     if (key) a.textContent = t(key);
   });
@@ -412,32 +408,20 @@ async function ensureDefaultAdminUser() {
 }
 
 const NAV_STRUCTURE = [
-  { categoryKey: 'nav.systema', items: [
-    { labelKey: 'nav.datacenter', href: 'datacenter.html' }
-  ]},
-  { categoryKey: 'nav.tiketing', items: [
-    { labelKey: 'nav.ticketing', href: 'ticketing.html' }
-  ]},
-  { categoryKey: 'nav.progetti', items: [
-    { labelKey: 'nav.progettiHome', href: 'progetti.html' }
-  ]},
-  { categoryKey: 'nav.utility', items: [
-    { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
-    { labelKey: 'nav.formule', href: 'formule-compressione.html' },
-    { labelKey: 'nav.protocolli', href: 'protocolli.html' },
-    { labelKey: 'nav.normative', href: 'normative.html' },
-    { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' }
-  ]},
-  { categoryKey: 'nav.telecontrollo', items: [
-    { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' }
-  ]},
-  { categoryKey: 'nav.sysem', items: [
-    { labelKey: 'nav.sistemi', href: 'sistemi.html' },
-    { labelKey: 'nav.download', href: 'download-applicativi.html' },
-    { labelKey: 'nav.about', href: 'about.html' },
-    { labelKey: 'nav.ai', href: 'ai.html' },
-    { labelKey: 'nav.contatti', href: 'contact.html' }
-  ]}
+  { labelKey: 'nav.datacenter', href: 'datacenter.html' },
+  { labelKey: 'nav.ticketing', href: 'ticketing.html' },
+  { labelKey: 'nav.progettiHome', href: 'progetti.html' },
+  { labelKey: 'nav.sensori', href: 'sensori-caratterizzazione.html' },
+  { labelKey: 'nav.formule', href: 'formule-compressione.html' },
+  { labelKey: 'nav.protocolli', href: 'protocolli.html' },
+  { labelKey: 'nav.normative', href: 'normative.html' },
+  { labelKey: 'nav.guidaNorme', href: 'guida-applicazione-norme.html' },
+  { labelKey: 'nav.telecontrolloHome', href: 'telecontrollo.html' },
+  { labelKey: 'nav.sistemi', href: 'sistemi.html' },
+  { labelKey: 'nav.download', href: 'download-applicativi.html' },
+  { labelKey: 'nav.about', href: 'about.html' },
+  { labelKey: 'nav.ai', href: 'ai.html' },
+  { labelKey: 'nav.contatti', href: 'contact.html' }
 ];
 
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
@@ -454,60 +438,21 @@ function renderNavigation(currentPage) {
   const menuList = overlayMenu.querySelector('ul');
   if (!menuList) return;
   menuList.innerHTML = '';
-  NAV_STRUCTURE.forEach(function(group) {
-    const catLi = document.createElement('li');
-    catLi.className = 'nav-category';
-    const span = document.createElement('span');
-    span.className = 'nav-cat-label';
-    span.dataset.i18nCat = group.categoryKey;
-    span.textContent = t(group.categoryKey);
-    catLi.appendChild(span);
-    menuList.appendChild(catLi);
-    group.items.forEach(function(item) {
-      const itemLi = document.createElement('li');
-      itemLi.className = 'nav-sub';
-      const link = document.createElement('a');
-      link.href = item.href;
-      link.dataset.i18nItem = item.labelKey;
-      link.textContent = t(item.labelKey);
-      if (item.href.indexOf('://') !== -1) {
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-      } else if (currentPage && item.href.indexOf(currentPage) !== -1) {
-        link.setAttribute('aria-current', 'page');
-      }
-      itemLi.appendChild(link);
-      if (item.children && item.children.length > 0) {
-        itemLi.classList.add('has-children');
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'nav-sub-toggle';
-        toggleBtn.textContent = '+';
-        toggleBtn.setAttribute('aria-label', 'Espandi sottomenu');
-        toggleBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const expanded = itemLi.classList.toggle('expanded');
-          toggleBtn.textContent = expanded ? '−' : '+';
-        });
-        itemLi.appendChild(toggleBtn);
-        const nestedUl = document.createElement('ul');
-        nestedUl.className = 'nav-nested';
-        item.children.forEach(function(child) {
-          const childLi = document.createElement('li');
-          childLi.className = 'nav-subitem';
-          const childLink = document.createElement('a');
-          childLink.href = child.href;
-          childLink.dataset.i18nItem = child.labelKey;
-          childLink.textContent = t(child.labelKey);
-          if (currentPage && child.href.indexOf(currentPage) !== -1) {
-            childLink.setAttribute('aria-current', 'page');
-          }
-          childLi.appendChild(childLink);
-          nestedUl.appendChild(childLi);
-        });
-        itemLi.appendChild(nestedUl);
-      }
-      menuList.appendChild(itemLi);
-    });
+  NAV_STRUCTURE.forEach(function(item) {
+    const itemLi = document.createElement('li');
+    itemLi.className = 'nav-sub';
+    const link = document.createElement('a');
+    link.href = item.href;
+    link.dataset.i18nItem = item.labelKey;
+    link.textContent = t(item.labelKey);
+    if (item.href.indexOf('://') !== -1) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    } else if (currentPage && item.href.indexOf(currentPage) !== -1) {
+      link.setAttribute('aria-current', 'page');
+    }
+    itemLi.appendChild(link);
+    menuList.appendChild(itemLi);
   });
   const topNavContainer = document.querySelector('.nav-container');
   if (!topNavContainer) return;
