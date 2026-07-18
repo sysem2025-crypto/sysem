@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.cedam3.metaTitle">Cedam 3 | SYSEM</title>
   <meta name="description" content="Cedam 3: sistema di telecontrollo per impianti di sollevamento e trattamento acque. Monitoraggio livelli serbatoi, automazione pompe, allarmi, fasce orarie e diagnostica remota.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="cedam3" data-required-role="guest">
@@ -34,100 +34,106 @@
       <p data-i18n="page.cedam3.overline">Telecontrollo</p>
       <h1 id="page-title" data-i18n="page.cedam3.title">Cedam 3</h1>
       <p class="hero-subtitle" data-i18n="page.cedam3.subtitle">Sistema di automazione e telecontrollo per impianti di sollevamento acque</p>
+    </section>
 
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Panoramica</h2>
-          <p>Piattaforma software per il telecontrollo di impianti idrici: gestione serbatoi, automazione pompe, allarmi configurabili e diagnostica da remoto.</p>
-          <ul class="normative-list">
-            <li>Due modalit&agrave; operative: <strong>Automatica</strong> (controllo a volumi) e <strong>a Livelli</strong> serbatoio</li>
-            <li>Automazione gruppi pompa con timer minimi partenza/esercizio</li>
-            <li>Programmazione fasce orarie con soglie differenziate</li>
-            <li>Allarmi configurabili con soglie, isteresi e ritardi</li>
-            <li>Logger eventi e storico allarmi</li>
-          </ul>
-        </article>
+    <section class="content-section">
+      <div class="tutorial-container">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Panoramica</h2>
+            <p>Piattaforma software per il telecontrollo di impianti idrici: gestione serbatoi, automazione pompe, allarmi configurabili e diagnostica da remoto.</p>
+            <ul class="normative-list">
+              <li>Due modalit&agrave; operative: <strong>Automatica</strong> (controllo a volumi) e <strong>a Livelli</strong> serbatoio</li>
+              <li>Automazione gruppi pompa con timer minimi partenza/esercizio</li>
+              <li>Programmazione fasce orarie con soglie differenziate</li>
+              <li>Allarmi configurabili con soglie, isteresi e ritardi</li>
+              <li>Logger eventi e storico allarmi</li>
+            </ul>
+          </article>
 
-        <article class="auth-card">
-          <h2>Architettura</h2>
-          <p>Applicazione Windows nativa con database SQL Server per configurazione e storicit&agrave; dati.</p>
-          <ul class="normative-list">
-            <li><strong>Frontend:</strong> interfaccia nativa Windows MFC (C++)</li>
-            <li><strong>Backend:</strong> SQL Server su rete locale</li>
-            <li><strong>Comunicazione:</strong> IP e Radio verso RTU in campo</li>
-            <li><strong>Statistiche:</strong> connettivit&agrave; IP/Radio per ogni RTU</li>
-          </ul>
-        </article>
+          <article class="auth-card">
+            <h2>Architettura</h2>
+            <p>Applicazione Windows nativa con database SQL Server per configurazione e storicit&agrave; dati.</p>
+            <ul class="normative-list">
+              <li><strong>Frontend:</strong> interfaccia nativa Windows MFC (C++)</li>
+              <li><strong>Backend:</strong> SQL Server su rete locale</li>
+              <li><strong>Comunicazione:</strong> IP e Radio verso RTU in campo</li>
+              <li><strong>Statistiche:</strong> connettivit&agrave; IP/Radio per ogni RTU</li>
+            </ul>
+          </article>
 
-        <article class="auth-card">
-          <h2>Impianti gestiti</h2>
-          <p>Controllo simultaneo di pi&ugrave; sistemi con logiche indipendenti.</p>
-          <ul class="normative-list">
-            <li><strong>S.Anna</strong> &mdash; 3 serbatoi, automazione a volumi/livelli</li>
-            <li><strong>Piardarossa</strong> &mdash; 1 serbatoio, automazione a volumi/livelli</li>
-            <li><strong>Frassineto</strong> &mdash; monitoraggio e statistiche</li>
-            <li><strong>Terranova</strong> &mdash; monitoraggio e statistiche</li>
-          </ul>
-        </article>
+          <article class="auth-card">
+            <h2>Impianti gestiti</h2>
+            <p>Controllo simultaneo di pi&ugrave; sistemi con logiche indipendenti.</p>
+            <ul class="normative-list">
+              <li><strong>S.Anna</strong> &mdash; 3 serbatoi, automazione a volumi/livelli</li>
+              <li><strong>Piardarossa</strong> &mdash; 1 serbatoio, automazione a volumi/livelli</li>
+              <li><strong>Frassineto</strong> &mdash; monitoraggio e statistiche</li>
+              <li><strong>Terranova</strong> &mdash; monitoraggio e statistiche</li>
+            </ul>
+          </article>
 
-        <article class="auth-card">
-          <h2>Programmazione Fasce Orarie</h2>
-          <p>Il sistema modula le soglie di volume dei serbatoi su base oraria, con valori differenziati per feriale, sabato e festivo.</p>
-          <ul class="normative-list">
-            <li>Tabella <code>livellifasceorarie_sanna</code> / <code>livellifasceorarie_piardarossa</code> con soglie 0-23 per Feriale, Sabato, Festivi</li>
-            <li>Interpolazione lineare tra una soglia oraria e la successiva per transizioni graduali</li>
-            <li>Calcolo portata richiesta: <code>Q = (soglia_corrente - volume_attuale) / tempo_recupero</code></li>
-            <li>Accensione/spegnimento pompe per inseguire il profilo target con isteresi</li>
-          </ul>
-        </article>
+          <article class="auth-card">
+            <h2>Programmazione Fasce Orarie</h2>
+            <p>Il sistema modula le soglie di volume dei serbatoi su base oraria, con valori differenziati per feriale, sabato e festivo.</p>
+            <ul class="normative-list">
+              <li>Tabella <code>livellifasceorarie_sanna</code> / <code>livellifasceorarie_piardarossa</code> con soglie 0-23 per Feriale, Sabato, Festivi</li>
+              <li>Interpolazione lineare tra una soglia oraria e la successiva per transizioni graduali</li>
+              <li>Calcolo portata richiesta: <code>Q = (soglia_corrente - volume_attuale) / tempo_recupero</code></li>
+              <li>Accensione/spegnimento pompe per inseguire il profilo target con isteresi</li>
+            </ul>
+          </article>
 
-        <article class="auth-card">
-          <h2>Specifica Fasce Orarie</h2>
-          <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
-            <thead>
-              <tr style="border-bottom:1px solid rgba(31,26,22,0.2);">
-                <th style="padding:4px 6px; text-align:left;">Ora</th>
-                <th style="padding:4px 6px; text-align:right;">Feriale</th>
-                <th style="padding:4px 6px; text-align:right;">Sabato</th>
-                <th style="padding:4px 6px; text-align:right;">Festivo</th>
-                <th style="padding:4px 6px; text-align:left;">Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td style="padding:2px 6px;">00-05</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px; text-align:right;">15%</td><td style="padding:2px 6px;">Notte &mdash; riserva minima</td></tr>
-              <tr><td style="padding:2px 6px;">06-07</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Inizio attivit&agrave;</td></tr>
-              <tr><td style="padding:2px 6px;">08-11</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">25%</td><td style="padding:2px 6px;">Picco consumo</td></tr>
-              <tr><td style="padding:2px 6px;">12-13</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px;">Pausa</td></tr>
-              <tr><td style="padding:2px 6px;">14-17</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px;">Secondo picco</td></tr>
-              <tr><td style="padding:2px 6px;">18-21</td><td style="padding:2px 6px; text-align:right;">70%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">35%</td><td style="padding:2px 6px;">Rientro serale</td></tr>
-              <tr><td style="padding:2px 6px;">22-23</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Chiusura</td></tr>
-            </tbody>
-          </table>
-          <p style="margin-top:8px; font-size:0.78rem; color:rgba(31,26,22,0.65);">
-          <strong>Legenda:</strong> valori % rispetto al volume massimo del serbatoio. La selezione del profilo segue la priorit&agrave;: Festivo &gt; Domenica &gt; Sabato &gt; Feriale.
-          </p>
-        </article>
+          <article class="auth-card">
+            <h2>Specifica Fasce Orarie</h2>
+            <div style="overflow-x:auto; max-width:100%;">
+              <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(31,26,22,0.2);">
+                    <th style="padding:4px 6px; text-align:left;">Ora</th>
+                    <th style="padding:4px 6px; text-align:right;">Feriale</th>
+                    <th style="padding:4px 6px; text-align:right;">Sabato</th>
+                    <th style="padding:4px 6px; text-align:right;">Festivo</th>
+                    <th style="padding:4px 6px; text-align:left;">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding:2px 6px;">00-05</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px; text-align:right;">15%</td><td style="padding:2px 6px;">Notte &mdash; riserva minima</td></tr>
+                  <tr><td style="padding:2px 6px;">06-07</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Inizio attivit&agrave;</td></tr>
+                  <tr><td style="padding:2px 6px;">08-11</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">25%</td><td style="padding:2px 6px;">Picco consumo</td></tr>
+                  <tr><td style="padding:2px 6px;">12-13</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px;">Pausa</td></tr>
+                  <tr><td style="padding:2px 6px;">14-17</td><td style="padding:2px 6px; text-align:right;">80%</td><td style="padding:2px 6px; text-align:right;">60%</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px;">Secondo picco</td></tr>
+                  <tr><td style="padding:2px 6px;">18-21</td><td style="padding:2px 6px; text-align:right;">70%</td><td style="padding:2px 6px; text-align:right;">50%</td><td style="padding:2px 6px; text-align:right;">35%</td><td style="padding:2px 6px;">Rientro serale</td></tr>
+                  <tr><td style="padding:2px 6px;">22-23</td><td style="padding:2px 6px; text-align:right;">40%</td><td style="padding:2px 6px; text-align:right;">30%</td><td style="padding:2px 6px; text-align:right;">20%</td><td style="padding:2px 6px;">Chiusura</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:8px; font-size:0.78rem; color:rgba(31,26,22,0.65);">
+            <strong>Legenda:</strong> valori % rispetto al volume massimo del serbatoio. La selezione del profilo segue la priorit&agrave;: Festivo &gt; Domenica &gt; Sabato &gt; Feriale.
+            </p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Specifiche tecniche</h2>
-          <ul class="normative-list">
-            <li>Controllo fino a 5 serbatoi e 100 pompe raggruppabili</li>
-            <li>Sistema allarmi con soglie, isteresi, ritardi e tacitazione</li>
-            <li>Controllavaggio programmato</li>
-            <li>Fasce orarie personalizzabili</li>
-            <li>Watchdog di sistema e diagnostica comunicazioni</li>
-          </ul>
-        </article>
+          <article class="auth-card">
+            <h2>Specifiche tecniche</h2>
+            <ul class="normative-list">
+              <li>Controllo fino a 5 serbatoi e 100 pompe raggruppabili</li>
+              <li>Sistema allarmi con soglie, isteresi, ritardi e tacitazione</li>
+              <li>Controllavaggio programmato</li>
+              <li>Fasce orarie personalizzabili</li>
+              <li>Watchdog di sistema e diagnostica comunicazioni</li>
+            </ul>
+          </article>
+        </div>
+
+        <section class="changelog-section" aria-label="Registro modifiche">
+          <div class="changelog-header">
+            <span class="changelog-badge">Modifiche recenti</span>
+          </div>
+          <div class="changelog-list" id="changelog-list">
+            <p class="changelog-loading">Caricamento...</p>
+          </div>
+        </section>
       </div>
-
-      <section class="changelog-section" aria-label="Registro modifiche">
-        <div class="changelog-header">
-          <span class="changelog-badge">Modifiche recenti</span>
-        </div>
-        <div class="changelog-list" id="changelog-list">
-          <p class="changelog-loading">Caricamento...</p>
-        </div>
-      </section>
     </section>
   </main>
 
