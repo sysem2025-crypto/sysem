@@ -37,32 +37,36 @@
     <section class="hero admin-hero" aria-labelledby="page-title">
       <p data-i18n="page.admin.overline">Controllo accessi</p>
       <h1 id="page-title" data-i18n="page.admin.title">Gestione Accessi</h1>
+    </section>
 
-      <div class="admin-panel">
-        <div class="admin-toolbar">
-          <input id="admin-search" type="search" placeholder="Cerca per email" data-i18n="admin.searchPlaceholder">
-          <select id="admin-role-filter">
-            <option value="all" data-i18n="admin.allRoles">Tutti i ruoli</option>
-            <option value="base">base</option>
-            <option value="pro">pro</option>
-            <option value="admin">admin</option>
-          </select>
-        </div>
+    <section class="content-section">
+      <div class="tutorial-container">
+        <div class="admin-panel">
+          <div class="admin-toolbar">
+            <input id="admin-search" type="search" placeholder="Cerca per email" data-i18n="admin.searchPlaceholder">
+            <select id="admin-role-filter">
+              <option value="all" data-i18n="admin.allRoles">Tutti i ruoli</option>
+              <option value="base">base</option>
+              <option value="pro">pro</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
 
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th data-i18n="admin.thEmail">Email</th>
-                <th data-i18n="admin.thRole">Ruolo</th>
-                <th data-i18n="admin.thCreated">Creato il</th>
-                <th data-i18n="admin.thAction">Azione</th>
-              </tr>
-            </thead>
-            <tbody id="admin-users-body"></tbody>
-          </table>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th data-i18n="admin.thEmail">Email</th>
+                  <th data-i18n="admin.thRole">Ruolo</th>
+                  <th data-i18n="admin.thCreated">Creato il</th>
+                  <th data-i18n="admin.thAction">Azione</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-body"></tbody>
+            </table>
+          </div>
+          <p id="admin-feedback" class="auth-feedback" aria-live="polite"></p>
         </div>
-        <p id="admin-feedback" class="auth-feedback" aria-live="polite"></p>
       </div>
     </section>
   </main>

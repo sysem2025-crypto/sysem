@@ -64,15 +64,6 @@ a {
   opacity: 0.52;
 }
 
-.home::after {
-  content: "";
-  position: absolute;
-  inset: 9.5% 6% 9.5%;
-  border: 1px solid rgba(31, 26, 22, 0.14);
-  border-radius: 2px;
-  pointer-events: none;
-}
-
 /* --- Menu Overlay Styles --- */
 .nav-toggle {
   display: flex;
@@ -358,6 +349,14 @@ a {
   padding: 36px 0 96px;
   position: relative;
   z-index: 1;
+  border-bottom: 1px solid rgba(31, 26, 22, 0.08);
+}
+
+.hero-home {
+  align-items: center;
+  text-align: center;
+  min-height: auto;
+  border-bottom: none;
 }
 
 .hero p {
@@ -403,12 +402,6 @@ a {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-}
-
-.hero-home {
-  align-items: center;
-  text-align: center;
-  min-height: auto;
 }
 
 .hero-home h1 {
@@ -925,19 +918,7 @@ a {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Resource page layout fixes */
-.resource-page {
-  overflow: visible;
-}
-
-.resource-page .hero {
-  min-height: auto;
-  width: min(1180px, calc(100% - 40px));
-  margin: -84px auto 10px;
-  padding: 0 0 0 104px;
-  justify-content: flex-start;
-}
-
+/* Resource page layout */
 .resource-page .resource-card {
   padding: 14px;
 }
@@ -1009,26 +990,6 @@ a {
   font-size: 0.76rem;
 }
 
-.resource-page .hero p {
-  margin: 0 0 6px;
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-}
-
-.resource-page .hero h1 {
-  padding: 8px 12px;
-  font-size: clamp(0.96rem, 1.8vw, 1.4rem);
-  border-radius: 6px;
-  line-height: 1;
-}
-
-@media (max-width: 900px) {
-  .resource-page .hero {
-    margin: -20px auto 18px;
-    padding-left: 0;
-  }
-}
-
 @media (max-width: 900px) {
   .resources-layout {
     grid-template-columns: 1fr;
@@ -1073,7 +1034,7 @@ a {
 .admin-hero {
   justify-content: flex-start;
   min-height: auto;
-  padding-top: 24px;
+  padding: 24px 0 32px;
 }
 
 .auth-hero h1 {
