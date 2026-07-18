@@ -3,15 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="page.embedded.metaTitle">Sistemi Embedded | SYSEM</title>
-  <meta name="description" content="Sistemi embedded e microcontrollori: famiglie 8-bit, progetti MIDI, controllo motori, termostato, applicazioni OS-based.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-client.js?v=20260615"></script>
-  <script src="assets/js/auth-supabase.js?v=20260615"></script>
+  <title data-i18n="page.embedded.metaTitle">Embedded | SYSEM</title>
+  <meta name="description" content="Progetti firmware per microcontrollori PIC: architettura modulare, OS cooperativo, gestione interrupt, lettura NTC, macchina a stati, controllo triac, lettura tachimetrica, protocollo TLC, gestione EEPROM, debug produzione.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260717">
 </head>
 
 <body data-page="embedded" data-required-role="guest">
@@ -22,9 +17,7 @@
       </a>
       <div class="nav-container">
         <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
       </div>
     </header>
@@ -34,27 +27,11 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.embedded.overline">Embedded & Microcontroller</p>
-      <h1 id="page-title" data-i18n="page.embedded.title">Sistemi Embedded</h1>
-      <p class="hero-subtitle" data-i18n="page.embedded.subtitle">Famiglie 8-bit e progetti embedded per applicazioni industriali</p>
+      <p data-i18n="page.embedded.overline">Progetti Embedded</p>
+      <h1 id="page-title" data-i18n="page.embedded.title">Firmware PIC</h1>
+      <p class="hero-subtitle" data-i18n="page.embedded.subtitle">Tutorial e progetti firmware per microcontrollori PIC 8-bit</p>
 
       <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Famiglie MCU 8-bit</h2>
-          <p>Panoramica completa dei microcontrollori 8-bit attualmente disponibili sul mercato, con specifiche tecniche, prestazioni e casi d'uso.</p>
-          <ul class="normative-list">
-            <li><strong>Atmel (Microchip) AVR:</strong> ATmega, ATtiny, AT86RF, integrazione wireless</li>
-            <li><strong>Microchip PIC10/12/16/18:</strong> bassissimo consumo, periferiche base</li>
-            <li><strong>STM8 (STMicroelectronics):</strong> prestazioni avanzate, periferiche complete</li>
-            <li><strong>Intel (ex-Dallas) 8051/8052:</strong> classico, ampio ecosistema</li>
-            <li><strong>Renesas R8C:</strong> microcontroller automobilistici, sicurezza integrata</li>
-            <li><strong>NXP (ex-Freescale) 8-bit:</strong> S08, S12, applicazioni industriali</li>
-            <li><strong>TI MSP430:</strong> ultra-basso consumo, sensori e energia</li>
-            <li><strong>Infineon XC800:</strong> automotive, sicurezza funzionale</li>
-          </ul>
-          <p><a class="btn-download" href="#families">Esplora famiglie</a></p>
-        </article>
-
         <article class="auth-card">
           <h2>Tutorial di Progettazione Firmware</h2>
           <p>Serie di articoli tecnici basati su progetti firmware PIC Assembly reali, con codice commentato, schema a blocchi e lezioni apprese.</p>
@@ -70,195 +47,23 @@
             <li><a href="embedded/gestione-eeprom.html"><strong>Gestione EEPROM Esterna</strong></a> &mdash; salvataggio configurazione e checksum</li>
             <li><a href="embedded/debug-produzione.html"><strong>Debug e Messa in Produzione</strong></a> &mdash; flag di simulazione, diagnostica, 19 versioni</li>
           </ul>
-          <p><a class="btn-download" href="#projects">Tutti i progetti &rarr;</a></p>
-        </article>
-      </div>
-
-      <section class="changelog-section" aria-label="Registro modifiche">
-        <div class="changelog-header">
-          <span class="changelog-badge" id="changelog-badge">Aggiornamenti recenti</span>
-        </div>
-        <div class="changelog-list" id="changelog-list">
-          <p class="changelog-loading">Caricamento...</p>
-        </div>
-      </section>
-    </section>
-
-    <section id="families" class="home">
-      <h2>Famiglie Microcontroller 8-bit</h2>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h3>Atmel (Microchip) AVR</h3>
-          <p><strong>Serie:</strong> ATmega (ATmega328P, ATmega2560), ATtiny (ATtiny85, ATtiny441), AT86RF (wireless)</p>
-          <p><strong>Caratteristiche:</strong> 8/16-bit RISC, 2-128KB Flash, periferiche USART, SPI, I2C, ADC, PWM</p>
-          <p><strong>Applicazioni:</strong> hobby, prototipi, IoT, wireless sensor networks</p>
-          <p><strong>Popolarità:</strong> molto alta, ampio ecosistema, facile programmazione con AVR-GCC/Arduino</p>
         </article>
 
         <article class="auth-card">
-          <h3>Microchip PIC10/12/16/18</h3>
-          <p><strong>Serie:</strong> PIC10F322, PIC12F1822, PIC16F18877, PIC18F26K22</p>
-          <p><strong>Caratteristiche:</strong> ultra-basso consumo, 1-64KB Flash, periferiche di base, bootloader integrato</p>
-          <p><strong>Applicazioni:</strong> dispositivi a basso consumo, sensori embedded, controllo di potenza</p>
-          <p><strong>Popolarità:</strong> molto diffusa in applicazioni industriali e di consumo</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>STM8 (STMicroelectronics)</h3>
-          <p><strong>Serie:</strong> STM8S, STM8L, STM8A, STM8AF</p>
-          <p><strong>Caratteristiche:</strong> 8-bit CISC, 16-128KB Flash, periferiche complete (CAN, USB, Ethernet), sicurezza</p>
-          <p><strong>Applicazioni:</strong> automotive, industriale, medicale</p>
-          <p><strong>Popolarità:</strong> crescente, supporto MDK-ARM, tool di sviluppo gratuiti</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Intel (ex-Dallas) 8051/8052</h3>
-          <p><strong>Serie:</strong> 8051, 8052, 89051, DS89251</p>
-          <p><strong>Caratteristiche:</strong> architettura classica, 4-64KB ROM, periferiche seriali, timer, interrupt</p>
-          <p><strong>Applicazioni:</strong> controllo industriale, sistemi embedded legacy, emulazione</p>
-          <p><strong>Popolarità:</strong> storico, ampio supporto software, ancora usato in molti sistemi embedded</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Renesas R8C</h3>
-          <p><strong>Serie:</strong> R8C/1, R8C/2, R8C/3, R8C/4</p>
-          <p><strong>Caratteristiche:</strong> microcontroller automobilistici, sicurezza funzionale integrata, CAN, LIN, FlexRay</p>
-          <p><strong>Applicazioni:</strong> automotive, controllo motore, body control modules</p>
-          <p><strong>Popolarità:</strong> specializzato, focus su automotive safety</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>NXP (ex-Freescale) 8-bit</h3>
-          <p><strong>Serie:</strong> S08, S12, S12X, S32</p>
-          <p><strong>Caratteristiche:</strong> ampia gamma, da entry-level a mid-range, periferiche complete</p>
-          <p><strong>Applicazioni:</strong> controllo industriale, automazione, dispositivi medici</p>
-          <p><strong>Popolarità:</strong> molto diffusa, soprattutto in applicazioni industriali</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>TI MSP430</h3>
-          <p><strong>Serie:</strong> MSP430F, MSP430G, MSP430X</p>
-          <p><strong>Caratteristiche:</strong> ultra-basso consumo (<10µA @ standby), sensori integrati, ADC, comparator</p>
-          <p><strong>Applicazioni:</strong> IoT, sensori, dispositivi medici portatili, energy harvesting</p>
-          <p><strong>Popolarità:</strong> molto popolare in applicazioni a basso consumo</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Infineon XC800</h3>
-          <p><strong>Serie:</strong> XC800, XC800 Safety, XC800 Comfort</p>
-          <p><strong>Caratteristiche:</strong> microcontroller automotive, sicurezza funzionale, CAN-FD, sicurezza integrata ASIL-B/D</p>
-          <p><strong>Applicazioni:</strong> sistemi di sicurezza automotive, controllo motore, body control</p>
-          <p><strong>Popolarità:</strong> emergente, focus su automotive safety</p>
-        </article>
-      </div>
-    </section>
-
-      <section id="projects" class="home">
-      <h2>Progetti Implementati</h2>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h3>MIDI Entry</h3>
-          <p>Obiettivo: Implementare un'interfaccia MIDI a 5 pin per generare note musicali</p>
-          <p>Hardware: PIC18F2520, potenziometro per transpose, display LCD 16x2, buzzer</p>
-          <p>Software: decoder note MIDI, gestione polifonica a 16 canali, gestione interrupt UART</p>
-          <p>Caratteristiche: 4 pollici per ottava, sustain, pitch bend, controllo di modulazione</p>
-          <p>Applicazioni: strumenti musicali digitali, controller MIDI per software</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Controllo Motore Lavatrice</h3>
-          <p>Obiettivo: Sviluppare un sistema di controllo per motore asincrono monofase con PWM per velocità</p>
-          <p>Hardware: PIC16F877A, driver MOSFET IRFZ44N, sensore Hall, potenziometro</p>
-          <p>Software: PWM a 10-bit, controllo closed-loop per velocità, protezione sovraccarico</p>
-          <p>Caratteristiche: controllo velocità variabile, avvio graduale, protezione da sovraccarico, indicatori LED</p>
-          <p>Applicazioni: lavatrici domestiche, lavaggio industriale, controllo velocità motori</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Forno Mono-Zona</h3>
-          <p>Obiettivo: Sistema di controllo temperatura per forno elettrico monozona con PID</p>
-          <p>Hardware: PIC18F2520, termistore NTC, relay driver, display LCD, pulsanti</p>
-          <p>Software: algoritmo PID, gestione temperatura di sicurezza, controllo relay, logging temperatura</p>
-          <p>Caratteristiche: impostazione temperatura, modalità manuale/auto, allarme temperatura alta, protezione surriscaldamento</p>
-          <p>Applicazioni: forni industriali, forni domestici, controllo temperatura in generale</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Termostato CNT</h3>
-          <p>Obiettivo: Sistema di misurazione temperatura con termocoppia e visualizzazione</p>
-          <p>Hardware: PIC16F1789, termocoppia K-type, ADC, display LCD, sensore umidità</p>
-          <p>Software: misurazione temperatura, compensazione umidità, allarme temperatura, visualizzazione in tempo reale</p>
-          <p>Caratteristiche: misurazione ±0.5°C, allarme +100°C/-50°C, visualizzazione °C/F, memoria dati</p>
-          <p>Applicazioni: monitoraggio temperatura ambiente, controllo HVAC, monitoraggio industriale</p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Applicazioni OS-based</h3>
-          <p>FreeRTOS: Sviluppo di un sistema operativo real-time per PIC32MX</p>
-          <p>ChibiOS: RTOS leggero per microcontroller 8-bit, sensori, comunicazione</p>
-          <p>Bare-metal: Bootloader USB, programming in-circuit, gestione firmware</p>
-          <p>Caratteristiche: scheduler real-time, gestione dei task, semafori, code messaggi</p>
-          <p>Applicazioni: sistemi embedded real-time, controllo di automazione, comunicazione periferica</p>
-        </article>
-      </div>
-    </section>
-
-      <section id="sensori-caratterizzazione" class="home">
-      <h2>Sensori e Caratterizzazione</h2>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h3>Panoramica sensori</h3>
-          <p>Approfondimento tecnico sui sensori di pressione e temperatura utilizzati nei sistemi embedded.</p>
-          <p>Include: tipi di sensori, interfacce di misura, criteri di caratterizzazione e best practice di implementazione.</p>
-          <p><a class="btn-download" href="sensori-caratterizzazione.html">Vai alla documentazione completa →</a></p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Caratterizzazione sensori pressione</h3>
-          <p>Approfondimento tecnico specifico sulla caratterizzazione dei sensori di pressione assoluta.</p>
-          <p>Includes: taratura a punti multipli, linearità, isteresi, deriva termica e incertezza estesa.</p>
-          <p><a class="btn-download" href="sensori-caratterizzazione.html#pressure">Dettagli tecnici →</a></p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Caratterizzazione sensori temperatura</h3>
-          <p>Approfondimento tecnico specifico sui sensori di temperatura.</p>
-          <p>Includes: tipi di termocoppie, junczione, linearità, stabilità, incertezza di misura.</p>
-          <p><a class="btn-download" href="sensori-caratterizzazione.html#temperature">Dettagli tecnici →</a></p>
-        </article>
-      </div>
-    </section>
-
-    <section id="regressione-polinomiale" class="home">
-      <h2>Regressione Polinomiale</h2>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h3>Panoramica regressione polinomiale</h3>
-          <p>Approfondimento tecnico sui metodi di regressione polinomiale per la modellazione di dati sensore.</p>
-          <p>Includes: introduzione, tipi di polinomi, metodi di calcolo, validazione, applicazioni.</p>
-          <p><a class="btn-download" href="#">Documentazione →</a></p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Regressione lineare</h3>
-          <p>Metodi di regressione lineare semplice e multipla per dati sensore.</p>
-          <p>Includes: formula, calcolo dei coefficienti, errore di stima, validazione.</p>
-          <p><a class="btn-download" href="#">Dettagli tecnici →</a></p>
-        </article>
-
-        <article class="auth-card">
-          <h3>Regressione polinomiale di ordine superiore</h3>
-          <p>Regressione polinomiale quadratica, cubica e oltre per curve complesse.</p>
-          <p>Includes: formula, determinazione dell'ordine, overfitting, validazione crociata.</p>
-          <p><a class="btn-download" href="#">Dettagli tecnici →</a></p>
+          <h2>Progetti Implementati</h2>
+          <p>Applicazioni reali sviluppate con le tecniche descritte nei tutorial.</p>
+          <ul class="normative-list">
+            <li><strong>MIDI Entry</strong> &mdash; interfaccia MIDI a 5 pin su PIC18F2520, decoder note, polifonia 16 canali</li>
+            <li><strong>Controllo Motore Lavatrice</strong> &mdash; motore asincrono monofase con PWM, PIC16F877A, closed-loop</li>
+            <li><strong>Forno Mono-Zona</strong> &mdash; controllo temperatura PID su PIC18F2520, termistore NTC, relay</li>
+            <li><strong>Termostato CNT</strong> &mdash; misura temperatura con termocoppia K-type su PIC16F1789</li>
+          </ul>
         </article>
       </div>
     </section>
   </main>
 
-  <script src="assets/js/main.js?v=20260717"></script>
+  <script src="assets/js/main.js?v=20260717b"></script>
 </body>
 </html>
-
-
 

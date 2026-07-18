@@ -175,6 +175,7 @@ async function loadLang(lang) {
         "cedam3": { "overline": "Telecontrollo", "title": "Cedam 3", "subtitle": "Sistema di automazione e telecontrollo per impianti di sollevamento acque", "metaTitle": "Cedam 3" },
         "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
         "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
+        "embedded": { "overline": "Progetti Embedded", "title": "Firmware PIC", "subtitle": "Tutorial e progetti firmware per microcontrollori PIC 8-bit", "metaTitle": "Embedded" },
         "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
         "resource": { "overline": "Learning & Assets", "title": "Resource", "metaTitle": "Resource" },
         "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },
