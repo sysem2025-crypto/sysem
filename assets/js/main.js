@@ -435,13 +435,23 @@ async function ensureDefaultAdminUser() {
   }
 }
 
-const NAV_STRUCTURE = [
-  { labelKey: 'nav.systema', href: 'datacenter.html' },
-  { labelKey: 'nav.tiketing', href: 'ticketing.html' },
-  { labelKey: 'nav.progetti', href: 'progetti.html' },
-  { labelKey: 'nav.utility', href: 'utility.html' },
-  { labelKey: 'nav.telecontrollo', href: 'telecontrollo.html' },
-  { labelKey: 'nav.sysem', href: 'sistemi.html' }
+const SITE_BASE = (function() {
+  var scripts = document.getElementsByTagName('script');
+  for (var i = 0; i < scripts.length; i++) {
+    var src = scripts[i].src;
+    var idx = src.indexOf('/assets/js/main.js');
+    if (idx !== -1) return src.substring(0, idx + 1);
+  }
+  return '/';
+})();
+
+var NAV_STRUCTURE = [
+  { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
+  { labelKey: 'nav.tiketing', href: SITE_BASE + 'ticketing.html' },
+  { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
+  { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
+  { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
+  { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' }
 ];
 
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
