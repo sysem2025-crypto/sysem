@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.embedded.metaTitle">Embedded | SYSEM</title>
   <meta name="description" content="Progetti firmware per microcontrollori PIC: architettura modulare, OS cooperativo, gestione interrupt, lettura NTC, macchina a stati, controllo triac, lettura tachimetrica, protocollo TLC, gestione EEPROM, debug produzione.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260718">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="embedded" data-required-role="guest">
@@ -30,67 +30,71 @@
       <p data-i18n="page.embedded.overline">Progetti Embedded</p>
       <h1 id="page-title" data-i18n="page.embedded.title">Firmware PIC</h1>
       <p class="hero-subtitle" data-i18n="page.embedded.subtitle">Tutorial e progetti firmware per microcontrollori PIC 8-bit</p>
+    </section>
 
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Architettura Modulare per PIC</h2>
-          <p>Organizzazione del codice su pagine ROM, inclusioni modulari con <code>#include</code>, controllo dimensionale e gestione delle pagine per PIC16Cxx.</p>
-          <p><a class="btn-download" href="embedded/architettura-modulare.html">Leggi tutto &rarr;</a></p>
-        </article>
+    <section class="home">
+      <div class="tutorial-container">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Architettura Modulare per PIC</h2>
+            <p>Organizzazione del codice su pagine ROM, inclusioni modulari con <code>#include</code>, controllo dimensionale e gestione delle pagine per PIC16Cxx.</p>
+            <p><a class="btn-download" href="embedded/architettura-modulare.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Sistema Operativo Cooperativo</h2>
-          <p>Scheduler round-robin con task a tempo e a evento su PIC 8-bit, senza RTOS esterno. Circa 100 righe di Assembly.</p>
-          <p><a class="btn-download" href="embedded/sistema-operativo-cooperativo.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Sistema Operativo Cooperativo</h2>
+            <p>Scheduler round-robin con task a tempo e a evento su PIC 8-bit, senza RTOS esterno. Circa 100 righe di Assembly.</p>
+            <p><a class="btn-download" href="embedded/sistema-operativo-cooperativo.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Gestione Interrupt su PIC</h2>
-          <p>Salvataggio contesto, decoder a cascata, innesco del triac via interrupt, priorità e nesting su PIC16Cxx.</p>
-          <p><a class="btn-download" href="embedded/gestione-interrupt.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Gestione Interrupt su PIC</h2>
+            <p>Salvataggio contesto, decoder a cascata, innesco del triac via interrupt, priorità e nesting su PIC16Cxx.</p>
+            <p><a class="btn-download" href="embedded/gestione-interrupt.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Lettura NTC a Condensatore</h2>
-          <p>Misura di temperatura senza ADC usando il metodo di carica RC. Lettura timer interna su PIC per determinare la resistenza NTC.</p>
-          <p><a class="btn-download" href="embedded/lettura-ntc.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Lettura NTC a Condensatore</h2>
+            <p>Misura di temperatura senza ADC usando il metodo di carica RC. Lettura timer interna su PIC per determinare la resistenza NTC.</p>
+            <p><a class="btn-download" href="embedded/lettura-ntc.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Macchina a Stati per Prodotto</h2>
-          <p>Diagramma a palle implementato in Assembly con transizioni a tempo e a evento. Logica di prodotto su PIC per climatizzazione.</p>
-          <p><a class="btn-download" href="embedded/macchina-a-stati.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Macchina a Stati per Prodotto</h2>
+            <p>Diagramma a palle implementato in Assembly con transizioni a tempo e a evento. Logica di prodotto su PIC per climatizzazione.</p>
+            <p><a class="btn-download" href="embedded/macchina-a-stati.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Controllo Triac e Utenze</h2>
-          <p>Taglio di fase con sincronismo di rete, generazione impulso zippillo via PWM software, zero-cross su PIC.</p>
-          <p><a class="btn-download" href="embedded/controllo-triac.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Controllo Triac e Utenze</h2>
+            <p>Taglio di fase con sincronismo di rete, generazione impulso zippillo via PWM software, zero-cross su PIC.</p>
+            <p><a class="btn-download" href="embedded/controllo-triac.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Lettura Tachimetrica</h2>
-          <p>Sensore Hall, media mobile sui giri, protezione rotore bloccato, finestra di lettura adattativa su PIC.</p>
-          <p><a class="btn-download" href="embedded/lettura-tachimetrica.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Lettura Tachimetrica</h2>
+            <p>Sensore Hall, media mobile sui giri, protezione rotore bloccato, finestra di lettura adattativa su PIC.</p>
+            <p><a class="btn-download" href="embedded/lettura-tachimetrica.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Protocollo TLC Seriale</h2>
-          <p>Comunicazione bit-bang termostato-split, protocollo TLC proprietario implementato via software su PIC16Cxx.</p>
-          <p><a class="btn-download" href="embedded/protocollo-tlc.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Protocollo TLC Seriale</h2>
+            <p>Comunicazione bit-bang termostato-split, protocollo TLC proprietario implementato via software su PIC16Cxx.</p>
+            <p><a class="btn-download" href="embedded/protocollo-tlc.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Gestione EEPROM Esterna</h2>
-          <p>Lettura/scrittura EEPROM seriale 24LCxx, salvataggio configurazione prodotto e checksum di integrità.</p>
-          <p><a class="btn-download" href="embedded/gestione-eeprom.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Gestione EEPROM Esterna</h2>
+            <p>Lettura/scrittura EEPROM seriale 24LCxx, salvataggio configurazione prodotto e checksum di integrità.</p>
+            <p><a class="btn-download" href="embedded/gestione-eeprom.html">Leggi tutto &rarr;</a></p>
+          </article>
 
-        <article class="auth-card">
-          <h2>Debug e Messa in Produzione</h2>
-          <p>Flag di simulazione, diagnostica UART, watchdog, e gestione di 19 versioni firmware per split climatizzazione.</p>
-          <p><a class="btn-download" href="embedded/debug-produzione.html">Leggi tutto &rarr;</a></p>
-        </article>
+          <article class="auth-card">
+            <h2>Debug e Messa in Produzione</h2>
+            <p>Flag di simulazione, diagnostica UART, watchdog, e gestione di 19 versioni firmware per split climatizzazione.</p>
+            <p><a class="btn-download" href="embedded/debug-produzione.html">Leggi tutto &rarr;</a></p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
