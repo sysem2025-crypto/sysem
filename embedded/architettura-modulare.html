@@ -6,14 +6,33 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Architettura Modulare per PIC | SYSEM</title>
+  <title data-i18n="page.architetturaModulare.metaTitle">Architettura Modulare per PIC | SYSEM</title>
   <meta name="description" content="Come organizzare il codice Assembly per PIC16Cxx su pagine ROM, con header modulari e dependency tracking.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="architettura-modulare" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Architettura Modulare per PIC16Cxx</h1>
-      <p class="hero-subtitle">Organizzare il codice Assembly su pagine ROM con moduli #include, header di dipendenza e controllo dimensionale</p>
+      <p class="hero-overline" data-i18n="page.architetturaModulare.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.architetturaModulare.title">Architettura Modulare per PIC16Cxx</h1>
+      <p class="hero-subtitle" data-i18n="page.architetturaModulare.subtitle">Organizzare il codice Assembly su pagine ROM con moduli #include, header di dipendenza e controllo dimensionale</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>Nei microcontrollori PIC a 8 bit con architettura Harvard, la memoria programma &egrave; organizzata in <strong>pagine da 512 word</strong>. Saltare da una pagina all&rsquo;altra richiede la gestione esplicita del registro <code>PCLATH</code>. Senza una struttura modulare chiara, il codice diventa rapidamente ingestibile: bisogna tracciare manualmente quanta ROM occupa ogni modulo, evitare overlap tra pagine, e garantire che le chiamate tra pagine funzionino correttamente.</p>
@@ -51,57 +71,57 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Struttura del main.asm (Split Elettroplastica, I200052)</h3>
-          <pre><code>;----------------------------------------------------------------------
+          <pre class="code-block"><span class="cmt">;----------------------------------------------------------------------
 ; Il main.asm definisce l'ordine di inclusione e il mapping a pagina ROM
-;----------------------------------------------------------------------
-    ORG      4
+;----------------------------------------------------------------------</span>
+    <span class="def">ORG</span>      <span class="num">4</span>
 
-I_01
-    #modulo     "#Inter.h"    ; gestione interrupt
-I_02
-    include     "table.h"     ; tabelle operative
-I_03
-    include     "#Init.h"     ; general startup
-I_04
-    include     "#OS.h"       ; sistema operativo (scheduler)
-I_05
-    include     "#Triac.h"    ; innesco triac ON/OFF
-I_06
-    include     "#Timer.h"    ; timer interni
-I_07
-    include     "#Key.h"      ; lettura tasto
-I_08
-    include     "#Tacho.h"    ; lettura tachimetrica
-I_09
-    include     "#Ntc.h"      ; sonde di temperatura
-I_10
-    include     "#Buzzer.h"   ; buzzers
-I_11
-    include     "#Dcm.h"      ; decodifica comando
-I_12
-    include     "#EEP.h"      ; EEPROM esterna
-I_13
-    include     "#Flap.h"     ; controllo deflettore
-I_14
-    include     "#Diag.h"     ; diagnostica seriale
-I_15
-    ORG         0x800         ; cambio pagina ROM
+<span class="lab">I_01</span>
+    <span class="def">#modulo</span>     <span class="str">"#Inter.h"</span>    <span class="cmt">; gestione interrupt</span>
+<span class="lab">I_02</span>
+    <span class="def">include</span>     <span class="str">"table.h"</span>     <span class="cmt">; tabelle operative</span>
+<span class="lab">I_03</span>
+    <span class="def">include</span>     <span class="str">"#Init.h"</span>     <span class="cmt">; general startup</span>
+<span class="lab">I_04</span>
+    <span class="def">include</span>     <span class="str">"#OS.h"</span>       <span class="cmt">; sistema operativo (scheduler)</span>
+<span class="lab">I_05</span>
+    <span class="def">include</span>     <span class="str">"#Triac.h"</span>    <span class="cmt">; innesco triac ON/OFF</span>
+<span class="lab">I_06</span>
+    <span class="def">include</span>     <span class="str">"#Timer.h"</span>    <span class="cmt">; timer interni</span>
+<span class="lab">I_07</span>
+    <span class="def">include</span>     <span class="str">"#Key.h"</span>      <span class="cmt">; lettura tasto</span>
+<span class="lab">I_08</span>
+    <span class="def">include</span>     <span class="str">"#Tacho.h"</span>    <span class="cmt">; lettura tachimetrica</span>
+<span class="lab">I_09</span>
+    <span class="def">include</span>     <span class="str">"#Ntc.h"</span>      <span class="cmt">; sonde di temperatura</span>
+<span class="lab">I_10</span>
+    <span class="def">include</span>     <span class="str">"#Buzzer.h"</span>   <span class="cmt">; buzzers</span>
+<span class="lab">I_11</span>
+    <span class="def">include</span>     <span class="str">"#Dcm.h"</span>      <span class="cmt">; decodifica comando</span>
+<span class="lab">I_12</span>
+    <span class="def">include</span>     <span class="str">"#EEP.h"</span>      <span class="cmt">; EEPROM esterna</span>
+<span class="lab">I_13</span>
+    <span class="def">include</span>     <span class="str">"#Flap.h"</span>     <span class="cmt">; controllo deflettore</span>
+<span class="lab">I_14</span>
+    <span class="def">include</span>     <span class="str">"#Diag.h"</span>     <span class="cmt">; diagnostica seriale</span>
+<span class="lab">I_15</span>
+    <span class="def">ORG</span>         <span class="num">0x800</span>         <span class="cmt">; cambio pagina ROM</span>
 
-    include     "table1.h"    ; tabelle operative pagina 1
-I_16
-    #modulo     "#M_State.h"  ; macchina a stati (1569 righe!)
-I_17
+    <span class="def">include</span>     <span class="str">"table1.h"</span>    <span class="cmt">; tabelle operative pagina 1</span>
+<span class="lab">I_16</span>
+    <span class="def">#modulo</span>     <span class="str">"#M_State.h"</span>  <span class="cmt">; macchina a stati (1569 righe!)</span>
+<span class="lab">I_17</span>
 
-; Controllo dimensionale automatico
-General_Interrupt  SET  I_02 - I_01
-Tabelle            SET  I_03 - I_02
-Sistema_Operativo  SET  I_05 - I_04
-Innesco_Triac      SET  I_06 - I_05
-Sonode_Temperatura SET  I_10 - I_09
-Macchina_a_Stati   SET  I_17 - I_16
+<span class="cmt">; Controllo dimensionale automatico</span>
+<span class="lab">General_Interrupt</span>  <span class="def">SET</span>  I_02 - I_01
+<span class="lab">Tabelle</span>            <span class="def">SET</span>  I_03 - I_02
+<span class="lab">Sistema_Operativo</span>  <span class="def">SET</span>  I_05 - I_04
+<span class="lab">Innesco_Triac</span>      <span class="def">SET</span>  I_06 - I_05
+<span class="lab">Sonode_Temperatura</span> <span class="def">SET</span>  I_10 - I_09
+<span class="lab">Macchina_a_Stati</span>   <span class="def">SET</span>  I_17 - I_16
 
-ROM_PAGE_0  SET  0x800 - I_15    ; spazio residuo pagina 0
-ROM_PAGE_1  SET  0xfff - I_17    ; spazio residuo pagina 1</code></pre>
+<span class="lab">ROM_PAGE_0</span>  <span class="def">SET</span>  <span class="num">0x800</span> - I_15    <span class="cmt">; spazio residuo pagina 0</span>
+<span class="lab">ROM_PAGE_1</span>  <span class="def">SET</span>  <span class="num">0xfff</span> - I_17    <span class="cmt">; spazio residuo pagina 1</span></pre>
           <p>Ogni etichetta <code>I_xx</code> funge da marcatore. Le costanti calcolano automaticamente la dimensione di ogni modulo e lo spazio residuo per pagina. Se un modulo cresce troppo e sfora la pagina, l&rsquo;assemblatore segnala un errore in fase di compilazione.</p>
         </article>
       </div>
@@ -110,18 +130,18 @@ ROM_PAGE_1  SET  0xfff - I_17    ; spazio residuo pagina 1</code></pre>
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>La direttiva #modulo</h3>
           <p>I progetti pi&ugrave; recenti introducono una macro <code>#modulo</code> che funge da header decorativo con nome del modulo, e le direttive <code>#if</code>/<code>#endif</code> per escludere moduli non necessari a seconda della configurazione hardware:</p>
-          <pre><code>#modulo     "#M_State.h"
-; Il nome del modulo viene stampato nel listato .lst
-; rendendo immediata la navigazione del codice assemblato.
+          <pre class="code-block"><span class="def">#modulo</span>     <span class="str">"#M_State.h"</span>
+<span class="cmt">; Il nome del modulo viene stampato nel listato .lst
+; rendendo immediata la navigazione del codice assemblato.</span>
 
-DECODE_MACRO    EQU  1
-TLC_FERROLI     EQU  0    ; Telecomando Elettroplastica
+<span class="lab">DECODE_MACRO</span>    <span class="def">EQU</span>  <span class="num">1</span>
+<span class="lab">TLC_FERROLI</span>     <span class="def">EQU</span>  <span class="num">0</span>    <span class="cmt">; Telecomando Elettroplastica</span>
 
-    IF TLC_FERROLI == 1
-        include  "#Tlc_Ferroli.h"
+    <span class="def">IF</span> TLC_FERROLI == <span class="num">1</span>
+        <span class="def">include</span>  <span class="str">"#Tlc_Ferroli.h"</span>
     ELSE
-        include  "#Tlc_Elettroplastica.h"
-    ENDIF</code></pre>
+        <span class="def">include</span>  <span class="str">"#Tlc_Elettroplastica.h"</span>
+    <span class="def">ENDIF</span></pre>
         </article>
       </div>
 
@@ -129,20 +149,20 @@ TLC_FERROLI     EQU  0    ; Telecomando Elettroplastica
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Gestione pagine con GOTO_P e CALL_P</h3>
           <p>Saltare tra pagine ROM richiede la gestione di <code>PCLATH</code>. I progetti usano macro come <code>GOTO_P</code> e <code>CALL_P</code> per astrarre questo dettaglio:</p>
-          <pre><code>; Esempio da TASK_1.H (Antisbilanciamento I200026)
-    BSF     STATUS,PA0
-    BSF     STATUS,PA1
-    GOTO_P  STATE_0       ; salto a pagina opportuna
+          <pre class="code-block"><span class="cmt">; Esempio da TASK_1.H (Antisbilanciamento I200026)</span>
+    <span class="kwd">BSF</span>     <span class="reg">STATUS</span>,PA0
+    <span class="kwd">BSF</span>     <span class="reg">STATUS</span>,PA1
+    GOTO_P  <span class="lab">STATE_0</span>       <span class="cmt">; salto a pagina opportuna</span>
 
-; La macro GOTO_P si occupa di:
+<span class="cmt">; La macro GOTO_P si occupa di:
 ; 1. Caricare PCLATH con la pagina di destinazione
-; 2. Eseguire il GOTO
+; 2. Eseguire il GOTO</span>
 
-; Moduli organizzati per pagina:
+<span class="cmt">; Moduli organizzati per pagina:
 ; Pagina 0: Init, NTC, Tacho
 ; Pagina 1: SM (state machine), Key, Sync, Triac, Sweep, Step
 ; Pagina 2: Cmd, Prepr, Postpr, Usr, DataOut, Test
-; Pagina 3: Reg, Pla, Tlc</code></pre>
+; Pagina 3: Reg, Pla, Tlc</span></pre>
           <p>L&rsquo;organizzazione segue un criterio logico: inizializzazione e lettura sensori in pagina 0, logica di controllo e attuatori in pagina 1 e 2, comunicazione e diagnostica in pagina 3.</p>
         </article>
       </div>
@@ -209,15 +229,9 @@ TLC_FERROLI     EQU  0    ; Telecomando Elettroplastica
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

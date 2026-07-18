@@ -6,14 +6,33 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lettura Tachimetrica | SYSEM</title>
+  <title data-i18n="page.letturaTacho.metaTitle">Lettura Tachimetrica | SYSEM</title>
   <meta name="description" content="Lettura velocit&agrave; motore tramite sensore Hall su PIC: interrupt on-change, accumulo periodi, filtro mobile, protezione rotore bloccato.">
   <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="lettura-tachimetrica" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Lettura Tachimetrica</h1>
-      <p class="hero-subtitle">Rilevare la velocit&agrave; del motore con un sensore Hall e un pin di interrupt on-change</p>
+      <p class="hero-overline" data-i18n="page.letturaTacho.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.letturaTacho.title">Lettura Tachimetrica</h1>
+      <p class="hero-subtitle" data-i18n="page.letturaTacho.subtitle">Rilevare la velocit&agrave; del motore con un sensore Hall e un pin di interrupt on-change</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>Per regolare la velocit&agrave; di una ventola AC con triac serve un feedback. Un sensore Hall sul rotore genera un impulso ogni giro (o ogni frazione di giro). Il PIC deve misurare il periodo tra impulsi successivi con risoluzione adeguata, mediare per eliminare fluttuazioni meccaniche, e fornire il valore alla logica di controllo PID. Inoltre deve rilevare condizioni di rotore bloccato o tachimetro guasto per attivare le protezioni.</p>
@@ -51,89 +71,89 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Interrupt handler per il fronte tachimetrico</h3>
-          <pre><code>; Decode_Tacho: chiamato dall'interrupt on-change
-; quando il pin TACHO cambia stato (fronte sensore Hall)
+          <pre class="code-block"><span class="cmt">; Decode_Tacho: chiamato dall'interrupt on-change
+; quando il pin TACHO cambia stato (fronte sensore Hall)</span>
 
-Decode_Tacho
-    ; Salva il timestamp corrente (Timer1 16 bit)
-    movfw   TMR1L
-    movwf   Tacho_Timestamp_Lo
-    movfw   TMR1H
-    movwf   Tacho_Timestamp_Hi
+<span class="lab">Decode_Tacho</span>
+    <span class="cmt">; Salva il timestamp corrente (Timer1 16 bit)</span>
+    <span class="kwd">movfw</span>   <span class="reg">TMR1L</span>
+    <span class="kwd">movwf</span>   <span class="reg">Tacho_Timestamp_Lo</span>
+    <span class="kwd">movfw</span>   <span class="reg">TMR1H</span>
+    <span class="kwd">movwf</span>   <span class="reg">Tacho_Timestamp_Hi</span>
 
-    ; Segnala alla task che un nuovo impulso &egrave; arrivato
-    SETB    F_TACHO_OK
+    <span class="cmt">; Segnala alla task che un nuovo impulso &egrave; arrivato</span>
+    <span class="kwd">SETB</span>    F_TACHO_OK
 
-    goto    End_Test_On_Change
+    <span class="kwd">goto</span>    <span class="lab">End_Test_On_Change</span>
 
-; Nel loop principale dello scheduler, il flag F_TACHO_OK
-; viene usato dalle task per sapere se aggiornare la velocit&agrave;.</code></pre>
+<span class="cmt">; Nel loop principale dello scheduler, il flag F_TACHO_OK
+; viene usato dalle task per sapere se aggiornare la velocit&agrave;.</span></pre>
         </article>
       </div>
 
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Buffer circolare e filtro mobile</h3>
-          <pre><code>; V_Tacho &egrave; un buffer di 4 byte in RAM generale.
+          <pre class="code-block"><span class="cmt">; V_Tacho &egrave; un buffer di 4 byte in RAM generale.
 ; Ogni nuovo periodo tachimetrico viene inserito,
 ; shiftando i precedenti. La somma dei 4 campioni
-; rappresenta il periodo medio su 4 giri.
+; rappresenta il periodo medio su 4 giri.</span>
 
-; Struttura buffer:
+<span class="cmt">; Struttura buffer:
 ; V_Tacho+0: periodo giro corrente
 ; V_Tacho+1: periodo giro -1
 ; V_Tacho+2: periodo giro -2
-; V_Tacho+3: periodo giro -3
+; V_Tacho+3: periodo giro -3</span>
 
-; Task #Tacho.h (eseguita dallo scheduler ogni 250 ms):
-; Calcola la somma dei 4 periodi
-    movlw   V_Tacho
-    movwf   FSR
+<span class="cmt">; Task #Tacho.h (eseguita dallo scheduler ogni 250 ms):
+; Calcola la somma dei 4 periodi</span>
+    <span class="kwd">movlw</span>   V_Tacho
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
 
-    movfw   INDF              ; periodo corrente
-    incf    FSR,same
-    addwf   INDF,w            ; + periodo -1
-    incf    FSR,same
-    addwf   INDF,w            ; + periodo -2
-    incf    FSR,same
-    addwf   INDF,w            ; + periodo -3 = somma 4 periodi
+    <span class="kwd">movfw</span>   <span class="reg">INDF</span>              <span class="cmt">; periodo corrente</span>
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w            <span class="cmt">; + periodo -1</span>
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w            <span class="cmt">; + periodo -2</span>
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w            <span class="cmt">; + periodo -3 = somma 4 periodi</span>
 
-    movwf   RB0_0             ; velocit&agrave; normalizzata
+    <span class="kwd">movwf</span>   <span class="reg">RB0_0</span>             <span class="cmt">; velocit&agrave; normalizzata</span>
 
-; Il valore &egrave; inversamente proporzionale alla velocit&agrave;
+<span class="cmt">; Il valore &egrave; inversamente proporzionale alla velocit&agrave;
 ; (pi&ugrave; alto = pi&ugrave; lento). La conversione in RPM
-; avviene nel modulo PID (vedi Controllo Triac).</code></pre>
+; avviene nel modulo PID (vedi Controllo Triac).</span></pre>
         </article>
       </div>
 
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Protezione rotore bloccato</h3>
-          <pre><code>; Nella task Triac_Power (eseguita ogni 1 sec):
+          <pre class="code-block"><span class="cmt">; Nella task Triac_Power (eseguita ogni 1 sec):
 ; Se la somma tachimetrica &egrave; troppo alta (rotore lento o fermo),
 ; si incrementa un timer dedicato T_Rot_Lock.
-; Se T_Rot_Lock raggiunge FS_ROT_LOCK, scatta allarme.
+; Se T_Rot_Lock raggiunge FS_ROT_LOCK, scatta allarme.</span>
 
-Test_Rotore
-    movlw   VEL_MIN_ROT_LOCK
-    subwf   RB0_0,w           ; confronto velocit&agrave; con soglia
-    skpc
-    goto    Test_Rot_Lock     ; troppo lento
+<span class="lab">Test_Rotore</span>
+    <span class="kwd">movlw</span>   VEL_MIN_ROT_LOCK
+    <span class="kwd">subwf</span>   <span class="reg">RB0_0</span>,w           <span class="cmt">; confronto velocit&agrave; con soglia</span>
+    <span class="kwd">skpc</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Rot_Lock</span>     <span class="cmt">; troppo lento</span>
 
-    ; Velocit&agrave; OK: reset timer protezione
-    BANK    1
-    clrf    T_Rot_Lock
-    BANK    0
-    goto    Test_Vel_Ventola
+    <span class="cmt">; Velocit&agrave; OK: reset timer protezione</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">clrf</span>    <span class="reg">T_Rot_Lock</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Vel_Ventola</span>
 
-Test_Rot_Lock
-    BANK    1
-    movlw   FS_ROT_LOCK
-    xorwf   T_Rot_Lock,w
-    BANK    0
-    skpnz
-    SETB    ALARM_NTC         ; allarme rotore bloccato!
-    ; L'allarme ferma la macchina e accende led di errore</code></pre>
+<span class="lab">Test_Rot_Lock</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movlw</span>   FS_ROT_LOCK
+    <span class="kwd">xorwf</span>   <span class="reg">T_Rot_Lock</span>,w
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">skpnz</span>
+    <span class="kwd">SETB</span>    ALARM_NTC         <span class="cmt">; allarme rotore bloccato!</span>
+    <span class="cmt">; L'allarme ferma la macchina e accende led di errore</span></pre>
         </article>
       </div>
 
@@ -141,7 +161,7 @@ Test_Rot_Lock
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Schema del sistema di misura</h3>
           <pre><code>+----------+     impulsi      +-------------------+
-|  Motore  |----+----------->| PORTB (RB7)       |
+|  Motore  |----+----------&gt;| PORTB (RB7)       |
 |  Ventola |    |             | Interrupt On-     |
 |  + Hall  |    |             | Change            |
 +----------+    |             |                   |
@@ -197,15 +217,9 @@ Test_Rot_Lock
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

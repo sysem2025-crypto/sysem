@@ -18,8 +18,21 @@ const STORAGE_KEYS = {
 const ROLE_LEVEL = { guest: 0, base: 1, pro: 2, admin: 3 };
 const LANG_KEY = 'sysem_lang';
 let currentLang = 'it';
-let translations = {};
 let apiAvailable = null;
+
+// --- i18next loader ---
+const I18NEXT_CDN = 'https://unpkg.com/i18next@23.16.4/dist/umd/i18next.min.js';
+
+function loadI18next() {
+  return new Promise(function(resolve, reject) {
+    if (window.i18next) { resolve(); return; }
+    var s = document.createElement('script');
+    s.src = I18NEXT_CDN;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
 
 async function checkApi() {
   if (apiAvailable !== null) return apiAvailable;
@@ -75,144 +88,157 @@ async function apiPut(path, body) {
   return data;
 }
 
+// --- Traduzioni Italiane inline (per caricamento immediato) ---
+var IT_TRANSLATIONS = {
+  "common": {
+    "login": "Login", "logout": "Logout", "save": "Salva", "email": "Email",
+    "password": "Password", "role": "Ruolo", "actions": "Azione",
+    "searchEmail": "Cerca per email", "allRoles": "Tutti i ruoli",
+    "noUsers": "Nessun utente trovato.", "user": "Utente", "signin": "Accedi",
+    "authorizedOnly": "Solo utenti autorizzati.", "openMenu": "Apri menu", "homeLabel": "SYSEM home"
+  },
+  "nav": {
+    "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
+    "volumeCorrector": "Correttore Volumi",
+    "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
+    "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
+    "utility": "Utility",
+    "sistemi": "Sistemi", "download": "Download applicativi",
+    "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
+    "normative": "Normative", "guidaNorme": "Guida applicazione norme",
+    "progetti": "Progetti", "progettiHome": "Progetti",
+    "telecontrollo": "Telecontrollo", "telecontrolloHome": "Telecontrollo", "cedam3": "Cedam 3",
+    "ctr": "Sezione CTR", "pot": "Sezione POT", "dlms": "Sezione DLMS",
+    "sysem": "Sysem",
+    "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
+    "architetturaModulare": "Architettura Modulare PIC",
+    "osCooperativo": "Sistema Operativo Cooperativo",
+    "gestioneInterrupt": "Gestione Interrupt",
+    "letturaNtc": "Lettura NTC a Condensatore",
+    "macchinaStati": "Macchina a Stati",
+    "controlloTriac": "Controllo Triac",
+    "letturaTacho": "Lettura Tachimetrica",
+    "protocolloTlc": "Protocollo TLC",
+    "gestioneEeprom": "Gestione EEPROM",
+    "debugProduzione": "Debug & Produzione"
+  },
+  "auth": {
+    "loginTitle": "Login", "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",
+    "loginLabel": "Utente", "passwordLabel": "Password", "signinBtn": "Accedi",
+    "invalidEmail": "Inserisci una email valida.", "passwordLength": "La password deve avere almeno 8 caratteri.",
+    "emailExists": "Questa email è già registrata.",
+    "registered": "Registrazione completata per {{email}}. Ruolo assegnato: base.",
+    "userNotFound": "Utente non trovato.", "wrongPassword": "Password non corretta.",
+    "mustLogin": "Devi essere autenticato per cambiare password.",
+    "wrongCurrentPassword": "Password attuale non valida.", "passwordMismatch": "Le nuove password non coincidono.",
+    "passwordUpdated": "Password aggiornata con successo.", "changePassword": "Cambio Password",
+    "currentPassword": "Password attuale", "newPassword": "Nuova password",
+    "confirmPassword": "Conferma nuova password", "changePasswordBtn": "Cambia password",
+    "registerTitle": "Registrazione", "registerDesc": "Crea un account per accedere all'area riservata.",
+    "registerBtn": "Registrati", "emailPlaceholder": "nome@azienda.it"
+  },
+  "admin": {
+    "title": "Controllo accessi", "heading": "Gestione Accessi",
+    "searchPlaceholder": "Cerca per email", "allRoles": "Tutti i ruoli",
+    "thEmail": "Email", "thRole": "Ruolo", "thCreated": "Creato il", "thAction": "Azione",
+    "noUsers": "Nessun utente trovato.", "noChange": "Nessuna modifica per {{email}}.",
+    "confirmPromotion": "Confermi promozione admin per {{email}}?", "roleUpdated": "Ruolo aggiornato: {{email}} -> {{newRole}}.",
+    "saveBtn": "Salva"
+  },
+  "download": {
+    "appTitle": "Applicativi disponibili",
+    "appDesc": "Gli applicativi sono distribuiti in area riservata per garantire tracciabilità versioni e controllo accessi.",
+    "accessTitle": "Accesso area download", "accessDesc": "Per scaricare i pacchetti software accedi con un account autorizzato.",
+    "supportTitle": "Supporto tecnico", "supportDesc": "Per attivazione utenze o supporto sui download contatta il team SYSEM.",
+    "genius": "GeniusMonitor", "rtu": "RTU Terminal", "releases": "Aggiornamenti e release operative",
+    "accessBtn": "Accedi all'area riservata", "catalogBtn": "Apri catalogo download", "contactBtn": "Contatta il supporto"
+  },
+  "resource": {
+    "selectLabel": "Seleziona programma da scaricare", "diagnosticsTitle": "Indice diagnostico aggiornamenti",
+    "manual": "Manual", "auto": "Auto", "updated": "Agg."
+  },
+  "lang": {
+    "it": "IT",
+    "en": "EN"
+  },
+  "page": {
+    "home": { "overline": "Studio Tecnico Informatico", "title": "SYSEM", "metaTitle": "Soluzioni software per utilities", "subtitle": "soluzioni digitali per telecontrollo utilities" },
+    "about": { "overline": "Chi siamo", "title": "SYSEM", "metaTitle": "Azienda", "desc1": "Siamo una realtà che sviluppa software per il settore dei servizi pubblici (utilities), attivo nella distribuzione di acqua, gas ed energia elettrica.", "desc2": "Uniamo competenza tecnica sul campo e approccio digitale per semplificare le attività quotidiane di tecnici e operatori." },
+    "services": { "overline": "Servizi operativi", "title": "Servizi per utilities", "metaTitle": "Servizi", "desc1": "Supportiamo utility, distributori e partner tecnici nella gestione completa del ciclo operativo dei sistemi.", "desc2": "Copriamo avvio impianto, parametrizzazione, integrazione con sistemi centrali e supporto post-attivazione." },
+    "industries": { "overline": "Ambiti applicativi", "title": "Dove operiamo", "metaTitle": "Applicazioni", "desc1": "Le nostre soluzioni sono pensate per reti utilities, cabine di misura e punti di consegna industriali.", "desc2": "Interveniamo in contesti dove affidabilità del dato, continuità del servizio e tracciabilità sono requisiti essenziali." },
+    "sistemi": { "overline": "Panoramica", "title": "Sistemi", "metaTitle": "Sistemi" },
+    "protocolli": { "overline": "Documentazione tecnica", "title": "Protocolli", "metaTitle": "Protocolli" },
+    "ctr": { "overline": "Specifica tecnica", "title": "Sezione CTR", "metaTitle": "Protocollo CTR" },
+    "pot": { "overline": "Norma tecnica", "title": "Sezione POT", "metaTitle": "Protocollo POT" },
+    "dlms": { "overline": "Specifica tecnica", "title": "Sezione DLMS", "metaTitle": "Protocollo DLMS" },
+    "sensori": { "overline": "Approfondimento tecnico", "title": "Sensori e caratterizzazione", "metaTitle": "Sensori e caratterizzazione" },
+    "formule": { "overline": "Approfondimento tecnico", "title": "Formule di compressione", "metaTitle": "Formule di compressione" },
+    "normative": { "overline": "Compliance", "title": "Normative", "metaTitle": "Normative" },
+    "guidaNorme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
+    "guida-norme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
+    "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
+    "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
+    "progetti": { "overline": "Progetti", "title": "Progetti", "metaTitle": "Progetti" },
+    "telecontrollo": { "overline": "Telecontrollo", "title": "Applicazioni di Telecontrollo", "subtitle": "Soluzioni per automazione e monitoraggio remoto di impianti utility", "metaTitle": "Telecontrollo" },
+    "cedam3": { "overline": "Telecontrollo", "title": "Cedam 3", "subtitle": "Sistema di automazione e telecontrollo per impianti di sollevamento acque", "metaTitle": "Cedam 3" },
+    "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
+    "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
+    "embedded": { "overline": "Progetti Embedded", "title": "Firmware PIC", "subtitle": "Tutorial e progetti firmware per microcontrollori PIC 8-bit", "metaTitle": "Embedded" },
+    "osCooperativo": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Sistema Operativo Cooperativo Round-Robin", "subtitle": "Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno", "metaTitle": "Sistema Operativo Cooperativo | SYSEM" },
+    "architetturaModulare": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Architettura Modulare per PIC16Cxx", "subtitle": "Organizzare il codice Assembly su pagine ROM con moduli #include, header di dipendenza e controllo dimensionale", "metaTitle": "Architettura Modulare PIC | SYSEM" },
+    "gestioneInterrupt": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Gestione Interrupt su PIC16Cxx", "subtitle": "Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura", "metaTitle": "Gestione Interrupt PIC | SYSEM" },
+    "gestioneEeprom": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Gestione EEPROM Esterna", "subtitle": "Salvare e ripristinare la configurazione prodotto: parametri macchina, temperatura, timer, diagnostica", "metaTitle": "Gestione EEPROM | SYSEM" },
+    "protocolloTlc": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Protocollo TLC Seriale", "subtitle": "Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo", "metaTitle": "Protocollo TLC | SYSEM" },
+    "debugProduzione": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Debug e Messa in Produzione", "subtitle": "Come sopravvivere a 60+ revisioni di firmware PIC Assembly: flag di simulazione, diagnostica seriale, autodiagnosi all'avvio", "metaTitle": "Debug e Produzione | SYSEM" },
+    "controlloTriac": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Controllo Triac e Utenze", "subtitle": "Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt", "metaTitle": "Controllo Triac | SYSEM" },
+    "macchinaStati": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Macchina a Stati per Prodotto", "subtitle": "Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente", "metaTitle": "Macchina a Stati | SYSEM" },
+    "letturaTacho": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Lettura Tachimetrica", "subtitle": "Rilevare la velocit del motore con un sensore Hall e un pin di interrupt on-change", "metaTitle": "Lettura Tachimetrica | SYSEM" },
+    "letturaNtc": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Lettura NTC a Condensatore", "subtitle": "Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC", "metaTitle": "Lettura NTC | SYSEM" },
+    "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
+    "resource": { "overline": "Learning & Assets", "title": "Resource", "metaTitle": "Resource" },
+    "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },
+    "programAccess": { "overline": "Program access", "title": "Accesso Programma", "metaTitle": "Program Access" },
+    "admin": { "overline": "Controllo accessi", "title": "Gestione Accessi", "metaTitle": "Admin Accessi" },
+    "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" },
+    "utility": { "overline": "Documentazione tecnica", "title": "Utility", "metaTitle": "Utility" }
+  }
+};
+
 async function initI18n() {
+  await loadI18next();
   currentLang = localStorage.getItem(LANG_KEY) || 'it';
-  await loadLang(currentLang);
+  var enResources = {};
+  try {
+    var resp = await fetch('assets/lang/en.json?v=20260718b');
+    enResources = await resp.json();
+  } catch {}
+  await i18next.init({
+    lng: currentLang,
+    fallbackLng: 'it',
+    interpolation: { prefix: '{{', suffix: '}}' },
+    resources: {
+      it: { translation: IT_TRANSLATIONS },
+      en: { translation: enResources }
+    }
+  });
   applyTranslations();
   renderLangSwitcher();
   document.documentElement.lang = currentLang === 'en' ? 'en' : 'it';
 }
 
-async function loadLang(lang) {
-  if (lang === 'it') {
-    translations = {
-      "common": {
-        "login": "Login", "logout": "Logout", "save": "Salva", "email": "Email",
-        "password": "Password", "role": "Ruolo", "actions": "Azione",
-        "searchEmail": "Cerca per email", "allRoles": "Tutti i ruoli",
-        "noUsers": "Nessun utente trovato.", "user": "Utente", "signin": "Accedi",
-        "authorizedOnly": "Solo utenti autorizzati.", "openMenu": "Apri menu", "homeLabel": "SYSEM home"
-      },
-      "nav": {
-        "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
-        "volumeCorrector": "Correttore Volumi",
-        "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
-        "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
-        "utility": "Utility",
-        "sistemi": "Sistemi", "download": "Download applicativi",
-        "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
-        "normative": "Normative", "guidaNorme": "Guida applicazione norme",
-        "progetti": "Progetti", "progettiHome": "Progetti",
-        "telecontrollo": "Telecontrollo", "telecontrolloHome": "Telecontrollo", "cedam3": "Cedam 3",
-        "ctr": "Sezione CTR", "pot": "Sezione POT", "dlms": "Sezione DLMS",
-        "sysem": "Sysem",
-        "about": "Studio Tecnico Informatico", "ai": "Intelligenza Artificiale", "contatti": "Contatti",
-        "architetturaModulare": "Architettura Modulare PIC",
-        "osCooperativo": "Sistema Operativo Cooperativo",
-        "gestioneInterrupt": "Gestione Interrupt",
-        "letturaNtc": "Lettura NTC a Condensatore",
-        "macchinaStati": "Macchina a Stati",
-        "controlloTriac": "Controllo Triac",
-        "letturaTacho": "Lettura Tachimetrica",
-        "protocolloTlc": "Protocollo TLC",
-        "gestioneEeprom": "Gestione EEPROM",
-        "debugProduzione": "Debug & Produzione"
-      },
-      "auth": {
-        "loginTitle": "Login", "loginDesc": "Inserisci le credenziali per entrare nell'area riservata.",
-        "loginLabel": "Utente", "passwordLabel": "Password", "signinBtn": "Accedi",
-        "invalidEmail": "Inserisci una email valida.", "passwordLength": "La password deve avere almeno 8 caratteri.",
-        "emailExists": "Questa email è già registrata.",
-        "registered": "Registrazione completata per {email}. Ruolo assegnato: base.",
-        "userNotFound": "Utente non trovato.", "wrongPassword": "Password non corretta.",
-        "mustLogin": "Devi essere autenticato per cambiare password.",
-        "wrongCurrentPassword": "Password attuale non valida.", "passwordMismatch": "Le nuove password non coincidono.",
-        "passwordUpdated": "Password aggiornata con successo.", "changePassword": "Cambio Password",
-        "currentPassword": "Password attuale", "newPassword": "Nuova password",
-        "confirmPassword": "Conferma nuova password", "changePasswordBtn": "Cambia password",
-        "registerTitle": "Registrazione", "registerDesc": "Crea un account per accedere all'area riservata.",
-        "registerBtn": "Registrati", "emailPlaceholder": "nome@azienda.it"
-      },
-      "admin": {
-        "title": "Controllo accessi", "heading": "Gestione Accessi",
-        "searchPlaceholder": "Cerca per email", "allRoles": "Tutti i ruoli",
-        "thEmail": "Email", "thRole": "Ruolo", "thCreated": "Creato il", "thAction": "Azione",
-        "noUsers": "Nessun utente trovato.", "noChange": "Nessuna modifica per {email}.",
-        "confirmPromotion": "Confermi promozione admin per {email}?", "roleUpdated": "Ruolo aggiornato: {email} -> {newRole}.",
-        "saveBtn": "Salva"
-      },
-      "download": {
-        "appTitle": "Applicativi disponibili",
-        "appDesc": "Gli applicativi sono distribuiti in area riservata per garantire tracciabilità versioni e controllo accessi.",
-        "accessTitle": "Accesso area download", "accessDesc": "Per scaricare i pacchetti software accedi con un account autorizzato.",
-        "supportTitle": "Supporto tecnico", "supportDesc": "Per attivazione utenze o supporto sui download contatta il team SYSEM.",
-        "genius": "GeniusMonitor", "rtu": "RTU Terminal", "releases": "Aggiornamenti e release operative",
-        "accessBtn": "Accedi all'area riservata", "catalogBtn": "Apri catalogo download", "contactBtn": "Contatta il supporto"
-      },
-      "resource": {
-        "selectLabel": "Seleziona programma da scaricare", "diagnosticsTitle": "Indice diagnostico aggiornamenti",
-        "manual": "Manual", "auto": "Auto", "updated": "Agg."
-      },
-      "page": {
-        "home": { "overline": "Studio Tecnico Informatico", "title": "SYSEM", "metaTitle": "Soluzioni software per utilities", "subtitle": "soluzioni digitali per telecontrollo utilities" },
-        "about": { "overline": "Chi siamo", "title": "SYSEM", "metaTitle": "Azienda", "desc1": "Siamo una realtà che sviluppa software per il settore dei servizi pubblici (utilities), attivo nella distribuzione di acqua, gas ed energia elettrica.", "desc2": "Uniamo competenza tecnica sul campo e approccio digitale per semplificare le attività quotidiane di tecnici e operatori." },
-        "services": { "overline": "Servizi operativi", "title": "Servizi per utilities", "metaTitle": "Servizi", "desc1": "Supportiamo utility, distributori e partner tecnici nella gestione completa del ciclo operativo dei sistemi.", "desc2": "Copriamo avvio impianto, parametrizzazione, integrazione con sistemi centrali e supporto post-attivazione." },
-        "industries": { "overline": "Ambiti applicativi", "title": "Dove operiamo", "metaTitle": "Applicazioni", "desc1": "Le nostre soluzioni sono pensate per reti utilities, cabine di misura e punti di consegna industriali.", "desc2": "Interveniamo in contesti dove affidabilità del dato, continuità del servizio e tracciabilità sono requisiti essenziali." },
-        "sistemi": { "overline": "Panoramica", "title": "Sistemi", "metaTitle": "Sistemi" },
-        "protocolli": { "overline": "Documentazione tecnica", "title": "Protocolli", "metaTitle": "Protocolli" },
-        "ctr": { "overline": "Specifica tecnica", "title": "Sezione CTR", "metaTitle": "Protocollo CTR" },
-        "pot": { "overline": "Norma tecnica", "title": "Sezione POT", "metaTitle": "Protocollo POT" },
-        "dlms": { "overline": "Specifica tecnica", "title": "Sezione DLMS", "metaTitle": "Protocollo DLMS" },
-        "sensori": { "overline": "Approfondimento tecnico", "title": "Sensori e caratterizzazione", "metaTitle": "Sensori e caratterizzazione" },
-        "formule": { "overline": "Approfondimento tecnico", "title": "Formule di compressione", "metaTitle": "Formule di compressione" },
-        "normative": { "overline": "Compliance", "title": "Normative", "metaTitle": "Normative" },
-        "guidaNorme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
-        "guida-norme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
-        "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
-        "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
-        "progetti": { "overline": "Progetti", "title": "Progetti", "metaTitle": "Progetti" },
-        "telecontrollo": { "overline": "Telecontrollo", "title": "Applicazioni di Telecontrollo", "subtitle": "Soluzioni per automazione e monitoraggio remoto di impianti utility", "metaTitle": "Telecontrollo" },
-        "cedam3": { "overline": "Telecontrollo", "title": "Cedam 3", "subtitle": "Sistema di automazione e telecontrollo per impianti di sollevamento acque", "metaTitle": "Cedam 3" },
-        "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
-        "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
-        "embedded": { "overline": "Progetti Embedded", "title": "Firmware PIC", "subtitle": "Tutorial e progetti firmware per microcontrollori PIC 8-bit", "metaTitle": "Embedded" },
-        "osCooperativo": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Sistema Operativo Cooperativo Round-Robin", "subtitle": "Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno", "metaTitle": "Sistema Operativo Cooperativo | SYSEM" },
-        "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
-        "resource": { "overline": "Learning & Assets", "title": "Resource", "metaTitle": "Resource" },
-        "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },
-        "programAccess": { "overline": "Program access", "title": "Accesso Programma", "metaTitle": "Program Access" },
-        "admin": { "overline": "Controllo accessi", "title": "Gestione Accessi", "metaTitle": "Admin Accessi" },
-        "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" },
-        "utility": { "overline": "Documentazione tecnica", "title": "Utility", "metaTitle": "Utility" }
-      }
-    };
-    return;
-  }
-  try {
-    const resp = await fetch('assets/lang/' + lang + '.json?v=20260703');
-    translations = await resp.json();
-  } catch {
-    await loadLang('it');
-  }
-}
-
 function t(key, fallback) {
-  const val = key.split('.').reduce(function(obj, k) { return obj && obj[k]; }, translations);
-  return val || fallback || key;
+  return i18next.t(key, { defaultValue: fallback || key });
 }
 
 function formatT(key, vars) {
-  var val = key.split('.').reduce(function(obj, k) { return obj && obj[k]; }, translations);
-  if (!val) val = key;
-  Object.keys(vars || {}).forEach(function(k) { val = val.replace('{' + k + '}', vars[k]); });
-  return val;
+  return i18next.t(key, { defaultValue: key, ...vars });
 }
 
 function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
-    const key = el.dataset.i18n;
-    const finalText = t(key);
-    const tag = el.tagName;
+    var key = el.dataset.i18n;
+    var finalText = i18next.t(key);
+    var tag = el.tagName;
     if (tag === 'TITLE') {
       el.textContent = finalText + ' | SYSEM';
     } else if (tag === 'INPUT' && el.hasAttribute('placeholder')) {
@@ -240,7 +266,7 @@ function renderLangSwitcher() {
       btn.className = 'lang-btn';
       btn.dataset.lang = code;
       btn.textContent = code.toUpperCase();
-      btn.setAttribute('aria-label', t('lang.' + code, code.toUpperCase()));
+      btn.setAttribute('aria-label', i18next.t('lang.' + code, { defaultValue: code.toUpperCase() }));
       btn.addEventListener('click', function() { setLang(code); });
       switcher.appendChild(btn);
     });
@@ -255,7 +281,7 @@ async function setLang(lang) {
   if (lang === currentLang) return;
   currentLang = lang;
   localStorage.setItem(LANG_KEY, lang);
-  await loadLang(lang);
+  await i18next.changeLanguage(lang);
   document.documentElement.lang = lang === 'en' ? 'en' : 'it';
   applyTranslations();
   renderLangSwitcher();

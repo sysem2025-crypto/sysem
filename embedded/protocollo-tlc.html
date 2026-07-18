@@ -6,14 +6,33 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Protocollo TLC Seriale | SYSEM</title>
+  <title data-i18n="page.protocolloTlc.metaTitle">Protocollo TLC Seriale | SYSEM</title>
   <meta name="description" content="Protocollo di comunicazione seriale TLC tra termostato e fan coil: encoding/decoding bit-bang, ricezione da interrupt on-change.">
   <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="protocollo-tlc" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Protocollo TLC Seriale</h1>
-      <p class="hero-subtitle">Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo</p>
+      <p class="hero-overline" data-i18n="page.protocolloTlc.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.protocolloTlc.title">Protocollo TLC Seriale</h1>
+      <p class="hero-subtitle" data-i18n="page.protocolloTlc.subtitle">Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>Il telecomando (termostato) comunica con la scheda elettronica dello split via cavo a 2 fili (alimentazione + dati). Non c&rsquo;&egrave; una UART dedicata: il protocollo TLC utilizza un singolo pin di PORTB con interrupt on-change per ricevere i bit, e un timer (Timer2) per il timeout di fine trasmissione. Il formato &egrave; proprietario, con encoding a finestra temporale: ogni bit &egrave; un impulso di larghezza variabile che codifica 0, 1, o start.</p>
@@ -51,119 +71,119 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Ricezione TLC da interrupt</h3>
-          <pre><code>; Decode_Tlc: chiamato dall'interrupt on-change
-; quando il pin TLC cambia stato (RB4)
+           <pre class="code-block"><span class="cmt">; Decode_Tlc: chiamato dall'interrupt on-change</span>
+<span class="cmt">; quando il pin TLC cambia stato (RB4)</span>
 
-Decode_Tlc
-    ; Confronto con ultimo stato per determinare il fronte
-    movfw   Last_Pb
-    xorwf   PORTB,w
-    movwf   Save_Port
+<span class="lab">Decode_Tlc</span>
+    <span class="cmt">; Confronto con ultimo stato per determinare il fronte</span>
+    <span class="kwd">movfw</span>   <span class="reg">Last_Pb</span>
+    <span class="kwd">xorwf</span>   <span class="reg">PORTB</span>,w
+    <span class="kwd">movwf</span>   <span class="reg">Save_Port</span>
 
-    ; Bit 4 del cambio = linea TLC
-    btfss   Save_Port,4
-    goto    End_Test_Tlc
+    <span class="cmt">; Bit 4 del cambio = linea TLC</span>
+    <span class="kwd">btfss</span>   <span class="reg">Save_Port</span>,<span class="num">4</span>
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Tlc</span>
 
-    ; Se &egrave; un fronte alto, avvio/continuo la ricezione
-    btfsc   PORTB,4           ; TLC HIGH?
-    goto    Tlc_High
+    <span class="cmt">; Se &egrave; un fronte alto, avvio/continuo la ricezione</span>
+    <span class="kwd">btfsc</span>   <span class="reg">PORTB</span>,<span class="num">4</span>           <span class="cmt">; TLC HIGH?</span>
+    <span class="kwd">goto</span>    <span class="lab">Tlc_High</span>
 
-; Fronte di discesa: fine bit
-    ; Timer2 gi&agrave; partito: carica il valore di timeout
-    BANK    1
-    bsf     PIE1 & 0x7f,TMR2IE   ; abilita interrupt Timer2
-    BANK    0
+<span class="cmt">; Fronte di discesa: fine bit</span>
+    <span class="cmt">; Timer2 gi&agrave; partito: carica il valore di timeout</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; abilita interrupt Timer2</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
 
-    incf    Bit_Count,same
-    goto    End_Test_Tlc
+    <span class="kwd">incf</span>    <span class="reg">Bit_Count</span>,same
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Tlc</span>
 
-Tlc_High
-; Fronte di salita: inizio bit (o start)
-    ; Primo fronte dopo un periodo di silenzio
-    btfsc   START_TLC
-    goto    End_Test_Tlc
-    SETB    START_TLC         ; prima volta: segnala inizio
+<span class="lab">Tlc_High</span>
+<span class="cmt">; Fronte di salita: inizio bit (o start)</span>
+    <span class="cmt">; Primo fronte dopo un periodo di silenzio</span>
+    <span class="kwd">btfsc</span>   <span class="reg">START_TLC</span>
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Tlc</span>
+    <span class="kwd">SETB</span>    <span class="reg">START_TLC</span>         <span class="cmt">; prima volta: segnala inizio</span>
 
-    ; Resetta contatori per la nuova ricezione
-    clrf    I_Byte_Tlc
-    clrf    Bit_Count
-    clrf    TMR2L
-    clrf    TMR2H
+    <span class="cmt">; Resetta contatori per la nuova ricezione</span>
+    <span class="kwd">clrf</span>    <span class="reg">I_Byte_Tlc</span>
+    <span class="kwd">clrf</span>    <span class="reg">Bit_Count</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR2L</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR2H</span>
 
-    ; Avvia Timer2 (timeout per fine trasmissione)
-    BANK    1
-    bsf     PIE1 & 0x7f,TMR2IE
-    BANK    0
-    goto    End_Test_Tlc
+    <span class="cmt">; Avvia Timer2 (timeout per fine trasmissione)</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Tlc</span>
 
-; Timer2 overflow -> fine trasmissione
-Test_Ovf_Timer
-    btfss   PIR1,TMR2IF
-    goto    Test_Timer1
-    BANK    1
-    btfss   PIE1 & 0x7f,TMR2IE
-    goto    Test_Timer1
-    BANK    0
-    bcf     PIR1,TMR2IF
-    BANK    1
-    bcf     PIE1 & 0x7f,TMR2IE   ; disabilita Timer2
+<span class="cmt">; Timer2 overflow -> fine trasmissione</span>
+<span class="lab">Test_Ovf_Timer</span>
+    <span class="kwd">btfss</span>   <span class="reg">PIR1</span>,<span class="reg">TMR2IF</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Timer1</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">btfss</span>   <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Timer1</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">bcf</span>     <span class="reg">PIR1</span>,<span class="reg">TMR2IF</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">bcf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; disabilita Timer2</span>
 
-    ; Verifica numero bit ricevuti
-    movlw   MAX_RX_BYTES
-    xorwf   I_Byte_Tlc,w
-    skpnz
-    goto    OK_Tlc_Rx
+    <span class="cmt">; Verifica numero bit ricevuti</span>
+    <span class="kwd">movlw</span>   MAX_RX_BYTES
+    <span class="kwd">xorwf</span>   <span class="reg">I_Byte_Tlc</span>,w
+    <span class="kwd">skpnz</span>
+    <span class="kwd">goto</span>    <span class="lab">OK_Tlc_Rx</span>
 
-    BANK    0
-    SETB    TLC_ERROR         ; errore: bit errati
-    goto    End_Test_Ovf
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">SETB</span>    <span class="reg">TLC_ERROR</span>         <span class="cmt">; errore: bit errati</span>
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Ovf</span>
 
-OK_Tlc_Rx
-    BANK    0
-    CLRB    TLC_ERROR         ; ricezione ok
-    SETB    F_TLC_EXE         ; consenso buzzer
-    SETB    F_OK_DECODE       ; consenso decodifica comando
-    SETB    F_EEP_OK          ; salva su EEPROM
+<span class="lab">OK_Tlc_Rx</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">CLRB</span>    <span class="reg">TLC_ERROR</span>         <span class="cmt">; ricezione ok</span>
+    <span class="kwd">SETB</span>    <span class="reg">F_TLC_EXE</span>         <span class="cmt">; consenso buzzer</span>
+    <span class="kwd">SETB</span>    <span class="reg">F_OK_DECODE</span>       <span class="cmt">; consenso decodifica comando</span>
+    <span class="kwd">SETB</span>    <span class="reg">F_EEP_OK</span>          <span class="cmt">; salva su EEPROM</span>
 
-End_Test_Ovf
-    BANK    1
-    clrf    I_Byte_Tlc
-    clrf    Bit_Count
-    BANK    0
-    CLRB    START_TLC
+<span class="lab">End_Test_Ovf</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">clrf</span>    <span class="reg">I_Byte_Tlc</span>
+    <span class="kwd">clrf</span>    <span class="reg">Bit_Count</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">CLRB</span>    <span class="reg">START_TLC</span>
 
-    goto    End_Test_Ovf_Int</code></pre>
+    <span class="kwd">goto</span>    <span class="lab">End_Test_Ovf_Int</span></pre>
         </article>
       </div>
 
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Decodifica del comando TLC</h3>
-          <pre><code>; Dopo la ricezione completa, il task #Dcm.h (Decodifica Comando)
-; interpreta i byte ricevuti.
-; Il formato TLC &egrave; un flusso di 8 byte:
-;   Byte 0: indirizzo/start
-;   Byte 1: temperatura impostata (T_User)
-;   Byte 2: modalit&agrave; (Cool, Heat, Dry, Fan, ecc.)
-;   Byte 3: velocit&agrave; ventola
-;   Byte 4: deflettore (posizione/sweep)
-;   Byte 5: timer on/off
-;   Byte 6-7: checksum e conferma
+           <pre class="code-block"><span class="cmt">; Dopo la ricezione completa, il task #Dcm.h (Decodifica Comando)</span>
+<span class="cmt">; interpreta i byte ricevuti.</span>
+<span class="cmt">; Il formato TLC &egrave; un flusso di 8 byte:</span>
+<span class="cmt">;   Byte 0: indirizzo/start</span>
+<span class="cmt">;   Byte 1: temperatura impostata (T_User)</span>
+<span class="cmt">;   Byte 2: modalit&agrave; (Cool, Heat, Dry, Fan, ecc.)</span>
+<span class="cmt">;   Byte 3: velocit&agrave; ventola</span>
+<span class="cmt">;   Byte 4: deflettore (posizione/sweep)</span>
+<span class="cmt">;   Byte 5: timer on/off</span>
+<span class="cmt">;   Byte 6-7: checksum e conferma</span>
 
-; Esempio di decodifica temperatura impostata:
-Dcm_Task
-    BANK    0
-    WAIT    TASK_DCM, OS_MSEC_100
+<span class="cmt">; Esempio di decodifica temperatura impostata:</span>
+<span class="lab">Dcm_Task</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">WAIT</span>    TASK_DCM, OS_MSEC_100
 
-    ; Aggiorna T_User dal buffer TLC ricevuto
-    movfw   Tlc_Buffer+1       ; byte temperatura
-    movwf   T_User
+    <span class="cmt">; Aggiorna T_User dal buffer TLC ricevuto</span>
+    <span class="kwd">movfw</span>   <span class="reg">Tlc_Buffer</span>+<span class="num">1</span>       <span class="cmt">; byte temperatura</span>
+    <span class="kwd">movwf</span>   <span class="reg">T_User</span>
 
-    ; Aggiorna modalit&agrave;
-    movfw   Tlc_Buffer+2
-    andlw   B'00000111'        ; maschera modo
-    movwf   Dec_State          ; stato richiesto
-    ; ...</code></pre>
+    <span class="cmt">; Aggiorna modalit&agrave;</span>
+    <span class="kwd">movfw</span>   <span class="reg">Tlc_Buffer</span>+<span class="num">2</span>
+    <span class="kwd">andlw</span>   <span class="num">B'00000111'</span>        <span class="cmt">; maschera modo</span>
+    <span class="kwd">movwf</span>   <span class="reg">Dec_State</span>          <span class="cmt">; stato richiesto</span>
+    <span class="cmt">; ...</span></pre>
         </article>
       </div>
 
@@ -215,9 +235,10 @@ Flusso completo:
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
 

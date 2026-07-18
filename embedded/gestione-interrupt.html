@@ -8,12 +8,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gestione Interrupt su PIC | SYSEM</title>
   <meta name="description" content="Salvataggio contesto, interrupt on-change, gestione timer multipli, decoder a cascata per PIC16Cxx in Assembly.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="gestione-interrupt" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Gestione Interrupt su PIC16Cxx</h1>
-      <p class="hero-subtitle">Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura</p>
+      <p class="hero-overline" data-i18n="page.gestioneInterrupt.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.gestioneInterrupt.title">Gestione Interrupt su PIC16Cxx</h1>
+      <p class="hero-subtitle" data-i18n="page.gestioneInterrupt.subtitle">Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>Su un PIC16C65A, un singolo vettore interrupt all&rsquo;indirizzo <code>0x004</code> serve tutte le periferiche: cambio stato su PORTB, overflow timer0, timer1, timer2. Ogni fonte deve essere identificata e servita in tempi strettissimi, senza perdere eventi. Inoltre il salvataggio del contesto (W, STATUS, PCLATH, FSR) deve essere completo ma velocissimo, e bisogna gestire l&rsquo;annidamento implicito tra interrupt e task dello scheduler.</p>
@@ -51,23 +71,23 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Salvataggio contesto (prologo interrupt)</h3>
-          <pre><code>;----------------------------------------------------------------------
+          <pre class="code-block"><span class="cmt">;----------------------------------------------------------------------
 ; Prologo interrupt: salva contesto in 4 istruzioni
-;----------------------------------------------------------------------
-Interrupt
-PUSH
-    movwf   Reg_w              ; salva W (nessun effetto su STATUS)
-    swapf   STATUS,w           ; scambia nibble per salvare STATUS
-    BANK    0
-    movwf   Reg_Status         ; Reg_Status = STATUS preservato
+;----------------------------------------------------------------------</span>
+<span class="lab">Interrupt</span>
+<span class="lab">PUSH</span>
+    <span class="kwd">movwf</span>   <span class="reg">Reg_w</span>              <span class="cmt">; salva W (nessun effetto su STATUS)</span>
+    <span class="kwd">swapf</span>   <span class="reg">STATUS</span>,w           <span class="cmt">; scambia nibble per salvare STATUS</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">movwf</span>   <span class="reg">Reg_Status</span>         <span class="cmt">; Reg_Status = STATUS preservato</span>
 
-    movfw   PCLATH
-    movwf   Save_PCLATH        ; salva pagina ROM corrente
-    movfw   FSR
-    movwf   Save_FSR           ; salva puntatore indiretto
+    <span class="kwd">movfw</span>   <span class="reg">PCLATH</span>
+    <span class="kwd">movwf</span>   <span class="reg">Save_PCLATH</span>        <span class="cmt">; salva pagina ROM corrente</span>
+    <span class="kwd">movfw</span>   <span class="reg">FSR</span>
+    <span class="kwd">movwf</span>   <span class="reg">Save_FSR</span>           <span class="cmt">; salva puntatore indiretto</span>
 
-    clrf    PCLATH             ; forza pagina 0 per i gestori
-                               ; (i gestori sono tutti in pagina 0)</code></pre>
+    <span class="kwd">clrf</span>    <span class="reg">PCLATH</span>             <span class="cmt">; forza pagina 0 per i gestori</span>
+                               <span class="cmt">; (i gestori sono tutti in pagina 0)</span></pre>
           <p>Nota tecnica: l&rsquo;uso di <code>SWAPF</code> per salvare STATUS non &egrave; casuale. <code>SWAPF</code> non modifica alcun flag di STATUS, a differenza di <code>MOVWF</code>. Questo &egrave; cruciale perch&eacute; l&rsquo;interrupt pu&ograve; accadere in qualsiasi momento e dobbiamo preservare il contesto esatto.</p>
         </article>
       </div>
@@ -75,61 +95,61 @@ PUSH
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Decoder a cascata (fonti interrupt)</h3>
-          <pre><code>;----------------------------------------------------------------------
+          <pre class="code-block"><span class="cmt">;----------------------------------------------------------------------
 ; Le fonti vengono testate in ordine di priorit&agrave; implicita:
 ; 1. PORTB change (TLC, SYNC, TACHO, NTC) - pi&ugrave; veloci
 ; 2. Timer2 overflow (timeout ricezione TLC)
 ; 3. Timer1 overflow (timeout lettura NTC)
 ; 4. Timer0 overflow (step OS, innesco triac)
-;----------------------------------------------------------------------
+;----------------------------------------------------------------------</span>
 
-; --- Fonte 1: PORTB On-Change ---
-    btfss   INTCON,RBIF        ; interrupt on change?
-    goto    Test_Ovf_Timer     ; no: passa a Timer2
+<span class="cmt">; --- Fonte 1: PORTB On-Change ---</span>
+    <span class="kwd">btfss</span>   <span class="reg">INTCON</span>,RBIF        <span class="cmt">; interrupt on change?</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Ovf_Timer</span>     <span class="cmt">; no: passa a Timer2</span>
 
-    bcf     INTCON,RBIF        ; resetta flag
+    <span class="kwd">bcf</span>     <span class="reg">INTCON</span>,RBIF        <span class="cmt">; resetta flag</span>
 
-Next_Interrupt
-    movfw   Last_Pb
-    xorwf   PORTB,w            ; quali bit sono cambiati?
-    movwf   Save_Port
+<span class="lab">Next_Interrupt</span>
+    <span class="kwd">movfw</span>   <span class="reg">Last_Pb</span>
+    <span class="kwd">xorwf</span>   <span class="reg">PORTB</span>,w            <span class="cmt">; quali bit sono cambiati?</span>
+    <span class="kwd">movwf</span>   <span class="reg">Save_Port</span>
 
-; Decodifica a catena: ogni gestore pu&ograve; "prendersi" l'interrupt
-    SCLR    FL_TLC             ; linea telecomando ?
-    goto    Decode_Tlc
-End_Test_Tlc
+<span class="cmt">; Decodifica a catena: ogni gestore pu&ograve; "prendersi" l'interrupt</span>
+    <span class="kwd">SCLR</span>    FL_TLC             <span class="cmt">; linea telecomando ?</span>
+    <span class="kwd">goto</span>    <span class="lab">Decode_Tlc</span>
+<span class="lab">End_Test_Tlc</span>
 
-    SCLR    FL_SYNC            ; fronte di sincronismo rete ?
-    goto    Decode_Sync
+    <span class="kwd">SCLR</span>    FL_SYNC            <span class="cmt">; fronte di sincronismo rete ?</span>
+    <span class="kwd">goto</span>    <span class="lab">Decode_Sync</span>
 
-    SCLR    FL_TACHO           ; fronte tachimetrico ?
-    goto    Decode_Tacho
+    <span class="kwd">SCLR</span>    FL_TACHO           <span class="cmt">; fronte tachimetrico ?</span>
+    <span class="kwd">goto</span>    <span class="lab">Decode_Tacho</span>
 
-    SCLR    FL_NTC             ; fine carica condensatore NTC ?
-    goto    Decode_Ntc
+    <span class="kwd">SCLR</span>    FL_NTC             <span class="cmt">; fine carica condensatore NTC ?</span>
+    <span class="kwd">goto</span>    <span class="lab">Decode_Ntc</span>
 
-End_Test_On_Change
+<span class="lab">End_Test_On_Change</span>
 
-; --- Fonte 2: Timer2 Overflow ---
-Test_Ovf_Timer
-    btfss   PIR1,TMR2IF        ; overflow timer2 (TLC timeout)?
-    goto    Test_Timer1
-    ; ... gestione timeout TLC ...
+<span class="cmt">; --- Fonte 2: Timer2 Overflow ---</span>
+<span class="lab">Test_Ovf_Timer</span>
+    <span class="kwd">btfss</span>   <span class="reg">PIR1</span>,TMR2IF        <span class="cmt">; overflow timer2 (TLC timeout)?</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Timer1</span>
+    <span class="cmt">; ... gestione timeout TLC ...</span>
 
-; --- Fonte 3: Timer1 Overflow ---
-Test_Timer1
-    btfss   PIR1,TMR1IF        ; overflow timer1 (NTC timeout)?
-    goto    Test_Timer0
-    ; ... gestione timeout NTC ...
+<span class="cmt">; --- Fonte 3: Timer1 Overflow ---</span>
+<span class="lab">Test_Timer1</span>
+    <span class="kwd">btfss</span>   <span class="reg">PIR1</span>,TMR1IF        <span class="cmt">; overflow timer1 (NTC timeout)?</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Timer0</span>
+    <span class="cmt">; ... gestione timeout NTC ...</span>
 
-; --- Fonte 4: Timer0 Overflow ---
-Test_Timer0
-    btfss   INTCON,T0IF        ; overflow timer0 (OS step)?
-    goto    End_Interrupt
-    bcf     INTCON,T0IF
+<span class="cmt">; --- Fonte 4: Timer0 Overflow ---</span>
+<span class="lab">Test_Timer0</span>
+    <span class="kwd">btfss</span>   <span class="reg">INTCON</span>,T0IF        <span class="cmt">; overflow timer0 (OS step)?</span>
+    <span class="kwd">goto</span>    <span class="lab">End_Interrupt</span>
+    <span class="kwd">bcf</span>     <span class="reg">INTCON</span>,T0IF
 
-    ; Innesco triac a tempo (zippillo)
-    ; ... vedi sezione triac ...</code></pre>
+    <span class="cmt">; Innesco triac a tempo (zippillo)</span>
+    <span class="cmt">; ... vedi sezione triac ...</span></pre>
         </article>
       </div>
 
@@ -137,35 +157,35 @@ Test_Timer0
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Innesco triac via interrupt (zippillo a tempo)</h3>
           <p>L&rsquo;interrupt Timer0 viene usato anche per generare l&rsquo;impulso di gate del triac con temporizzazione precisa:</p>
-          <pre><code>; Dallo stesso interrupt Timer0:
+          <pre class="code-block"><span class="cmt">; Dallo stesso interrupt Timer0:
 ; Diamo lo zippillo al triac richiesto,
-; solo se la ventola relativa deve essere accesa.
+; solo se la ventola relativa deve essere accesa.</span>
 
-Test_V_Int_On
-    SSET    V_INT              ; test consenso ventola interna
-    goto    Test_V_Ext_On
-    SSET    V_INT_REQ          ; test richiesta attivazione
-    goto    Test_V_Ext_On
-    SETB    OK_V_INT           ; consenso attivazione da task!
-    CLRB    IO_V_INT           ; azionamento triac (pin basso = ON)
+<span class="lab">Test_V_Int_On</span>
+    <span class="kwd">SSET</span>    V_INT              <span class="cmt">; test consenso ventola interna</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SSET</span>    V_INT_REQ          <span class="cmt">; test richiesta attivazione</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SETB</span>    <span class="reg">OK_V_INT</span>           <span class="cmt">; consenso attivazione da task!</span>
+    <span class="kwd">CLRB</span>    <span class="reg">IO_V_INT</span>           <span class="cmt">; azionamento triac (pin basso = ON)</span>
 
-Test_V_Ext_On
-    SSET    V_EXT              ; test consenso ventola esterna
-    goto    Fire_On_Triac
-    SSET    V_EXT_REQ
-    goto    Fire_On_Triac
-    SETB    OK_V_EXT
-    CLRB    IO_V_EXT
+<span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SSET</span>    V_EXT              <span class="cmt">; test consenso ventola esterna</span>
+    <span class="kwd">goto</span>    <span class="lab">Fire_On_Triac</span>
+    <span class="kwd">SSET</span>    V_EXT_REQ
+    <span class="kwd">goto</span>    <span class="lab">Fire_On_Triac</span>
+    <span class="kwd">SETB</span>    <span class="reg">OK_V_EXT</span>
+    <span class="kwd">CLRB</span>    <span class="reg">IO_V_EXT</span>
 
-Fire_On_Triac
-    movlw   7
-    movwf   Wait_Rit_Triac     ; attesa 21 us (3 cicli * 7)
-Loop_V_xx
-    decfsz  Wait_Rit_Triac,same
-    goto    Loop_V_xx
+<span class="lab">Fire_On_Triac</span>
+    <span class="kwd">movlw</span>   <span class="num">7</span>
+    <span class="kwd">movwf</span>   <span class="reg">Wait_Rit_Triac</span>     <span class="cmt">; attesa 21 us (3 cicli * 7)</span>
+<span class="lab">Loop_V_xx</span>
+    <span class="kwd">decfsz</span>  <span class="reg">Wait_Rit_Triac</span>,same
+    <span class="kwd">goto</span>    <span class="lab">Loop_V_xx</span>
 
-    SETB    IO_V_INT           ; disattiva triac (fine impulso)
-    SETB    IO_V_EXT</code></pre>
+    <span class="kwd">SETB</span>    <span class="reg">IO_V_INT</span>           <span class="cmt">; disattiva triac (fine impulso)</span>
+    <span class="kwd">SETB</span>    <span class="reg">IO_V_EXT</span></pre>
           <p>L&rsquo;impulso di gate di circa 21 &micro;s &egrave; generato interamente via software, senza timer hardware dedicato.</p>
         </article>
       </div>
@@ -239,15 +259,9 @@ Loop_V_xx
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

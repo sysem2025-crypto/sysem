@@ -6,14 +6,33 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Macchina a Stati per Prodotto | SYSEM</title>
+  <title data-i18n="page.macchinaStati.metaTitle">Macchina a Stati per Prodotto | SYSEM</title>
   <meta name="description" content="Progettazione di macchine a stati per sistemi embedded: diagramma a palle per il cliente, transizioni a tempo/evento, output istantanei.">
   <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="macchina-a-stati" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Macchina a Stati per Prodotto</h1>
-      <p class="hero-subtitle">Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente</p>
+      <p class="hero-overline" data-i18n="page.macchinaStati.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.macchinaStati.title">Macchina a Stati per Prodotto</h1>
+      <p class="hero-subtitle" data-i18n="page.macchinaStati.subtitle">Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>Uno split system ha molti modi di funzionamento (Cool, Heat, Dry, Fan, Night, Defrost, Thermo Off, ecc.). Ognuno richiede una combinazione specifica di attuatori: compressore acceso/spento, ventola interna a velocit&agrave; X, ventola esterna, deflettore in posizione A o B. Il cliente deve poter capire cosa sta facendo la macchina in ogni istante, e il team di sviluppo deve poter aggiungere o modificare stati senza rischiare regressioni. Un tradizionale flow chart non basta: serve un modello che separi chiaramente <strong>stato istantaneo delle utenze</strong> (output) dalle <strong>condizioni di transizione</strong> (eventi/tempo).</p>
@@ -52,28 +72,28 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Implementazione: la tabella degli stati (table1.h)</h3>
-          <pre><code>; Ogni stato &egrave; un'etichetta nella jump table.
+          <pre class="code-block"><span class="cmt">; Ogni stato &egrave; un'etichetta nella jump table.
 ; La funzione M_State_Table prende Index_M_S in W
 ; e salta allo stato corrispondente.
-; Ogni stato restituisce in W il prossimo stato.
+; Ogni stato restituisce in W il prossimo stato.</span>
 
-M_State_Table
-    addwf   PCL,same                ; jump table
-    nop                             ; parto da 1
-    goto    S_1                     ; STOP
-    goto    S_2                     ; COOL
-    goto    S_3                     ; DRY
-    goto    S_4                     ; FAN
-    goto    S_5                     ; ...
-    goto    S_6                     ; Thermo Off Cool
-    goto    S_7                     ; ...
-    goto    S_8                     ; Thermo Off Dry
+<span class="lab">M_State_Table</span>
+    <span class="kwd">addwf</span>   <span class="reg">PCL</span>,same                <span class="cmt">; jump table</span>
+    <span class="kwd">nop</span>                             <span class="cmt">; parto da 1</span>
+    <span class="kwd">goto</span>    <span class="lab">S_1</span>                     <span class="cmt">; STOP</span>
+    <span class="kwd">goto</span>    <span class="lab">S_2</span>                     <span class="cmt">; COOL</span>
+    <span class="kwd">goto</span>    <span class="lab">S_3</span>                     <span class="cmt">; DRY</span>
+    <span class="kwd">goto</span>    <span class="lab">S_4</span>                     <span class="cmt">; FAN</span>
+    <span class="kwd">goto</span>    <span class="lab">S_5</span>                     <span class="cmt">; ...</span>
+    <span class="kwd">goto</span>    <span class="lab">S_6</span>                     <span class="cmt">; Thermo Off Cool</span>
+    <span class="kwd">goto</span>    <span class="lab">S_7</span>                     <span class="cmt">; ...</span>
+    <span class="kwd">goto</span>    <span class="lab">S_8</span>                     <span class="cmt">; Thermo Off Dry</span>
     ...
-    goto    S_20                    ; Allarme Hot Battery
-    goto    S_23                    ; Allarme NTC
-    goto    S_25                    ; Diagnostica ICA
-    goto    S_26                    ; Defrost Heat
-    goto    S_27                    ; Defrost Heat Night</code></pre>
+    <span class="kwd">goto</span>    <span class="lab">S_20</span>                    <span class="cmt">; Allarme Hot Battery</span>
+    <span class="kwd">goto</span>    <span class="lab">S_23</span>                    <span class="cmt">; Allarme NTC</span>
+    <span class="kwd">goto</span>    <span class="lab">S_25</span>                    <span class="cmt">; Diagnostica ICA</span>
+    <span class="kwd">goto</span>    <span class="lab">S_26</span>                    <span class="cmt">; Defrost Heat</span>
+    <span class="kwd">goto</span>    <span class="lab">S_27</span>                    <span class="cmt">; Defrost Heat Night</span></pre>
         </article>
       </div>
 
@@ -81,85 +101,85 @@ M_State_Table
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Anatomia di uno stato: S_2 (COOL)</h3>
           <p>Ogni stato ha tre sezioni ben distinte, che corrispondono esattamente agli elementi del diagramma a palle:</p>
-          <pre><code>S_2
-; ====================================================================
+          <pre class="code-block"><span class="lab">S_2</span>
+<span class="cmt">; ====================================================================
 ; 1. CONDIZIONI DI TRANSIZIONE (frecce del diagramma)
 ;    Codice "on the fly": testa le condizioni di uscita dallo stato.
 ;    Ogni freccia &egrave; un test con goto allo stato destinazione.
-; ====================================================================
+; ====================================================================</span>
 
-    ; Freccia: Thermo Off se T_amb raggiunge T_set da 2 minuti
-    #ifreg _T_Amb < T_Set
-        #ifreg Sat_Timer2 > @SAT_TIMER_1_MIN
-            goto    Thermo_Off_Cool_S_6
-        #endif
-    #endif
+    <span class="cmt">; Freccia: Thermo Off se T_amb raggiunge T_set da 2 minuti</span>
+    <span class="def">#ifreg</span> _T_Amb &lt; T_Set
+        <span class="def">#ifreg</span> Sat_Timer2 &gt; @SAT_TIMER_1_MIN
+            <span class="kwd">goto</span>    <span class="lab">Thermo_Off_Cool_S_6</span>
+        <span class="def">#endif</span>
+    <span class="def">#endif</span>
 
-    ; Freccia: esci dal COOL se non pi&ugrave; in modalit&agrave; Cool
-    SSET    DS_COOL
-    goto    Thermo_Off_Cool_S_6
+    <span class="cmt">; Freccia: esci dal COOL se non pi&ugrave; in modalit&agrave; Cool</span>
+    <span class="kwd">SSET</span>    DS_COOL
+    <span class="kwd">goto</span>    <span class="lab">Thermo_Off_Cool_S_6</span>
 
-    ; Freccia: protezione antibrinamento dopo 8 minuti
-    #ifreg _T_Bat < @T_BAT_NEG_1
-        #ifreg Sat_Timer2 > @SAT_TIMER_7_MIN
-            goto    Thermo_Off_Cool_S_6
-        #endif
-    #endif
+    <span class="cmt">; Freccia: protezione antibrinamento dopo 8 minuti</span>
+    <span class="def">#ifreg</span> _T_Bat &lt; @T_BAT_NEG_1
+        <span class="def">#ifreg</span> Sat_Timer2 &gt; @SAT_TIMER_7_MIN
+            <span class="kwd">goto</span>    <span class="lab">Thermo_Off_Cool_S_6</span>
+        <span class="def">#endif</span>
+    <span class="def">#endif</span>
 
-    ; Freccia: passa a Night se timer notte scaduto
-    SSET    DS_NIGHT
-    goto    End33
-    #ifreg Night_Timer >= @NIGHT_TIMER_1_H
-        goto    Cool_Night_S_17
-    #endif
+    <span class="cmt">; Freccia: passa a Night se timer notte scaduto</span>
+    <span class="kwd">SSET</span>    DS_NIGHT
+    <span class="kwd">goto</span>    <span class="lab">End33</span>
+    <span class="def">#ifreg</span> Night_Timer &gt;= @NIGHT_TIMER_1_H
+        <span class="kwd">goto</span>    <span class="lab">Cool_Night_S_17</span>
+    <span class="def">#endif</span>
 
-    ; Freccia: allarme NTC
-    SCLR    ALARM_NTC
-    goto    Alarm_Ntc_S_23
+    <span class="cmt">; Freccia: allarme NTC</span>
+    <span class="kwd">SCLR</span>    ALARM_NTC
+    <span class="kwd">goto</span>    <span class="lab">Alarm_Ntc_S_23</span>
 
-; ====================================================================
+<span class="cmt">; ====================================================================
 ; 2. STAND CODE (azioni continue nello stato)
-; ====================================================================
-    clrf    Compr_Timer         ; compressore acceso, reset timer
+; ====================================================================</span>
+    <span class="kwd">clrf</span>    <span class="reg">Compr_Timer</span>         <span class="cmt">; compressore acceso, reset timer</span>
 
-; ====================================================================
+<span class="cmt">; ====================================================================
 ; 3. OUTPUT (stato istantaneo delle utenze - il contenuto del cerchio)
 ;    Definisce quali attuatori sono ON/OFF in questo stato
-; ====================================================================
-    SETB    COMPR               ; compressore ON
-    ; Ventola esterna: dopo 3 secondi dalla partenza
-    #ifreg !Sat_Timer2
-        #ifreg Sat_Timer1 >= @3
-            SETB    V_EXT
-        #endif
-    #else
-        SETB    V_EXT
-    #endif
+; ====================================================================</span>
+    <span class="kwd">SETB</span>    <span class="reg">COMPR</span>               <span class="cmt">; compressore ON</span>
+    <span class="cmt">; Ventola esterna: dopo 3 secondi dalla partenza</span>
+    <span class="def">#ifreg</span> !Sat_Timer2
+        <span class="def">#ifreg</span> Sat_Timer1 &gt;= @3
+            <span class="kwd">SETB</span>    V_EXT
+        <span class="def">#endif</span>
+    <span class="def">#else</span>
+        <span class="kwd">SETB</span>    V_EXT
+    <span class="def">#endif</span>
 
-    SCLR    END_OPEN_FLAP
-    SETB    V_INT               ; ventola interna ON
+    <span class="kwd">SCLR</span>    END_OPEN_FLAP
+    <span class="kwd">SETB</span>    V_INT               <span class="cmt">; ventola interna ON</span>
 
-    SCLR    DS_RIC_ARIA
-    SETB    RIC_ARIA             ; ricircolo aria ON
+    <span class="kwd">SCLR</span>    DS_RIC_ARIA
+    <span class="kwd">SETB</span>    RIC_ARIA             <span class="cmt">; ricircolo aria ON</span>
 
-    ; Velocit&agrave; ventola in base alla temperatura
-    movlw   V_INT_MIN
-    movwf   V_Def
-    #ifreg _T_Amb > T_Set + @T_1
-        movlw   V_INT_MED
-        movwf   V_Def
-    #endif
-    #ifreg _T_Amb > T_Set + @T_2
-        movlw   V_INT_MAX
-        movwf   V_Def
-    #endif
+    <span class="cmt">; Velocit&agrave; ventola in base alla temperatura</span>
+    <span class="kwd">movlw</span>   V_INT_MIN
+    <span class="kwd">movwf</span>   <span class="reg">V_Def</span>
+    <span class="def">#ifreg</span> _T_Amb &gt; T_Set + @T_1
+        <span class="kwd">movlw</span>   V_INT_MED
+        <span class="kwd">movwf</span>   <span class="reg">V_Def</span>
+    <span class="def">#endif</span>
+    <span class="def">#ifreg</span> _T_Amb &gt; T_Set + @T_2
+        <span class="kwd">movlw</span>   V_INT_MAX
+        <span class="kwd">movwf</span>   <span class="reg">V_Def</span>
+    <span class="def">#endif</span>
 
-    SETB    OPEN_FLAP           ; deflettore aperto
+    <span class="kwd">SETB</span>    OPEN_FLAP           <span class="cmt">; deflettore aperto</span>
 
-    call    Config_Led          ; aggiorna led pannello
+    <span class="kwd">call</span>    <span class="lab">Config_Led</span>          <span class="cmt">; aggiorna led pannello</span>
 
-    movlw   2                   ; ritorna S_2 (resta in questo stato)
-    return</code></pre>
+    <span class="kwd">movlw</span>   <span class="num">2</span>                   <span class="cmt">; ritorna S_2 (resta in questo stato)</span>
+    <span class="kwd">return</span></pre>
         </article>
       </div>
 
@@ -185,8 +205,8 @@ M_State_Table
     | Deflettore: COOL  |   | Deflettore: HEAT  |
     +-------------------+   +-------------------+
       |          |               |          |
-      | T_amb    | T_bat <      | T_amb    | Defrost
-      | >= T_set | -1°C x 8'    | >= T_set | timer
+      | T_amb    | T_bat &lt;      | T_amb    | Defrost
+      | &gt;= T_set | -1&deg;C x 8'    | &gt;= T_set | timer
       | x 2'     |               | x 2'     |
       v          v               v          v
     +-------------------+   +-------------------+
@@ -197,14 +217,14 @@ M_State_Table
     | Deflettore: COOL  |   | Deflettore: COOL  |
     +-------------------+   +-------------------+
               |                         |
-              | T_Set - T_amb > 2°     | fine defrost
+              | T_Set - T_amb &gt; 2&deg;     | fine defrost
               v                         v
            S_2 COOL                   S_10 HEAT
 
     Legenda frecce:
-    ---> transizione a evento (comando utente o allarme)
-    - - > transizione a tempo (dopo N secondi/minuti)
-    ... > transizione su condizione sensori (temperatura)</code></pre>
+    ---&gt; transizione a evento (comando utente o allarme)
+    - - &gt; transizione a tempo (dopo N secondi/minuti)
+    ... &gt; transizione su condizione sensori (temperatura)</code></pre>
           <p>Ogni cerchio dice esattamente cosa accade alle utenze in quello stato. Le frecce dicono quando e perch&eacute; si passa a un altro cerchio. Il cliente pu&ograve; verificare la logica semplicemente seguendo le frecce. Lo sviluppatore implementa ogni cerchio come subroutine indipendente.</p>
         </article>
       </div>
@@ -212,30 +232,30 @@ M_State_Table
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Il ciclo della macchina a stati</h3>
-          <pre><code>; La state machine &egrave; una task dello scheduler OS,
-; eseguita ogni 250 ms.
+          <pre class="code-block"><span class="cmt">; La state machine &egrave; una task dello scheduler OS,
+; eseguita ogni 250 ms.</span>
 
-State_Machine_Loop_1
-    BANK    0
-    bcf     INTCON,GIE          ; disabilita interrupt
-    EVENT   TASK_M_STATE, MSEC_250
-    CLRB    F_MSEC_250
+<span class="lab">State_Machine_Loop_1</span>
+    <span class="kwd">BANK</span>    0
+    <span class="kwd">bcf</span>     <span class="reg">INTCON</span>,GIE          <span class="cmt">; disabilita interrupt</span>
+    <span class="kwd">EVENT</span>   TASK_M_STATE, MSEC_250
+    <span class="kwd">CLRB</span>    F_MSEC_250
 
-    ; ... lettura configurazione da EEPROM ...
+    <span class="cmt">; ... lettura configurazione da EEPROM ...</span>
 
-State_Machine_Loop_2
-    EVENT   TASK_M_STATE, MSEC_250
+<span class="lab">State_Machine_Loop_2</span>
+    <span class="kwd">EVENT</span>   TASK_M_STATE, MSEC_250
 
-    ; ... aggiornamento timer interni ...
+    <span class="cmt">; ... aggiornamento timer interni ...</span>
 
-    ; Chiamata alla macchina a stati
-    movlw   HIGH M_State_Table
-    movwf   PCLATH
-    movfw   Index_M_S           ; indice stato corrente
-    call    M_State_Table       ; esegue stato, torna prossimo stato
-    movwf   Index_M_S           ; aggiorna stato corrente
+    <span class="cmt">; Chiamata alla macchina a stati</span>
+    <span class="kwd">movlw</span>   HIGH M_State_Table
+    <span class="kwd">movwf</span>   <span class="reg">PCLATH</span>
+    <span class="kwd">movfw</span>   <span class="reg">Index_M_S</span>           <span class="cmt">; indice stato corrente</span>
+    <span class="kwd">call</span>    <span class="lab">M_State_Table</span>       <span class="cmt">; esegue stato, torna prossimo stato</span>
+    <span class="kwd">movwf</span>   <span class="reg">Index_M_S</span>           <span class="cmt">; aggiorna stato corrente</span>
 
-    goto    State_Machine_Loop_1</code></pre>
+    <span class="kwd">goto</span>    <span class="lab">State_Machine_Loop_1</span></pre>
           <p>Il ciclo &egrave; semplice: ogni 250 ms lo scheduler risveglia la task, che chiama lo stato corrente. Lo stato esamina le condizioni, eventualmente aggiorna le utenze, e restituisce il nuovo indice. Se le condizioni non cambiano, lo stato restituisce se stesso (stato invariato).</p>
         </article>
       </div>
@@ -259,12 +279,12 @@ State_Machine_Loop_2
           <h3>Esempio di modifica richiesta dal cliente</h3>
           <p>Il cliente dice: <em>&ldquo;Nello stato COOL, se la batteria scende sotto -1&deg;C per 8 minuti, voglio che la macchina vada in Thermo Off invece di continuare a raffreddare.&rdquo;</em></p>
           <p>Si aggiunge una freccia nel diagramma a palle da S_2 a S_6 con condizione <code>T_bat &lt; -1&deg;C AND timer &gt; 8 min</code>. Nel codice, si aggiungono poche righe nella sezione delle condizioni di S_2:</p>
-          <pre><code>; Freccia: protezione antibrinamento
-#ifreg _T_Bat < @T_BAT_NEG_1
-    #ifreg Sat_Timer2 > @SAT_TIMER_7_MIN
-        goto    Thermo_Off_Cool_S_6
-    #endif
-#endif</code></pre>
+          <pre class="code-block"><span class="cmt">; Freccia: protezione antibrinamento</span>
+<span class="def">#ifreg</span> _T_Bat &lt; @T_BAT_NEG_1
+    <span class="def">#ifreg</span> Sat_Timer2 &gt; @SAT_TIMER_7_MIN
+        <span class="kwd">goto</span>    <span class="lab">Thermo_Off_Cool_S_6</span>
+    <span class="def">#endif</span>
+<span class="def">#endif</span></pre>
           <p>Nessuna modifica agli altri stati. Il cliente vede la nuova freccia sul diagramma e la verifica sul prodotto reale.</p>
         </article>
       </div>
@@ -279,15 +299,9 @@ State_Machine_Loop_2
           <p>Entrambi i progetti usano lo stesso modello grafico: cerchi = stati, frecce = transizioni a tempo o evento.</p>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

@@ -9,11 +9,30 @@
   <title>Lettura NTC a Condensatore | SYSEM</title>
   <meta name="description" content="Misura di temperatura con termistore NTC su PIC: metodo carica/scarica RC, normalizzazione a 130 count, lookup indiretto.">
   <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="lettura-ntc" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Lettura NTC a Condensatore</h1>
-      <p class="hero-subtitle">Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC</p>
+      <p class="hero-overline" data-i18n="page.letturaNtc.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.letturaNtc.title">Lettura NTC a Condensatore</h1>
+      <p class="hero-subtitle" data-i18n="page.letturaNtc.subtitle">Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>In uno split system servono 3 sonde NTC (ambiente, batteria, uscita aria) e una resistenza di calibrazione R_CAL. Su PIC16C65A il numero di pin ADC &egrave; limitato. Invece di aggiungere un ADC esterno, si sfrutta il principio RC: la NTC fa parte di una rete RC, e il tempo di carica del condensatore &egrave; proporzionale alla resistenza della NTC, quindi alla temperatura. Un interrupt on-change sul pin segnala quando la soglia logica viene superata.</p>
@@ -58,129 +78,129 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Implementazione: #NTC.H (Split Elettroplastica I200052)</h3>
-          <pre><code>;----------------------------------------------------------------------
+          <pre class="code-block"><span class="cmt">;----------------------------------------------------------------------
 ; Macchina a stati per lettura NTC
 ; Cicla su: [R_CAL, NTC_AMB, NTC_BAT, NTC_VENT]
-;----------------------------------------------------------------------
-MAX_STATE     EQU   2
-MAX_INDEX_NTC EQU   3    ; 3 sonde + R_CAL (indice 0)
+;----------------------------------------------------------------------</span>
+MAX_STATE     <span class="def">EQU</span>   <span class="num">2</span>
+MAX_INDEX_NTC <span class="def">EQU</span>   <span class="num">3</span>    <span class="cmt">; 3 sonde + R_CAL (indice 0)</span>
 
-NtcTask
-    WAIT    TASK_NTC, OS_MSEC_100    ; chiamata ogni 100 ms
+<span class="lab">NtcTask</span>
+    <span class="kwd">WAIT</span>    TASK_NTC, OS_MSEC_100    <span class="cmt">; chiamata ogni 100 ms</span>
 
-; Invia le temperature correnti al task di diagnostica / TLC
-    movfw   T_User
-    movwf   RB0_0
+<span class="cmt">; Invia le temperature correnti al task di diagnostica / TLC</span>
+    <span class="kwd">movfw</span>   T_User
+    <span class="kwd">movwf</span>   RB0_0
     Send_8_Lo   MSG_T_USER, RB0_0
-    movfw   T_Amb
-    movwf   RB0_0
+    <span class="kwd">movfw</span>   T_Amb
+    <span class="kwd">movwf</span>   RB0_0
     Send_8_Lo   MSG_T_AMB, RB0_0
-    movfw   T_Exit
-    movwf   RB0_0
+    <span class="kwd">movfw</span>   T_Exit
+    <span class="kwd">movwf</span>   RB0_0
     Send_8_Lo   MSG_T_EXIT, RB0_0
-    movfw   T_Bat
-    movwf   RB0_0
+    <span class="kwd">movfw</span>   T_Bat
+    <span class="kwd">movwf</span>   RB0_0
     Send_8_Lo   MSG_T_BAT, RB0_0
 
-;----------------------------------------------------------------------
+<span class="cmt">;----------------------------------------------------------------------
 ; Fase 1: Lettura R_Cal (resistenza di calibrazione)
-;----------------------------------------------------------------------
-Read_RCal
-    ; PORTB bit R_CAL = output high (carica condensatore via R_CAL)
-    movlw   1 << R_CAL
-    iorwf   PORTB,same
+;----------------------------------------------------------------------</span>
+<span class="lab">Read_RCal</span>
+    <span class="cmt">; PORTB bit R_CAL = output high (carica condensatore via R_CAL)</span>
+    <span class="kwd">movlw</span>   <span class="num">1</span> <span class="opr">&lt;&lt;</span> R_CAL
+    <span class="kwd">iorwf</span>   <span class="reg">PORTB</span>,same
 
-    BANK    1
-    ; Tre-state: NTC in alta impedenza
-    movlw   1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT
-    iorwf   PORTB,same
-    movlw   ~(1 << R_CAL)
-    andwf   PORTB,same      ; solo R_CAL in output
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="cmt">; Tre-state: NTC in alta impedenza</span>
+    <span class="kwd">movlw</span>   <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_AMB <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_BAT <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_VENT
+    <span class="kwd">iorwf</span>   <span class="reg">PORTB</span>,same
+    <span class="kwd">movlw</span>   ~(<span class="num">1</span> <span class="opr">&lt;&lt;</span> R_CAL)
+    <span class="kwd">andwf</span>   <span class="reg">PORTB</span>,same      <span class="cmt">; solo R_CAL in output</span>
 
-    BANK    0
-    CLRB    F_NTC_OK        ; reset flag
-    clrf    TMR1L
-    clrf    TMR1H           ; reset timer1
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    CLRB    F_NTC_OK        <span class="cmt">; reset flag</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR1L</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR1H</span>           <span class="cmt">; reset timer1</span>
 
-    ; Attendi interrupt on-change (fine carica RC)
-    EVENT   TASK_NTC, NTC_OK
+    <span class="cmt">; Attendi interrupt on-change (fine carica RC)</span>
+    <span class="kwd">EVENT</span>   TASK_NTC, NTC_OK
 
-    ; Salva count R_Cal
-    BANK    1
-    movfw   RB1_12
-    movwf   R_Cal_h
-    movfw   RB1_13
-    movwf   R_Cal_l
+    <span class="cmt">; Salva count R_Cal</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movfw</span>   RB1_12
+    <span class="kwd">movwf</span>   R_Cal_h
+    <span class="kwd">movfw</span>   RB1_13
+    <span class="kwd">movwf</span>   R_Cal_l
 
-    ; Scarica condensatore
-    BANK    0
-    movlw   ~(1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT | 1 << R_CAL)
-    andwf   PORTB,same      ; tutti output LOW
-    BANK    1
-    andwf   PORTB,same
+    <span class="cmt">; Scarica condensatore</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">movlw</span>   ~(<span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_AMB <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_BAT <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_VENT <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> R_CAL)
+    <span class="kwd">andwf</span>   <span class="reg">PORTB</span>,same      <span class="cmt">; tutti output LOW</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">andwf</span>   <span class="reg">PORTB</span>,same
 
-    WAIT    TASK_NTC, OS_MSEC_50    ; 50 ms di scarica
+    <span class="kwd">WAIT</span>    TASK_NTC, OS_MSEC_50    <span class="cmt">; 50 ms di scarica</span>
 
-;----------------------------------------------------------------------
+<span class="cmt">;----------------------------------------------------------------------
 ; Fase 2-4: Lettura NTC_Amb, NTC_Bat, NTC_Vent
-;----------------------------------------------------------------------
-Read_Ntc
-    BANK    1
-    movfw   Index_Ntc       ; indice sonda corrente (0..2)
-    call    Config_Io_Ntc   ; configura pin per la sonda selezionata
-    BANK    0
-    iorwf   PORTB,same      ; output high = inizio carica
+;----------------------------------------------------------------------</span>
+<span class="lab">Read_Ntc</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movfw</span>   Index_Ntc       <span class="cmt">; indice sonda corrente (0..2)</span>
+    <span class="kwd">call</span>    Config_Io_Ntc   <span class="cmt">; configura pin per la sonda selezionata</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">iorwf</span>   <span class="reg">PORTB</span>,same      <span class="cmt">; output high = inizio carica</span>
 
-    BANK    1
-    movfw   Index_Ntc
-    call    Config_Treestate_Ntc
-    iorwf   PORTB,same      ; tre-state per le altre sonde
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movfw</span>   Index_Ntc
+    <span class="kwd">call</span>    Config_Treestate_Ntc
+    <span class="kwd">iorwf</span>   <span class="reg">PORTB</span>,same      <span class="cmt">; tre-state per le altre sonde</span>
 
-    BANK    0
+    <span class="kwd">BANK</span>    <span class="num">0</span>
     CLRB    F_NTC_OK
-    clrf    TMR1L
-    clrf    TMR1H           ; reset timer
+    <span class="kwd">clrf</span>    <span class="reg">TMR1L</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR1H</span>           <span class="cmt">; reset timer</span>
 
-    EVENT   TASK_NTC, NTC_OK
+    <span class="kwd">EVENT</span>   TASK_NTC, NTC_OK
 
-    BANK    1
-    movfw   RB1_12
-    movwf   Ntc_h           ; salva count Ntc
-    movfw   RB1_13
-    movwf   Ntc_l
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movfw</span>   RB1_12
+    <span class="kwd">movwf</span>   Ntc_h           <span class="cmt">; salva count Ntc</span>
+    <span class="kwd">movfw</span>   RB1_13
+    <span class="kwd">movwf</span>   Ntc_l
 
-    ; Scarica condensatore
-    BANK    0
-    movlw   ~(1 << NTC_AMB | 1 << NTC_BAT | 1 << NTC_VENT | 1 << R_CAL)
-    andwf   PORTB,same
-    BANK    1
-    andwf   PORTB,same
+    <span class="cmt">; Scarica condensatore</span>
+    <span class="kwd">BANK</span>    <span class="num">0</span>
+    <span class="kwd">movlw</span>   ~(<span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_AMB <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_BAT <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> NTC_VENT <span class="opr">|</span> <span class="num">1</span> <span class="opr">&lt;&lt;</span> R_CAL)
+    <span class="kwd">andwf</span>   <span class="reg">PORTB</span>,same
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">andwf</span>   <span class="reg">PORTB</span>,same
 
-    WAIT    TASK_NTC, OS_MSEC_50
+    <span class="kwd">WAIT</span>    TASK_NTC, OS_MSEC_50
 
-    ; Normalizzazione temperatura
-    movlw   1
+    <span class="cmt">; Normalizzazione temperatura</span>
+    <span class="kwd">movlw</span>   <span class="num">1</span>
     SCLR    INIT_NTC
-    movlw   NORMALIZED_NTC  ; = 130 (fondo scala)
-    BANK    1
-    movwf   Index_Cmd_Ntc
+    <span class="kwd">movlw</span>   NORMALIZED_NTC  <span class="cmt">; = 130 (fondo scala)</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">movwf</span>   Index_Cmd_Ntc
 
-Loop_Nmz_Ntc
-    clrwdt
-    movlw   1
-    movwf   PCLATH
-    call    Cmd_Ntc         ; lookup temperatura
-    decfsz  Index_Cmd_Ntc,same
-    goto    Loop_Nmz_Ntc    ; loop di normalizzazione
+<span class="lab">Loop_Nmz_Ntc</span>
+    <span class="kwd">clrwdt</span>
+    <span class="kwd">movlw</span>   <span class="num">1</span>
+    <span class="kwd">movwf</span>   <span class="reg">PCLATH</span>
+    <span class="kwd">call</span>    Cmd_Ntc         <span class="cmt">; lookup temperatura</span>
+    <span class="kwd">decfsz</span>  Index_Cmd_Ntc,same
+    <span class="kwd">goto</span>    <span class="lab">Loop_Nmz_Ntc</span>    <span class="cmt">; loop di normalizzazione</span>
 
-    ; Prossima sonda
-    BANK    1
-    incf    Index_Ntc,same
-    movfw   Index_Ntc
-    xorlw   MAX_INDEX_NTC
-    skpz
-    goto    Read_Ntc        ; ancora sonde
-    clrf    Index_Ntc       ; tutte fatte: ricomincia</code></pre>
+    <span class="cmt">; Prossima sonda</span>
+    <span class="kwd">BANK</span>    <span class="num">1</span>
+    <span class="kwd">incf</span>    Index_Ntc,same
+    <span class="kwd">movfw</span>   Index_Ntc
+    <span class="kwd">xorlw</span>   MAX_INDEX_NTC
+    <span class="kwd">skpz</span>
+    <span class="kwd">goto</span>    <span class="lab">Read_Ntc</span>        <span class="cmt">; ancora sonde</span>
+    <span class="kwd">clrf</span>    Index_Ntc       <span class="cmt">; tutte fatte: ricomincia</span></pre>
         </article>
       </div>
 
@@ -226,15 +246,15 @@ Timing della misura:
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Lookup e normalizzazione</h3>
           <p>Il valore grezzo del timer (16 bit, count Timer1) viene normalizzato a 130 passi tramite una lookup table. La costante <code>NORMALIZED_NTC = 130</code> definisce il numero di iterazioni del loop di normalizzazione. Ad ogni iterazione viene chiamata <code>Cmd_Ntc</code> che, mediante una tabella di retlw, converte il conteggio in temperatura effettiva:</p>
-          <pre><code>; Tabella di conversione count -> temperatura
-; (tipicamente 130 entry, indicizzate dal valore normalizzato)
-Cmd_Ntc
-    addwf   Pc,Same
-    retlw   00h    ; count = 0   -> T = 0 (corto)
-    retlw   01h    ; count = 1   -> T = 1
-    retlw   02h
+          <pre class="code-block"><span class="cmt">; Tabella di conversione count -> temperatura
+; (tipicamente 130 entry, indicizzate dal valore normalizzato)</span>
+<span class="lab">Cmd_Ntc</span>
+    <span class="kwd">addwf</span>   Pc,Same
+    <span class="kwd">retlw</span>   <span class="num">00h</span>    <span class="cmt">; count = 0   -> T = 0 (corto)</span>
+    <span class="kwd">retlw</span>   <span class="num">01h</span>    <span class="cmt">; count = 1   -> T = 1</span>
+    <span class="kwd">retlw</span>   <span class="num">02h</span>
     ...
-    retlw   7Fh    ; count = 130 -> T = max (circuito aperto)</code></pre>
+    <span class="kwd">retlw</span>   <span class="num">7Fh</span>    <span class="cmt">; count = 130 -> T = max (circuito aperto)</span></pre>
         </article>
       </div>
 
@@ -260,15 +280,9 @@ Cmd_Ntc
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

@@ -6,14 +6,33 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Controllo Triac e Utenze | SYSEM</title>
+  <title data-i18n="page.controlloTriac.metaTitle">Controllo Triac e Utenze | SYSEM</title>
   <meta name="description" content="Controllo di carichi AC con triac su PIC: taglio di fase, sincronismo di rete, finestra di innesco, zippillo a tempo da interrupt.">
   <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="controllo-triac" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,13 +49,14 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Controllo Triac e Utenze</h1>
-      <p class="hero-subtitle">Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt</p>
+      <p class="hero-overline" data-i18n="page.controlloTriac.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.controlloTriac.title">Controllo Triac e Utenze</h1>
+      <p class="hero-subtitle" data-i18n="page.controlloTriac.subtitle">Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt</p>
     </section>
 
     <section class="home">
-      <div class="auth-grid">
+      <div class="tutorial-container">
+        <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
           <p>In uno split system, le ventole interna ed esterna sono motori AC monofase la cui velocit&agrave; viene regolata tramite <strong>taglio di fase</strong> (phase-cut). Un triac, innescato a un ritardo variabile dopo lo zero crossing della rete, conduce solo per una frazione della semi-onda. Pi&ugrave; piccolo &egrave; il ritardo, pi&ugrave; potenza arriva al carico. Servono: sincronismo con la rete (50 Hz), generazione dell&rsquo;impulso di gate (zippillo) con durata precisa, e aggiornamento continuo del ritardo in base alla velocit&agrave; desiderata.</p>
@@ -55,70 +75,70 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Rivelazione sincronismo di rete</h3>
-          <pre><code>; Interrupt on-change su PORTB rileva il fronte di SYNC
-; (pin RB5 collegato a optoaccoppiatore rete)
+          <pre class="code-block"><span class="cmt">; Interrupt on-change su PORTB rileva il fronte di SYNC
+; (pin RB5 collegato a optoaccoppiatore rete)</span>
 
-Decode_Sync
-    ; Salva il ritardo triac corrente come punto di partenza
-    ; per il prossimo semiperiodo
-    movfw   Pw_State2
-    movwf   Sync_Reg          ; ritardo triac per questo semiperiodo
+<span class="lab">Decode_Sync</span>
+    <span class="cmt">; Salva il ritardo triac corrente come punto di partenza
+    ; per il prossimo semiperiodo</span>
+    <span class="kwd">movfw</span>   <span class="reg">Pw_State2</span>
+    <span class="kwd">movwf</span>   <span class="reg">Sync_Reg</span>          <span class="cmt">; ritardo triac per questo semiperiodo</span>
 
-    ; Resetta contatori per innesco
-    clrf    TMR0              ; timer0 riparte da 0 per il nuovo semiperiodo
-    bcf     INTCON,T0IF
+    <span class="cmt">; Resetta contatori per innesco</span>
+    <span class="kwd">clrf</span>    <span class="reg">TMR0</span>              <span class="cmt">; timer0 riparte da 0 per il nuovo semiperiodo</span>
+    <span class="kwd">bcf</span>     <span class="reg">INTCON</span>,T0IF
 
-    ; Segnala allo scheduler che il sincronismo &egrave; avvenuto
-    SETB    F_SYNC_OK
-    goto    End_Test_On_Change</code></pre>
+    <span class="cmt">; Segnala allo scheduler che il sincronismo &egrave; avvenuto</span>
+    <span class="kwd">SETB</span>    F_SYNC_OK
+    <span class="kwd">goto</span>    <span class="lab">End_Test_On_Change</span></pre>
         </article>
       </div>
 
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Innesco triac (zippillo) da interrupt Timer0</h3>
-          <pre><code>; L'interrupt Timer0 serve sia come passo dello scheduler OS
+          <pre class="code-block"><span class="cmt">; L'interrupt Timer0 serve sia come passo dello scheduler OS
 ; sia per generare l'impulso di gate del triac.
 ; Quando Timer0 raggiunge il valore programmato (ritardo),
-; il triac viene acceso e mantenuto per 21 us (zippillo).
+; il triac viene acceso e mantenuto per 21 us (zippillo).</span>
 
-Test_Timer0
-    btfss   INTCON,T0IF
-    goto    End_Interrupt
-    bcf     INTCON,T0IF
+<span class="lab">Test_Timer0</span>
+    <span class="kwd">btfss</span>   <span class="reg">INTCON</span>,T0IF
+    <span class="kwd">goto</span>    <span class="lab">End_Interrupt</span>
+    <span class="kwd">bcf</span>     <span class="reg">INTCON</span>,T0IF
 
-    ; Test richiesta ventola interna
-Test_V_Int_On
-    SSET    V_INT             ; consenso ventola interna acceso?
-    goto    Test_V_Ext_On
-    SSET    V_INT_REQ         ; richiesta attivazione?
-    goto    Test_V_Ext_On
-    SETB    OK_V_INT          ; impulso di gate consentito
-    CLRB    IO_V_INT          ; pin basso = triac ON (innesco)
+    <span class="cmt">; Test richiesta ventola interna</span>
+<span class="lab">Test_V_Int_On</span>
+    <span class="kwd">SSET</span>    V_INT             <span class="cmt">; consenso ventola interna acceso?</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SSET</span>    V_INT_REQ         <span class="cmt">; richiesta attivazione?</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SETB</span>    OK_V_INT          <span class="cmt">; impulso di gate consentito</span>
+    <span class="kwd">CLRB</span>    <span class="reg">IO_V_INT</span>          <span class="cmt">; pin basso = triac ON (innesco)</span>
 
-Test_V_Ext_On
-    SSET    V_EXT             ; consenso ventola esterna?
-    goto    Fire_On_Triac
-    SSET    V_EXT_REQ
-    goto    Fire_On_Triac
-    SETB    OK_V_EXT
-    CLRB    IO_V_EXT
+<span class="lab">Test_V_Ext_On</span>
+    <span class="kwd">SSET</span>    V_EXT             <span class="cmt">; consenso ventola esterna?</span>
+    <span class="kwd">goto</span>    <span class="lab">Fire_On_Triac</span>
+    <span class="kwd">SSET</span>    V_EXT_REQ
+    <span class="kwd">goto</span>    <span class="lab">Fire_On_Triac</span>
+    <span class="kwd">SETB</span>    OK_V_EXT
+    <span class="kwd">CLRB</span>    <span class="reg">IO_V_EXT</span>
 
-; Impulso di gate: 21 microsecondi esatti
-Fire_On_Triac
-    movlw   7
-    movwf   Wait_Rit_Triac
+<span class="cmt">; Impulso di gate: 21 microsecondi esatti</span>
+<span class="lab">Fire_On_Triac</span>
+    <span class="kwd">movlw</span>   <span class="num">7</span>
+    <span class="kwd">movwf</span>   <span class="reg">Wait_Rit_Triac</span>
 
-Loop_V_xx
-    decfsz  Wait_Rit_Triac,same
-    goto    Loop_V_xx         ; 3 cicli * 7 = 21 us a 4 MHz
+<span class="lab">Loop_V_xx</span>
+    <span class="kwd">decfsz</span>  <span class="reg">Wait_Rit_Triac</span>,same
+    <span class="kwd">goto</span>    <span class="lab">Loop_V_xx</span>         <span class="cmt">; 3 cicli * 7 = 21 us a 4 MHz</span>
 
-    SETB    IO_V_INT          ; fine impulso: triac OFF
-    SETB    IO_V_EXT
+    <span class="kwd">SETB</span>    <span class="reg">IO_V_INT</span>          <span class="cmt">; fine impulso: triac OFF</span>
+    <span class="kwd">SETB</span>    <span class="reg">IO_V_EXT</span>
 
-    ; ... prossimo passo scheduler OS ...
+    <span class="cmt">; ... prossimo passo scheduler OS ...</span>
 
-    goto    End_Interrupt</code></pre>
+    <span class="kwd">goto</span>    <span class="lab">End_Interrupt</span></pre>
         </article>
       </div>
 
@@ -135,14 +155,14 @@ Loop_V_xx
   |         |         |
  SYNC      SYNC      SYNC     (fronte di zero crossing)
   |         |         |
-  |<-------->|<------->|
+  |&lt;--------&gt;|&lt;-------&gt;|
   | ritardo  | ritardo  |      (tempo prima dell'innesco)
   |   _      |   _      |
   +--+ +-----+--+ +-----+--   (impulso gate 21 us)
   |  | |     |  | |     |
   +--+ +-----+--+ +-----+--   (conduzione triac - tratteggiato)
 
-  |<------------->|
+  |&lt;-------------&gt;|
    periodo di conduzione
    maggiore ritardo = minore conduzione = minore potenza</code></pre>
         </article>
@@ -151,39 +171,39 @@ Loop_V_xx
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Calcolo del ritardo in base alla velocit&agrave; (PID software)</h3>
-          <pre><code>; Il ritardo triac viene calcolato ogni secondo
-; con un algoritmo proporzionale-integrale software.
+          <pre class="code-block"><span class="cmt">; Il ritardo triac viene calcolato ogni secondo
+; con un algoritmo proporzionale-integrale software.</span>
 
-Triac_Power
-    ; Legge velocit&agrave; tachimetrica (4 campioni sommati)
-    movlw   V_Tacho
-    movwf   FSR
-    movfw   INDF
-    incf    FSR,same
-    addwf   INDF,w
-    incf    FSR,same
-    addwf   INDF,w
-    incf    FSR,same
-    addwf   INDF,w
-    movwf   RB0_0             ; somma 4 letture tacho
+<span class="lab">Triac_Power</span>
+    <span class="cmt">; Legge velocit&agrave; tachimetrica (4 campioni sommati)</span>
+    <span class="kwd">movlw</span>   V_Tacho
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
+    <span class="kwd">movfw</span>   <span class="reg">INDF</span>
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w
+    <span class="kwd">incf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">addwf</span>   <span class="reg">INDF</span>,w
+    <span class="kwd">movwf</span>   <span class="reg">RB0_0</span>             <span class="cmt">; somma 4 letture tacho</span>
 
-    ; Protezione rotore bloccato
-    movlw   VEL_MIN_ROT_LOCK
-    subwf   RB0_0,w
-    skpc
-    goto    Test_Rotore       ; velocit&agrave; troppo bassa
+    <span class="cmt">; Protezione rotore bloccato</span>
+    <span class="kwd">movlw</span>   VEL_MIN_ROT_LOCK
+    <span class="kwd">subwf</span>   <span class="reg">RB0_0</span>,w
+    <span class="kwd">skpc</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Rotore</span>       <span class="cmt">; velocit&agrave; troppo bassa</span>
 
-    ; Limita tra START_RIT e END_RIT
-    DEC_BIN_OVF  Integr_Term, END_RIT
-    INC_BIN_OVF  Integr_Term, START_RIT
+    <span class="cmt">; Limita tra START_RIT e END_RIT</span>
+    <span class="kwd">DEC_BIN_OVF</span>  Integr_Term, END_RIT
+    <span class="kwd">INC_BIN_OVF</span>  Integr_Term, START_RIT
 
-    ; Aggiorna ritardo triac per il prossimo semiperiodo
-    movwf   Pw_State2
+    <span class="cmt">; Aggiorna ritardo triac per il prossimo semiperiodo</span>
+    <span class="kwd">movwf</span>   <span class="reg">Pw_State2</span>
 
-    ; Conversione: START_RIT = massima potenza (ritardo minimo)
+    <span class="cmt">; Conversione: START_RIT = massima potenza (ritardo minimo)
     ;              END_RIT   = minima potenza (ritardo massimo)
     ; START_RIT = 3000 us  -> ventola a fondo
-    ; END_RIT   = 7000 us  -> ventola al minimo</code></pre>
+    ; END_RIT   = 7000 us  -> ventola al minimo</span></pre>
         </article>
       </div>
 
@@ -208,15 +228,9 @@ Triac_Power
           </ul>
         </article>
       </div>
+      </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260718b"></script>
+  <script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

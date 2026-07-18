@@ -1100,8 +1100,26 @@ a {
   max-width: 1040px;
   display: grid;
   grid-template-columns: repeat(2, minmax(280px, 1fr));
-  gap: 18px;
-  margin-top: 20px;
+  gap: 24px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.tutorial-container {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  padding-bottom: 80px;
+}
+
+.tutorial-container .auth-grid {
+  margin-top: 28px;
+  margin-bottom: 0;
+}
+
+.tutorial-container .auth-grid:last-child {
+  margin-bottom: 0;
 }
 
 .auth-card,
@@ -1110,7 +1128,51 @@ a {
   border-radius: 14px;
   background: rgba(252, 250, 244, 0.92);
   backdrop-filter: blur(14px);
-  padding: 18px;
+  padding: 22px 24px;
+  min-width: 0;
+}
+
+.auth-card[style*="grid-column: 1 / -1"] {
+  max-width: 100%;
+}
+
+.auth-card h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  letter-spacing: 0.02em;
+}
+
+.auth-card h3 {
+  margin: 0 0 14px;
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  color: var(--aqua);
+  letter-spacing: 0.04em;
+}
+
+.auth-card p {
+  margin: 0 0 14px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.auth-card p:last-child {
+  margin-bottom: 0;
+}
+
+.auth-card pre {
+  margin: 14px 0 0;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.auth-card pre:last-child {
+  margin-bottom: 0;
+}
+
+.auth-card .code-block {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .auth-card h2 {
