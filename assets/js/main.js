@@ -176,6 +176,7 @@ async function loadLang(lang) {
         "datacenter": { "overline": "Infrastruttura", "title": "Datacenter comunicazione dati", "metaTitle": "Datacenter" },
         "ticketing": { "overline": "Gestione", "title": "Sistema di Ticketing", "metaTitle": "Ticketing" },
         "embedded": { "overline": "Progetti Embedded", "title": "Firmware PIC", "subtitle": "Tutorial e progetti firmware per microcontrollori PIC 8-bit", "metaTitle": "Embedded" },
+        "osCooperativo": { "overline": "Embedded &mdash; Progettazione Firmware", "title": "Sistema Operativo Cooperativo Round-Robin", "subtitle": "Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno", "metaTitle": "Sistema Operativo Cooperativo | SYSEM" },
         "download": { "overline": "Software operativi", "title": "Download applicativi", "metaTitle": "Download applicativi" },
         "resource": { "overline": "Learning & Assets", "title": "Resource", "metaTitle": "Resource" },
         "access": { "overline": "Area riservata", "title": "Accesso", "metaTitle": "Accesso" },

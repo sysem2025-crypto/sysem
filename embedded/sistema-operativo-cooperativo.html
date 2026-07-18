@@ -3,17 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sistema Operativo Cooperativo Round-Robin | SYSEM</title>
+  <title data-i18n="page.osCooperativo.metaTitle">Sistema Operativo Cooperativo Round-Robin | SYSEM</title>
   <meta name="description" content="Scheduler cooperativo per PIC16Cxx con task a tempo e a evento, wake-up table, implementazione in Assembly.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js?v=20260615"></script>
-  <script src="../assets/js/auth-supabase.js?v=20260615"></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260717b">
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      line-height: 1.55;
+      padding: 16px 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 4;
+    }
+    .code-block .cmt { color: #6a9955; font-style: italic; }
+    .code-block .kwd { color: #569cd6; }
+    .code-block .def { color: #dcdcaa; }
+    .code-block .num { color: #b5cea8; }
+    .code-block .str { color: #ce9178; }
+    .code-block .reg { color: #9cdcfe; }
+    .code-block .lab { color: #f0d269; }
+    .code-block .opr { color: #d4d4d4; }
+  </style>
 </head>
-<body data-page="embedded" data-required-role="guest">
+<body data-page="os-cooperativo" data-required-role="guest">
   <main class="home">
     <header class="topbar" aria-label="Intestazione sito">
       <a class="brand" href="/" aria-label="SYSEM home">
@@ -30,9 +47,9 @@
     </div>
 
     <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title">Sistema Operativo Cooperativo Round-Robin</h1>
-      <p class="hero-subtitle">Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno</p>
+      <p data-i18n="page.osCooperativo.overline">Embedded &mdash; Progettazione Firmware</p>
+      <h1 id="page-title" data-i18n="page.osCooperativo.title">Sistema Operativo Cooperativo Round-Robin</h1>
+      <p class="hero-subtitle" data-i18n="page.osCooperativo.subtitle">Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno</p>
     </section>
 
     <section class="home">
@@ -55,84 +72,84 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Implementazione: OS.H (Split Elettroplastica I200052)</h3>
-          <pre><code>;----------------------------------------------------------------------
+          <pre class="code-block"><span class="cmt">;----------------------------------------------------------------------
 ; Scheduler cooperativo round-robin
-;----------------------------------------------------------------------
-#define     MAX_TASK    11            ; numero massimo di task
-#define     MSEC_05_OS  16            ; attesa base ~0.5 msec
+;----------------------------------------------------------------------</span>
+<span class="def">#define</span>     MAX_TASK    <span class="num">11</span>            <span class="cmt">; numero massimo di task</span>
+<span class="def">#define</span>     MSEC_05_OS  <span class="num">16</span>            <span class="cmt">; attesa base ~0.5 msec</span>
 
-Operative_System
+<span class="lab">Operative_System</span>
 
-Loop_OS_Step
-    BANK    0
-    movfw   Old_Timer0
-    subwf   TMR0,w
-; Se sono passati almeno MSEC_05_OS tick dal ciclo precedente,
-; eseguo un passo dello scheduler
-    clrc
-    sublw   MSEC_05_OS
-    skpnc
-    goto    Loop_OS_Step              ; non ancora: aspetto
+<span class="lab">Loop_OS_Step</span>
+    <span class="kwd">BANK</span>    0
+    <span class="kwd">movfw</span>   <span class="reg">Old_Timer0</span>
+    <span class="kwd">subwf</span>   <span class="reg">TMR0</span>,w
+<span class="cmt">; Se sono passati almeno MSEC_05_OS tick dal ciclo precedente,
+; eseguo un passo dello scheduler</span>
+    <span class="kwd">clrc</span>
+    <span class="kwd">sublw</span>   MSEC_05_OS
+    <span class="kwd">skpnc</span>
+    <span class="kwd">goto</span>    <span class="lab">Loop_OS_Step</span>              <span class="cmt">; non ancora: aspetto</span>
 
-    movfw   TMR0
-    movwf   Old_Timer0                ; aggiorno riferimento
+    <span class="kwd">movfw</span>   <span class="reg">TMR0</span>
+    <span class="kwd">movwf</span>   <span class="reg">Old_Timer0</span>                <span class="cmt">; aggiorno riferimento</span>
 
-Loop_OS_Task
-    BANK    0
-    clrwdt                            ; reset watchdog
+<span class="lab">Loop_OS_Task</span>
+    <span class="kwd">BANK</span>    0
+    <span class="kwd">clrwdt</span>                            <span class="cmt">; reset watchdog</span>
 
-    incf    Curr_Task,same            ; task successiva
-    movlw   MAX_TASK
-    xorwf   Curr_Task,W               ; ho superato l'ultima?
-    clrc
-    skpnz
-    clrf    Curr_Task                 ; se s&igrave;, riparto da 0
+    <span class="kwd">incf</span>    <span class="reg">Curr_Task</span>,same            <span class="cmt">; task successiva</span>
+    <span class="kwd">movlw</span>   MAX_TASK
+    <span class="kwd">xorwf</span>   <span class="reg">Curr_Task</span>,W               <span class="cmt">; ho superato l'ultima?</span>
+    <span class="kwd">clrc</span>
+    <span class="kwd">skpnz</span>
+    <span class="kwd">clrf</span>    <span class="reg">Curr_Task</span>                 <span class="cmt">; se sì, riparto da 0</span>
 
-    rlf     Curr_Task,w               ; indice * 2 (tabella 16 bit)
-    addlw   Ret_Add + 1               ; puntatore alla tabella ritorni
-    movwf   FSR
-    movfw   INDF                      ; leggo MSB del return address
-    andlw   0x80                      ; MSB=1 significa "wake a evento"
-    skpz
-    goto    Test_Conditional_Flag     ; task a evento
+    <span class="kwd">rlf</span>     <span class="reg">Curr_Task</span>,w               <span class="cmt">; indice * 2 (tabella 16 bit)</span>
+    <span class="kwd">addlw</span>   Ret_Add + 1               <span class="cmt">; puntatore alla tabella ritorni</span>
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
+    <span class="kwd">movfw</span>   <span class="reg">INDF</span>                      <span class="cmt">; leggo MSB del return address</span>
+    <span class="kwd">andlw</span>   <span class="num">0x80</span>                      <span class="cmt">; MSB=1 significa "wake a evento"</span>
+    <span class="kwd">skpz</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Conditional_Flag</span>     <span class="cmt">; task a evento</span>
 
-; Task a tempo: decremento contatore
-    movfw   Curr_Task
-    addlw   Wake_Up
-    movwf   FSR
-    tstf    INDF
-    skpz
-    decfsz  INDF,same                 --contatore; se 0, esegui task
-    goto    Next_Task
-    goto    Esegui_Task               ; scade il timer: esegui!
+<span class="cmt">; Task a tempo: decremento contatore</span>
+    <span class="kwd">movfw</span>   <span class="reg">Curr_Task</span>
+    <span class="kwd">addlw</span>   Wake_Up
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
+    <span class="kwd">tstf</span>    <span class="reg">INDF</span>
+    <span class="kwd">skpz</span>
+    <span class="kwd">decfsz</span>  <span class="reg">INDF</span>,same                 <span class="cmt">; --contatore; se 0, esegui task</span>
+    <span class="kwd">goto</span>    <span class="lab">Next_Task</span>
+    <span class="kwd">goto</span>    <span class="lab">Esegui_Task</span>               <span class="cmt">; scade il timer: esegui!</span>
 
-Test_Conditional_Flag
-; Task a evento: controllo flag di risveglio
-    movfw   Curr_Task
-    addlw   Wake_Up
-    movwf   FSR
-    movfw   Flag_Task
-    andwf   INDF,w
-    skpnz
-    goto    Next_Task                 ; evento non accaduto: salta
+<span class="lab">Test_Conditional_Flag</span>
+<span class="cmt">; Task a evento: controllo flag di risveglio</span>
+    <span class="kwd">movfw</span>   <span class="reg">Curr_Task</span>
+    <span class="kwd">addlw</span>   Wake_Up
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
+    <span class="kwd">movfw</span>   <span class="reg">Flag_Task</span>
+    <span class="kwd">andwf</span>   <span class="reg">INDF</span>,w
+    <span class="kwd">skpnz</span>
+    <span class="kwd">goto</span>    <span class="lab">Next_Task</span>                 <span class="cmt">; evento non accaduto: salta</span>
 
-Esegui_Task
-    rlf     Curr_Task,w
-    addlw   Ret_Add + 1
-    movwf   FSR
-    movfw   INDF                      ; MSB indirizzo
-    movwf   PCLATH
-    decf    FSR,same
-    movfw   INDF                      ; LSB indirizzo
-    movwf   PCL                       ; salto alla task!
+<span class="lab">Esegui_Task</span>
+    <span class="kwd">rlf</span>     <span class="reg">Curr_Task</span>,w
+    <span class="kwd">addlw</span>   Ret_Add + 1
+    <span class="kwd">movwf</span>   <span class="reg">FSR</span>
+    <span class="kwd">movfw</span>   <span class="reg">INDF</span>                      <span class="cmt">; MSB indirizzo</span>
+    <span class="kwd">movwf</span>   <span class="reg">PCLATH</span>
+    <span class="kwd">decf</span>    <span class="reg">FSR</span>,same
+    <span class="kwd">movfw</span>   <span class="reg">INDF</span>                      <span class="cmt">; LSB indirizzo</span>
+    <span class="kwd">movwf</span>   <span class="reg">PCL</span>                       <span class="cmt">; salto alla task!</span>
 
-Next_Task
-    bsf     INTCON,GIE
-    BANK    0
-    tstf    Curr_Task
-    skpnz
-    goto    Operative_System          ; giro completato
-    goto    Loop_OS_Task              ; prossima task</code></pre>
+<span class="lab">Next_Task</span>
+    <span class="kwd">bsf</span>     <span class="reg">INTCON</span>,GIE
+    <span class="kwd">BANK</span>    0
+    <span class="kwd">tstf</span>    <span class="reg">Curr_Task</span>
+    <span class="kwd">skpnz</span>
+    <span class="kwd">goto</span>    <span class="lab">Operative_System</span>          <span class="cmt">; giro completato</span>
+    <span class="kwd">goto</span>    <span class="lab">Loop_OS_Task</span>              <span class="cmt">; prossima task</span></pre>
         </article>
       </div>
 
@@ -252,9 +269,10 @@ NtcTask
       </div>
     </section>
   </main>
-  <script src="../assets/js/main.js?v=20260717b"></script>
+  <script src="../assets/js/main.js?v=20260718"></script>
 </body>
 </html>
+
 
 
 
