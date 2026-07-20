@@ -8,96 +8,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.guidaNorme.metaTitle">Guida Applicazione Norme | SYSEM</title>
   <meta name="description" content="Guida pratica SYSEM per applicare normative MID, RED e norme correlate nei progetti reali.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="guida-norme" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.guidaNorme.overline">Metodo operativo</p>
-      <h1 id="page-title" data-i18n="page.guidaNorme.title">Come Applicare le Norme</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>1. Definisci il perimetro</h2>
-          <ul class="normative-list">
-            <li>Identifica la famiglia strumento (es. MID MI-002 gas).</li>
-            <li>Definisci hardware, firmware, opzioni e configurazioni incluse.</li>
-            <li>Blocca versione di riferimento per evitare test su baseline variabile.</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>2. Mappa norme applicabili</h2>
-          <ul class="normative-list">
-            <li>MID 2014/32/UE + recepimento nazionale.</li>
-            <li>RED 2014/53/UE in presenza di moduli radio o comunicazione wireless.</li>
-            <li>Guide WELMEC per software e aspetti metrologici.</li>
-            <li>Norme tecniche di prodotto e metodi prova (UNI/EN/ISO).</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>3. Costruisci il fascicolo tecnico</h2>
-          <ul class="normative-list">
-            <li>Descrizione prodotto, architettura e disegni.</li>
-            <li>Analisi rischi metrologici e controlli mitigativi.</li>
-            <li>Piano prove, rapporti test, tracciabilita strumenti campione.</li>
-            <li>Gestione software: versioning, change log, protezioni.</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>4. Validazione e riesame</h2>
-          <ul class="normative-list">
-            <li>Verifica copertura requisiti con checklist finale.</li>
-            <li>Chiudi non conformita e registra azioni correttive.</li>
-            <li>Riesame interno prima invio a organismo notificato.</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Output minimi consigliati</h2>
-          <ul class="normative-list">
-            <li>Matrice requisito → evidenza documentale.</li>
-            <li>Indice fascicolo tecnico con revisioni.</li>
-            <li>Piano prove approvato e rapporti firmati.</li>
-            <li>Dichiarazione di conformita e marcature.</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Sezioni correlate</h2>
-          <p><a class="btn-download" href="normative.html">Apri quadro normative</a></p>
-          <p><a class="btn-download btn-download-secondary" href="sistemi.html">Torna ai sistemi</a></p>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.guidaNorme.title">Come Applicare le Norme</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>1. Definisci il perimetro</h2>
+            <ul class="normative-list">
+              <li>Identifica la famiglia strumento (es. MID MI-002 gas).</li>
+              <li>Definisci hardware, firmware, opzioni e configurazioni incluse.</li>
+              <li>Blocca versione di riferimento per evitare test su baseline variabile.</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>2. Mappa norme applicabili</h2>
+            <ul class="normative-list">
+              <li>MID 2014/32/UE + recepimento nazionale.</li>
+              <li>RED 2014/53/UE in presenza di moduli radio o comunicazione wireless.</li>
+              <li>Guide WELMEC per software e aspetti metrologici.</li>
+              <li>Norme tecniche di prodotto e metodi prova (UNI/EN/ISO).</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>3. Costruisci il fascicolo tecnico</h2>
+            <ul class="normative-list">
+              <li>Descrizione prodotto, architettura e disegni.</li>
+              <li>Analisi rischi metrologici e controlli mitigativi.</li>
+              <li>Piano prove, rapporti test, tracciabilita strumenti campione.</li>
+              <li>Gestione software: versioning, change log, protezioni.</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>4. Validazione e riesame</h2>
+            <ul class="normative-list">
+              <li>Verifica copertura requisiti con checklist finale.</li>
+              <li>Chiudi non conformita e registra azioni correttive.</li>
+              <li>Riesame interno prima invio a organismo notificato.</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Output minimi consigliati</h2>
+            <ul class="normative-list">
+              <li>Matrice requisito → evidenza documentale.</li>
+              <li>Indice fascicolo tecnico con revisioni.</li>
+              <li>Piano prove approvato e rapporti firmati.</li>
+              <li>Dichiarazione di conformita e marcature.</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Sezioni correlate</h2>
+            <p><a class="btn-download" href="normative.html">Apri quadro normative</a></p>
+            <p><a class="btn-download btn-download-secondary" href="sistemi.html">Torna ai sistemi</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Progetti Industriali | SYSEM</title>
+  <meta name="description" content="Progetti di automazione industriale: forni rifusione, stampanti pasta saldante, dispenser, profiler termici, taglierine e firmware embedded.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
+</head>
+
+<body data-page="progetti" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">Progetti Industriali</h1>
+        <p class="page-subtitle">Progettazione e sviluppo di macchine per assemblaggio SMT, firmware embedded e automazione</p>
+      </div>
+      <div class="page-body">
+
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Forno Rifusione Multicamera</h2>
+            <p>Forno a rifusione per saldatura SMT con controllo PID multizona. Gestione profilo termico a 6-8 zone indipendenti, nastro trasportatore a velocit variabile, interfaccia operatore e datalogging dei cicli di saldatura.</p>
+            <ul class="normative-list">
+              <li>Controllo temperatura con termocoppie tipo K, precisione &plusmn;1&deg;C</li>
+              <li>Profili termici programmabili per pasta saldante lead-free</li>
+              <li>Sistema di sicurezza con termostato indipendente e allarmi</li>
+              <li>Interfaccia RS-232/485 per monitoraggio remoto</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Stampante Pasta Saldante</h2>
+            <p>Stampante semiautomatica per applicazione pasta saldante su PCB mediante stencil metallico. Testa squeegee a pressione regolabile, allineamento ottico e movimentazione asse X-Y.</p>
+            <ul class="normative-list">
+              <li>Movimentazione passo-passo con encoder per repeatability</li>
+              <li>Controllo pressione squeegee pneumatico con sensore forza</li>
+              <li>Allineamento stencil/PCB tramite telecamera e micrometrici</li>
+              <li>Area stampa fino a 400&times;400 mm</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Dispenser Pasta Saldante</h2>
+            <p>Dispenser manuale per applicazione pasta saldante e adesivi in assemblaggio SMT. Dosatura pneumatica controllata con tempi e volumi regolabili.</p>
+            <ul class="normative-list">
+              <li>Dosatura a tempo e pressione con controllo precisione</li>
+              <li>Diverse configurazioni ugello per paste e fluidi</li>
+              <li>Opzione vuoto per prelievo e posizionamento componenti</li>
+              <li>Gestione multiprogramma per ricette di dosatura</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Profiler Termico</h2>
+            <p>Data logger portatile per acquisizione profilo termico all'interno del forno rifusione. Misura simultanea su pi canali con termocoppie tipo K.</p>
+            <ul class="normative-list">
+              <li>Da 4 a 8 canali di acquisizione simultanea</li>
+              <li>Campionamento fino a 10 campioni/secondo</li>
+              <li>Memoria interna per profili completi</li>
+              <li>Software di analisi con grafici e report</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Taglierina Componenti</h2>
+            <p>Macchina per taglio rebbi di componenti elettronici a passo variabile. Taglio pneumatico con controllo sicurezza a due mani.</p>
+            <ul class="normative-list">
+              <li>Taglio componenti radiali e assiali con passo 2.5-20 mm</li>
+              <li>Controllo pneumatico con sensori di posizione</li>
+              <li>Sistema sicurezza con comando bimanuale</li>
+              <li>Contapezzi e predisposizione scarto</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Firmware Macchine SMT</h2>
+            <p>Sviluppo firmware in C e Assembly per microcontrollori 8051 e PIC utilizzati nelle macchine SMT. Progetti completi con scheduler cooperativo, gestione EEPROM, comunicazione seriale e diagnostica.</p>
+            <ul class="normative-list">
+              <li>Scheduler task cooperativo per gestione concorrente</li>
+              <li>Protocolli di comunicazione RS-232/485 con checksum e retry</li>
+              <li>Gestione parametri macchina su EEPROM esterna (ST93Cxx)</li>
+              <li>Diagnostica on-board e report errori</li>
+            </ul>
+            <p><a class="btn-download" href="embedded.html">Vedi progetti embedded correlati &rarr;</a></p>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
+</body>
+</html>

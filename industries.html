@@ -8,49 +8,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.industries.metaTitle">Applicazioni | SYSEM</title>
   <meta name="description" content="Ambiti applicativi SYSEM per reti utilities, misura e telelettura.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="industries" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero" aria-labelledby="page-title">
-      <p data-i18n="page.industries.overline">Ambiti applicativi</p>
-      <h1 id="page-title" data-i18n="page.industries.title">Dove operiamo</h1>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.industries.title">Dove operiamo</h1>
+      </div>
+      <div class="page-body">
         <p data-i18n="page.industries.desc1">Le nostre soluzioni sono pensate per reti utilities, cabine di misura e punti di consegna industriali.</p>
         <p data-i18n="page.industries.desc2">Interveniamo in contesti dove affidabilita del dato, continuita del servizio e tracciabilita sono requisiti essenziali.</p>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 
-  <script src="assets/js/main.js?v=20260718c"></script>
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.ctr.metaTitle">Protocollo CTR | SYSEM</title>
   <meta name="description" content="Protocollo CTR UNI/TS 11291-3:2021: panoramica, trame, sicurezza, funzioni e profili.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
   <style>
     .ctr-shell {
       width: 100%;
@@ -128,175 +128,184 @@
 </head>
 
 <body data-page="ctr" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.ctr.overline">Norma tecnica</p>
-      <h1 id="page-title" data-i18n="page.ctr.title">Protocollo CTR</h1>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.ctr.title">Protocollo CTR</h1>
+      </div>
+      <div class="page-body">
+        <article class="ctr-shell" aria-label="Scheda protocollo CTR">
+          <header class="ctr-header">
+            <span class="ctr-badge">UNI/TS 11291-3:2021</span>
+            <h2>Comunicazione per sistemi di misura gas su base oraria</h2>
+            <p>Scheda tecnica divulgativa: panoramica, trame, sicurezza, funzioni e modello dati.</p>
+            <p><strong>Nota legale:</strong> questa pagina e un riassunto originale a scopo informativo e non sostituisce il testo ufficiale della norma.</p>
+          </header>
 
-      <article class="ctr-shell" aria-label="Scheda protocollo CTR">
-        <header class="ctr-header">
-          <span class="ctr-badge">UNI/TS 11291-3:2021</span>
-          <h2>Comunicazione per sistemi di misura gas su base oraria</h2>
-          <p>Scheda tecnica divulgativa: panoramica, trame, sicurezza, funzioni e modello dati.</p>
-          <p><strong>Nota legale:</strong> questa pagina e un riassunto originale a scopo informativo e non sostituisce il testo ufficiale della norma.</p>
-        </header>
+          <nav class="ctr-tabs" aria-label="Sezioni protocollo CTR">
+            <button type="button" class="ctr-tab active" data-tab="overview">Panoramica</button>
+            <button type="button" class="ctr-tab" data-tab="frame">Trame</button>
+            <button type="button" class="ctr-tab" data-tab="security">Sicurezza</button>
+            <button type="button" class="ctr-tab" data-tab="functions">Funzioni</button>
+            <button type="button" class="ctr-tab" data-tab="objects">Oggetti</button>
+            <button type="button" class="ctr-tab" data-tab="profiles">Profili</button>
+          </nav>
 
-        <nav class="ctr-tabs" aria-label="Sezioni protocollo CTR">
-          <button type="button" class="ctr-tab active" data-tab="overview">Panoramica</button>
-          <button type="button" class="ctr-tab" data-tab="frame">Trame</button>
-          <button type="button" class="ctr-tab" data-tab="security">Sicurezza</button>
-          <button type="button" class="ctr-tab" data-tab="functions">Funzioni</button>
-          <button type="button" class="ctr-tab" data-tab="objects">Oggetti</button>
-          <button type="button" class="ctr-tab" data-tab="profiles">Profili</button>
-        </nav>
+          <section id="overview" class="ctr-pane active">
+            <h3>Cos'e il protocollo CTR</h3>
+            <p>Il <strong>CTR (Communication protocol for gas metering)</strong> e il protocollo applicativo usato in ambito misura gas oraria. In questa pagina lo descriviamo in forma sintetica, con taglio pratico per integrazione e manutenzione.</p>
+            <div class="ctr-grid">
+              <div class="ctr-card"><strong>Ambito applicativo</strong><br>Misuratori gas residenziali, industriali, stazioni di misura, data logger e convertitori di volume. Classi A2/A1 escluse.</div>
+              <div class="ctr-card"><strong>Mezzi supportati</strong><br>GSM-SMS, GPRS (TCP/UDP), PSTN, linea dedicata, radio, bus seriali locali.</div>
+              <div class="ctr-card"><strong>Architettura</strong><br>Modello OSI collapsed: livello fisico, data-link e applicazione. Supporto point-to-point e multipunto.</div>
+            </div>
+            <h3>Caratteristiche principali</h3>
+            <ul>
+              <li>Trame pensate per canali a banda limitata, con formati compatti e versioni estese per casi specifici.</li>
+              <li>Frammentazione non supportata: ogni datagramma e autonomo.</li>
+              <li>Autenticazione obbligatoria tramite CPA (AES-128-CMAC) e cifratura opzionale AES-128 in modalita CTR.</li>
+              <li>Supporto canali multipli di misura e canale generico di servizio.</li>
+              <li>Meccanismi di risparmio energetico: wake-up string e finestre di comunicazione (WUIP-OUT).</li>
+              <li>Comunicazione connection-less adatta a SMS, con protezione anti-replay (data di validita + identificatore).</li>
+            </ul>
+            <p>Il protocollo si interfaccia a dispositivi DTE (gruppi di misura) e DCE (modem, traslatori) secondo lo schema definito dalla norma, supportando comandi di lettura, scrittura, esecuzione azioni e spontanee (voluntary).</p>
+          </section>
 
-        <section id="overview" class="ctr-pane active">
-          <h3>Cos'e il protocollo CTR</h3>
-          <p>Il <strong>CTR (Communication protocol for gas metering)</strong> e il protocollo applicativo usato in ambito misura gas oraria. In questa pagina lo descriviamo in forma sintetica, con taglio pratico per integrazione e manutenzione.</p>
-          <div class="ctr-grid">
-            <div class="ctr-card"><strong>Ambito applicativo</strong><br>Misuratori gas residenziali, industriali, stazioni di misura, data logger e convertitori di volume. Classi A2/A1 escluse.</div>
-            <div class="ctr-card"><strong>Mezzi supportati</strong><br>GSM-SMS, GPRS (TCP/UDP), PSTN, linea dedicata, radio, bus seriali locali.</div>
-            <div class="ctr-card"><strong>Architettura</strong><br>Modello OSI collapsed: livello fisico, data-link e applicazione. Supporto point-to-point e multipunto.</div>
-          </div>
-          <h3>Caratteristiche principali</h3>
-          <ul>
-            <li>Trame pensate per canali a banda limitata, con formati compatti e versioni estese per casi specifici.</li>
-            <li>Frammentazione non supportata: ogni datagramma e autonomo.</li>
-            <li>Autenticazione obbligatoria tramite CPA (AES-128-CMAC) e cifratura opzionale AES-128 in modalita CTR.</li>
-            <li>Supporto canali multipli di misura e canale generico di servizio.</li>
-            <li>Meccanismi di risparmio energetico: wake-up string e finestre di comunicazione (WUIP-OUT).</li>
-            <li>Comunicazione connection-less adatta a SMS, con protezione anti-replay (data di validita + identificatore).</li>
-          </ul>
-          <p>Il protocollo si interfaccia a dispositivi DTE (gruppi di misura) e DCE (modem, traslatori) secondo lo schema definito dalla norma, supportando comandi di lettura, scrittura, esecuzione azioni e spontanee (voluntary).</p>
-        </section>
+          <section id="frame" class="ctr-pane">
+            <h3>Struttura trame</h3>
+            <p>Ogni trama usa campi stabili e riconoscibili per rendere robusta la comunicazione su mezzi eterogenei.</p>
+            <div class="ctr-code">[WAKE (20B opz.)] | STX (0Ah) | ADD (2) | PROFI (1) | FUNCT (1) | STRUCT (1) | CHAN (1) | DATI (n) | CPA (4) | CRC (2) | ETX (0Dh)</div>
+            <div class="ctr-table-wrap">
+              <table class="ctr-table">
+                <tr><th>Campo</th><th>Lunghezza</th><th>Descrizione</th></tr>
+                <tr><td>WAKE</td><td>20 byte</td><td>Stringa di risveglio opzionale per dispositivi in sleep.</td></tr>
+                <tr><td>ADD</td><td>2 byte</td><td>Indirizzo destinatario/mittente (FFFFh broadcast, 0000h non valido).</td></tr>
+                <tr><td>PROFI</td><td>1 byte</td><td>Bit7 LdT + profilo (0-4) + operator_id.</td></tr>
+                <tr><td>FUNCT</td><td>1 byte</td><td>Codice funzione e flag cifratura.</td></tr>
+                <tr><td>STRUCT</td><td>1 byte</td><td>Codice struttura dati (REGISTER, TABLE, ARRAY, TRACE).</td></tr>
+                <tr><td>CHAN</td><td>1 byte</td><td>Canale misura: 0 generico, 1-14 specifici, 0Fh broadcast.</td></tr>
+                <tr><td>DATI</td><td>Variabile</td><td>Payload struttura (max 128 byte trame corte).</td></tr>
+                <tr><td>CPA</td><td>4 byte</td><td>Message Authentication Code (AES-128-CMAC).</td></tr>
+                <tr><td>CRC</td><td>2 byte</td><td>Ridondanza ciclica su campi da ADD a DATI.</td></tr>
+              </table>
+            </div>
+            <p>Nel trasporto SMS alcuni campi di incapsulamento possono non essere usati, mantenendo la parte applicativa coerente.</p>
+            <p><strong>PROFI:</strong> codifica profilo/operatore e tipo trama.<br><strong>FUNCT:</strong> codifica operazione richiesta e modalita di protezione.</p>
+          </section>
 
-        <section id="frame" class="ctr-pane">
-          <h3>Struttura trame</h3>
-          <p>Ogni trama usa campi stabili e riconoscibili per rendere robusta la comunicazione su mezzi eterogenei.</p>
-          <div class="ctr-code">[WAKE (20B opz.)] | STX (0Ah) | ADD (2) | PROFI (1) | FUNCT (1) | STRUCT (1) | CHAN (1) | DATI (n) | CPA (4) | CRC (2) | ETX (0Dh)</div>
-          <div class="ctr-table-wrap">
-            <table class="ctr-table">
-              <tr><th>Campo</th><th>Lunghezza</th><th>Descrizione</th></tr>
-              <tr><td>WAKE</td><td>20 byte</td><td>Stringa di risveglio opzionale per dispositivi in sleep.</td></tr>
-              <tr><td>ADD</td><td>2 byte</td><td>Indirizzo destinatario/mittente (FFFFh broadcast, 0000h non valido).</td></tr>
-              <tr><td>PROFI</td><td>1 byte</td><td>Bit7 LdT + profilo (0-4) + operator_id.</td></tr>
-              <tr><td>FUNCT</td><td>1 byte</td><td>Codice funzione e flag cifratura.</td></tr>
-              <tr><td>STRUCT</td><td>1 byte</td><td>Codice struttura dati (REGISTER, TABLE, ARRAY, TRACE).</td></tr>
-              <tr><td>CHAN</td><td>1 byte</td><td>Canale misura: 0 generico, 1-14 specifici, 0Fh broadcast.</td></tr>
-              <tr><td>DATI</td><td>Variabile</td><td>Payload struttura (max 128 byte trame corte).</td></tr>
-              <tr><td>CPA</td><td>4 byte</td><td>Message Authentication Code (AES-128-CMAC).</td></tr>
-              <tr><td>CRC</td><td>2 byte</td><td>Ridondanza ciclica su campi da ADD a DATI.</td></tr>
-            </table>
-          </div>
-          <p>Nel trasporto SMS alcuni campi di incapsulamento possono non essere usati, mantenendo la parte applicativa coerente.</p>
-          <p><strong>PROFI:</strong> codifica profilo/operatore e tipo trama.<br><strong>FUNCT:</strong> codifica operazione richiesta e modalita di protezione.</p>
-        </section>
+          <section id="security" class="ctr-pane">
+            <h3>Sicurezza</h3>
+            <p>CTR protegge autenticita, integrita e riservatezza dei dati utilizzando AES-128 in modalita CMAC (CPA) e CTR (cifratura a flusso).</p>
+            <div class="ctr-grid">
+              <div class="ctr-card"><strong>Autenticazione (CPA)</strong><br>Il CPA e calcolato su ADD+PROFI+FUNCT+STRUCT+CHAN+DATI con AES-128-CMAC. Il ricevente ricalcola e confronta i primi 4 byte.</div>
+              <div class="ctr-card"><strong>Cifratura</strong><br>STRUCT, CHAN e DATI possono essere cifrati con AES-128-CTR. IV = CPA ripetuto 4 volte.</div>
+              <div class="ctr-card"><strong>Gerarchia chiavi</strong><br>KEYC_x, KEYT, KEYF modificabili con funzioni amministrative.</div>
+            </div>
+            <p><strong>Protezione replay/spoofing:</strong> uso di controlli temporali e identificativi operativi per ridurre riuso improprio dei messaggi.</p>
+          </section>
 
-        <section id="security" class="ctr-pane">
-          <h3>Sicurezza</h3>
-          <p>CTR protegge autenticita, integrita e riservatezza dei dati utilizzando AES-128 in modalita CMAC (CPA) e CTR (cifratura a flusso).</p>
-          <div class="ctr-grid">
-            <div class="ctr-card"><strong>Autenticazione (CPA)</strong><br>Il CPA e calcolato su ADD+PROFI+FUNCT+STRUCT+CHAN+DATI con AES-128-CMAC. Il ricevente ricalcola e confronta i primi 4 byte.</div>
-            <div class="ctr-card"><strong>Cifratura</strong><br>STRUCT, CHAN e DATI possono essere cifrati con AES-128-CTR. IV = CPA ripetuto 4 volte.</div>
-            <div class="ctr-card"><strong>Gerarchia chiavi</strong><br>KEYC_x, KEYT, KEYF modificabili con funzioni amministrative.</div>
-          </div>
-          <p><strong>Protezione replay/spoofing:</strong> uso di controlli temporali e identificativi operativi per ridurre riuso improprio dei messaggi.</p>
-        </section>
+          <section id="functions" class="ctr-pane">
+            <h3>Funzioni principali</h3>
+            <div class="ctr-table-wrap">
+              <table class="ctr-table">
+                <tr><th>Codice</th><th>Funzione</th><th>Uso</th></tr>
+                <tr><td>?</td><td>QUERY</td><td>Lettura attributi su REGISTER/ARRAY/TRACE/TABLE.</td></tr>
+                <tr><td>/</td><td>WRITE</td><td>Modifica parametri via sessione di configurazione.</td></tr>
+                <tr><td>&</td><td>EXECUTE</td><td>Azioni sul server: reset, sync oraria, sigilli, download.</td></tr>
+                <tr><td>;</td><td>VOLUNTARY</td><td>Trasmissione spontanea server-client.</td></tr>
+                <tr><td>%</td><td>END OF SESSION</td><td>Chiusura sessione comunicazione.</td></tr>
+                <tr><td>#</td><td>SECRET</td><td>Modifica chiavi crittografiche.</td></tr>
+                <tr><td>$</td><td>DOWNLOAD</td><td>Aggiornamento firmware con trame lunghe.</td></tr>
+                <tr><td>( e )</td><td>IDENTIFICATION</td><td>Procedura challenge-response (PUK_S).</td></tr>
+              </table>
+            </div>
+            <p>Le risposte applicative distinguono esito positivo e negativo, con codici di errore utili alla diagnostica.</p>
+          </section>
 
-        <section id="functions" class="ctr-pane">
-          <h3>Funzioni principali</h3>
-          <div class="ctr-table-wrap">
-            <table class="ctr-table">
-              <tr><th>Codice</th><th>Funzione</th><th>Uso</th></tr>
-              <tr><td>?</td><td>QUERY</td><td>Lettura attributi su REGISTER/ARRAY/TRACE/TABLE.</td></tr>
-              <tr><td>/</td><td>WRITE</td><td>Modifica parametri via sessione di configurazione.</td></tr>
-              <tr><td>&</td><td>EXECUTE</td><td>Azioni sul server: reset, sync oraria, sigilli, download.</td></tr>
-              <tr><td>;</td><td>VOLUNTARY</td><td>Trasmissione spontanea server-client.</td></tr>
-              <tr><td>%</td><td>END OF SESSION</td><td>Chiusura sessione comunicazione.</td></tr>
-              <tr><td>#</td><td>SECRET</td><td>Modifica chiavi crittografiche.</td></tr>
-              <tr><td>$</td><td>DOWNLOAD</td><td>Aggiornamento firmware con trame lunghe.</td></tr>
-              <tr><td>( e )</td><td>IDENTIFICATION</td><td>Procedura challenge-response (PUK_S).</td></tr>
-            </table>
-          </div>
-          <p>Le risposte applicative distinguono esito positivo e negativo, con codici di errore utili alla diagnostica.</p>
-        </section>
+          <section id="objects" class="ctr-pane">
+            <h3>Oggetti e modello dati</h3>
+            <p>Modello orientato agli oggetti: ogni oggetto ha .id (2 byte) e attributi standard <code>.qlf</code>, <code>.val</code>, <code>.acces</code>, <code>.def</code>.</p>
+            <div class="ctr-grid">
+              <div class="ctr-card"><strong>Portata/Volume</strong><br>Qm, Qb, Vm, Vb, totalizzatori orari/giornalieri/mensili.</div>
+              <div class="ctr-card"><strong>Pressione/Temperatura</strong><br>P, T, Pb, Tb, valori di riserva e diagnostica.</div>
+              <div class="ctr-card"><strong>Eventi/Allarmi</strong><br>Registri evento con timestamp, progressivo, codice evento.</div>
+            </div>
+            <div class="ctr-grid">
+              <div class="ctr-card"><strong>REGISTER (50h)</strong><br>Lista oggetti con attributi richiesti.</div>
+              <div class="ctr-card"><strong>TABLE / ARRAY (01h-51h)</strong><br>Strutture posizionali o vettoriali.</div>
+              <div class="ctr-card"><strong>TRACE / TRACE_C (52h-53h)</strong><br>Storici a passo costante con informazioni aggiuntive.</div>
+            </div>
+          </section>
 
-        <section id="objects" class="ctr-pane">
-          <h3>Oggetti e modello dati</h3>
-          <p>Modello orientato agli oggetti: ogni oggetto ha .id (2 byte) e attributi standard <code>.qlf</code>, <code>.val</code>, <code>.acces</code>, <code>.def</code>.</p>
-          <div class="ctr-grid">
-            <div class="ctr-card"><strong>Portata/Volume</strong><br>Qm, Qb, Vm, Vb, totalizzatori orari/giornalieri/mensili.</div>
-            <div class="ctr-card"><strong>Pressione/Temperatura</strong><br>P, T, Pb, Tb, valori di riserva e diagnostica.</div>
-            <div class="ctr-card"><strong>Eventi/Allarmi</strong><br>Registri evento con timestamp, progressivo, codice evento.</div>
-          </div>
-          <div class="ctr-grid">
-            <div class="ctr-card"><strong>REGISTER (50h)</strong><br>Lista oggetti con attributi richiesti.</div>
-            <div class="ctr-card"><strong>TABLE / ARRAY (01h-51h)</strong><br>Strutture posizionali o vettoriali.</div>
-            <div class="ctr-card"><strong>TRACE / TRACE_C (52h-53h)</strong><br>Storici a passo costante con informazioni aggiuntive.</div>
-          </div>
-        </section>
+          <section id="profiles" class="ctr-pane">
+            <h3>Profili e password</h3>
+            <p>CTR implementa RBAC con 5 profili (0 amministratore servizio, 1-4 profili operativi). I permessi sono definiti dall'attributo <code>.acces</code> su ciascun oggetto.</p>
+            <p>Per ogni profilo e prevista gestione utenti/credenziali con identificativo operatore nel messaggio.</p>
+            <div class="ctr-code">Esempio didattico: il campo .acces abilita in modo separato permessi di lettura e scrittura per ciascun profilo.</div>
+            <p>Funzioni amministrative disponibili: modifica password (F_PSW), modifica chiavi (F_MKC/F_MKT/SECRET), gestione sigilli (F_DSIG/F_ASIG).</p>
+          </section>
+        </article>
+      </div>
+    </div>
+  </div>
 
-        <section id="profiles" class="ctr-pane">
-          <h3>Profili e password</h3>
-          <p>CTR implementa RBAC con 5 profili (0 amministratore servizio, 1-4 profili operativi). I permessi sono definiti dall'attributo <code>.acces</code> su ciascun oggetto.</p>
-          <p>Per ogni profilo e prevista gestione utenti/credenziali con identificativo operatore nel messaggio.</p>
-          <div class="ctr-code">Esempio didattico: il campo .acces abilita in modo separato permessi di lettura e scrittura per ciascun profilo.</div>
-          <p>Funzioni amministrative disponibili: modifica password (F_PSW), modifica chiavi (F_MKC/F_MKT/SECRET), gestione sigilli (F_DSIG/F_ASIG).</p>
-        </section>
-      </article>
-    </section>
-  </main>
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
 
-  <script src="assets/js/main.js?v=20260718c"></script>
-  <script>
-    (function () {
-      var tabs = document.querySelectorAll('.ctr-tab');
-      var panes = document.querySelectorAll('.ctr-pane');
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
 
-      function activate(tabId) {
-        panes.forEach(function (pane) {
-          pane.classList.toggle('active', pane.id === tabId);
-        });
-        tabs.forEach(function (tab) {
-          tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
-        });
-      }
+<script src="assets/js/main.js?v=20260718c"></script>
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('.ctr-tab');
+    var panes = document.querySelectorAll('.ctr-pane');
 
-      tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          activate(tab.getAttribute('data-tab'));
-        });
+    function activate(tabId) {
+      panes.forEach(function (pane) {
+        pane.classList.toggle('active', pane.id === tabId);
       });
+      tabs.forEach(function (tab) {
+        tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
+      });
+    }
 
-      var hash = window.location.hash ? window.location.hash.slice(1) : '';
-      if (hash) {
-        activate(hash);
-      }
-    })();
-  </script>
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        activate(tab.getAttribute('data-tab'));
+      });
+    });
+
+    var hash = window.location.hash ? window.location.hash.slice(1) : '';
+    if (hash) {
+      activate(hash);
+    }
+  })();
+</script>
 </body>
 </html>
-
-
-
-
-
-
-

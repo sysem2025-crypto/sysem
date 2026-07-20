@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.debugProduzione.metaTitle">Debug e Messa in Produzione | SYSEM</title>
   <meta name="description" content="Tecniche di debug firmware PIC Assembly: diario di sviluppo, flag di simulazione, diagnostica seriale, autodiagnosi all'avvio.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="debug-produzione" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.debugProduzione.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.debugProduzione.title">Debug e Messa in Produzione</h1>
-      <p class="hero-subtitle" data-i18n="page.debugProduzione.subtitle">Come sopravvivere a 60+ revisioni di firmware PIC Assembly: flag di simulazione, diagnostica seriale, autodiagnosi all&rsquo;avvio</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.debugProduzione.title">Debug e Messa in Produzione</h1>
+        <p class="page-subtitle" data-i18n="page.debugProduzione.subtitle">Come sopravvivere a 60+ revisioni di firmware PIC Assembly: flag di simulazione, diagnostica seriale, autodiagnosi all&rsquo;avvio</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -76,7 +75,7 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Flag di simulazione (test in isolamento)</h3>
-           <pre class="code-block"><span class="cmt">; All&rsquo;inizio del main.asm, ogni modulo dichiara</span>
+           <pre class="code-block"><span class="cmt">; All?inizio del main.asm, ogni modulo dichiara</span>
 <span class="cmt">; una costante SIMUL che, se TRUE, sostituisce</span>
 <span class="cmt">; la logica reale con una fittizia per debug.</span>
 <span class="cmt">; Esempio dal main.asm dello Split Ferroli:</span>
@@ -97,7 +96,7 @@ SIM_SWEEP       <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE 
 SIM_STEP        <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE = step simulato</span>
 
 <span class="cmt">; Uso nei moduli:</span>
-<span class="cmt">; All&rsquo;inizio di #Key.h:</span>
+<span class="cmt">; All?inizio di #Key.h:</span>
     <span class="def">IF</span> SIMUL_UPD_KEY == TRUE
         <span class="cmt">; routine fittizia che genera tasti predefiniti</span>
         <span class="kwd">goto</span>    <span class="lab">Simul_Key</span>
@@ -117,11 +116,11 @@ SIM_STEP        <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE 
 <span class="cmt">; Esempio di messaggi inviati a ogni ciclo (250 ms):</span>
     <span class="kwd">Send_8_Lo</span>   MSG_TYPE, <span class="reg">Index_Cfg</span>   <span class="cmt">; "Configurazione: 0..4"</span>
     <span class="kwd">Send_8_Lo</span>   MSG_T_STAT, <span class="reg">Index_M_S</span> <span class="cmt">; "Stato corrente: 2=COOL"</span>
-    <span class="kwd">Send_8_Lo</span>   MSG_T_USER, <span class="reg">T_User</span>    <span class="cmt">; "T impostata: 22°C"</span>
-    <span class="kwd">Send_8_Lo</span>   MSG_T_AMB, <span class="reg">T_Amb</span>      <span class="cmt">; "T ambiente: 25°C"</span>
-    <span class="kwd">Send_8_Lo</span>   MSG_T_BAT, <span class="reg">T_Bat</span>      <span class="cmt">; "T batteria: 35°C"</span>
-    <span class="kwd">Send_8_Lo</span>   MSG_T_EXIT, <span class="reg">T_Exit</span>    <span class="cmt">; "T uscita aria: 12°C"</span>
-    <span class="kwd">Send_8_Lo</span>   MSG_T_TACHO, <span class="reg">RB0_0</span>    <span class="cmt">; "Velocità ventola: 980 RPM"</span>
+    <span class="kwd">Send_8_Lo</span>   MSG_T_USER, <span class="reg">T_User</span>    <span class="cmt">; "T impostata: 22?C"</span>
+    <span class="kwd">Send_8_Lo</span>   MSG_T_AMB, <span class="reg">T_Amb</span>      <span class="cmt">; "T ambiente: 25?C"</span>
+    <span class="kwd">Send_8_Lo</span>   MSG_T_BAT, <span class="reg">T_Bat</span>      <span class="cmt">; "T batteria: 35?C"</span>
+    <span class="kwd">Send_8_Lo</span>   MSG_T_EXIT, <span class="reg">T_Exit</span>    <span class="cmt">; "T uscita aria: 12?C"</span>
+    <span class="kwd">Send_8_Lo</span>   MSG_T_TACHO, <span class="reg">RB0_0</span>    <span class="cmt">; "Velocit? ventola: 980 RPM"</span>
 
 <span class="cmt">; In laboratorio, un PC collegato alla seriale mostra:</span>
 <span class="cmt">;   CFG=2 ST=2 TU=22 TA=25 TB=35 TE=12 RPM=980</span>
@@ -182,7 +181,7 @@ SIM_STEP        <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE 
 <span class="cmt">; V2  - Aggiunto supporto ventola PP (permanent split)</span>
 <span class="cmt">; V3  - Bug fix: timeout NTC in condizioni di batteria ghiacciata</span>
 <span class="cmt">; V4  - Aggiunto controllo deflettore</span>
-<span class="cmt">; V5  - Modifica tempi transizione stato Dry->Cool</span>
+<span class="cmt">; V5  - Modifica tempi transizione stato Dry-&gt;Cool</span>
 <span class="cmt">; V6  - Rilascio produzione: versione stabile</span>
 <span class="cmt">; V7  - Aggiunto supporto pompa di calore (modello HP)</span>
 <span class="cmt">; V8  - Bug fix: rotore bloccato su ventola esterna a bassa temperatura</span>
@@ -192,8 +191,8 @@ SIM_STEP        <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE 
 <span class="cmt">; V12 - Aggiunto filtro antipendolamento PID</span>
 <span class="cmt">; V13 - Ottimizzazione consumo: sleep mode when idle</span>
 <span class="cmt">; V14 - Aggiunto supporto modelli 7000/9000/12000 BTU</span>
-<span class="cmt">; V15 - Bug fix: transizione Defrost->Heat perdeva impostazione ventola</span>
-<span class="cmt">; V16 - Aggiunto anti-brinamento batteria (T_bat < -1°C per 8 min)</span>
+<span class="cmt">; V15 - Bug fix: transizione Defrost-&gt;Heat perdeva impostazione ventola</span>
+<span class="cmt">; V16 - Aggiunto anti-brinamento batteria (T_bat &lt; -1?C per 8 min)</span>
 <span class="cmt">; V17 - Aggiunto modo Night con riduzione rumore ventola</span>
 <span class="cmt">; V18 - Bug fix: timer notte non si resettava cambio modo</span>
 <span class="cmt">; V19 - Release finale: tutti i fix validati in produzione</span></pre>
@@ -224,15 +223,25 @@ SIM_STEP        <span class="def">EQU</span>  FALSE    <span class="cmt">; TRUE 
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

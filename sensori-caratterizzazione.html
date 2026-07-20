@@ -8,87 +8,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.sensori.metaTitle">Sensori e caratterizzazione | SYSEM</title>
   <meta name="description" content="Sensori pressione/temperatura e criteri di caratterizzazione per sistemi di misura gas.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="sensori-caratterizzazione" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.sensori.overline">Approfondimento tecnico</p>
-      <h1 id="page-title" data-i18n="page.sensori.title">Sensori e caratterizzazione</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Tipologie sensori</h2>
-          <p>Nei sistemi di misura utilities il dato volumetrico corretto dipende principalmente da sensori di pressione assoluta, temperatura e dallo stato metrologico del misuratore associato.</p>
-          <ul class="normative-list">
-            <li>Sensori pressione: campo operativo, stabilita nel tempo, deriva termica</li>
-            <li>Sensori temperatura: posizione di installazione, tempi di risposta, accuratezza</li>
-            <li>Interfaccia misura: coerenza tra ingresso analogico/digitale e parametrizzazione</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Caratterizzazione</h2>
-          <p>La caratterizzazione definisce il comportamento reale del sensore nel campo di esercizio, cosi da ridurre errore sistematico e incertezza operativa.</p>
-          <ul class="normative-list">
-            <li>Verifica a punti multipli su intervallo nominale e zone critiche</li>
-            <li>Determinazione offset, linearita, isteresi e ripetibilita</li>
-            <li>Tracciabilita delle tarature e storico delle regolazioni</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Controlli operativi</h2>
-          <p>Per mantenere affidabile la catena di misura serve monitorare allineamento tra sensori, configurazione correttore e dati acquisiti dal backend.</p>
-          <ul class="normative-list">
-            <li>Allarmi su drift, freeze valore e incoerenza tra variabili correlate</li>
-            <li>Confronto periodico con campioni o riferimenti certificati</li>
-            <li>Piano manutentivo con soglie e azioni correttive predefinite</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Caratterizzazione sensori pressione</h2>
-          <p>La caratterizzazione metrologica del sensore di pressione assoluta è cruciale per il calcolo del volume corretto. Definisce la curva di risposta reale del trasduttore.</p>
-          <ul class="normative-list">
-            <li>Punti di taratura: minimo 5 punti (0%, 25%, 50%, 75%, 100% FS)</li>
-            <li>Offset (zero): deviazione a pressione nulla, compensabile via software</li>
-            <li>Linearità: scostamento max dalla retta ideale (es. ±0.075% FS)</li>
-            <li>Isteresi: differenza tra curva salita e discesa</li>
-            <li>Deriva termica: coefficiente %FS/°C (zero e span)</li>
-            <li>Stabilità a lungo termine: drift annuo dichiarato dal costruttore</li>
-            <li>Tabella di linearizzazione: coppie (lettura grezza, pressione reale) per interpolazione nel correttore</li>
-            <li>Incertezza estesa (k=2): somma contributi taratura + risoluzione + deriva + interpolazione</li>
-          </ul>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.sensori.title">Sensori e caratterizzazione</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Tipologie sensori</h2>
+            <p>Nei sistemi di misura utilities il dato volumetrico corretto dipende principalmente da sensori di pressione assoluta, temperatura e dallo stato metrologico del misuratore associato.</p>
+            <ul class="normative-list">
+              <li>Sensori pressione: campo operativo, stabilita nel tempo, deriva termica</li>
+              <li>Sensori temperatura: posizione di installazione, tempi di risposta, accuratezza</li>
+              <li>Interfaccia misura: coerenza tra ingresso analogico/digitale e parametrizzazione</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Caratterizzazione</h2>
+            <p>La caratterizzazione definisce il comportamento reale del sensore nel campo di esercizio, cosi da ridurre errore sistematico e incertezza operativa.</p>
+            <ul class="normative-list">
+              <li>Verifica a punti multipli su intervallo nominale e zone critiche</li>
+              <li>Determinazione offset, linearita, isteresi e ripetibilita</li>
+              <li>Tracciabilita delle tarature e storico delle regolazioni</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Controlli operativi</h2>
+            <p>Per mantenere affidabile la catena di misura serve monitorare allineamento tra sensori, configurazione correttore e dati acquisiti dal backend.</p>
+            <ul class="normative-list">
+              <li>Allarmi su drift, freeze valore e incoerenza tra variabili correlate</li>
+              <li>Confronto periodico con campioni o riferimenti certificati</li>
+              <li>Piano manutentivo con soglie e azioni correttive predefinite</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Caratterizzazione sensori pressione</h2>
+            <p>La caratterizzazione metrologica del sensore di pressione assoluta è cruciale per il calcolo del volume corretto. Definisce la curva di risposta reale del trasduttore.</p>
+            <ul class="normative-list">
+              <li>Punti di taratura: minimo 5 punti (0%, 25%, 50%, 75%, 100% FS)</li>
+              <li>Offset (zero): deviazione a pressione nulla, compensabile via software</li>
+              <li>Linearità: scostamento max dalla retta ideale (es. ±0.075% FS)</li>
+              <li>Isteresi: differenza tra curva salita e discesa</li>
+              <li>Deriva termica: coefficiente %FS/°C (zero e span)</li>
+              <li>Stabilità a lungo termine: drift annuo dichiarato dal costruttore</li>
+              <li>Tabella di linearizzazione: coppie (lettura grezza, pressione reale) per interpolazione nel correttore</li>
+              <li>Incertezza estesa (k=2): somma contributi taratura + risoluzione + deriva + interpolazione</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

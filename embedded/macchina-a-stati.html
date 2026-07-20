@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.macchinaStati.metaTitle">Macchina a Stati per Prodotto | SYSEM</title>
   <meta name="description" content="Progettazione di macchine a stati per sistemi embedded: diagramma a palle per il cliente, transizioni a tempo/evento, output istantanei.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="macchina-a-stati" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.macchinaStati.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.macchinaStati.title">Macchina a Stati per Prodotto</h1>
-      <p class="hero-subtitle" data-i18n="page.macchinaStati.subtitle">Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.macchinaStati.title">Macchina a Stati per Prodotto</h1>
+        <p class="page-subtitle" data-i18n="page.macchinaStati.subtitle">Diagramma a palle: progettare la logica prodotto in modo che sia leggibile e modificabile dal cliente</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -206,7 +205,7 @@
     +-------------------+   +-------------------+
       |          |               |          |
       | T_amb    | T_bat &lt;      | T_amb    | Defrost
-      | &gt;= T_set | -1&deg;C x 8'    | &gt;= T_set | timer
+      | &gt;= T_set | -1?C x 8'    | &gt;= T_set | timer
       | x 2'     |               | x 2'     |
       v          v               v          v
     +-------------------+   +-------------------+
@@ -217,7 +216,7 @@
     | Deflettore: COOL  |   | Deflettore: COOL  |
     +-------------------+   +-------------------+
               |                         |
-              | T_Set - T_amb &gt; 2&deg;     | fine defrost
+              | T_Set - T_amb &gt; 2?     | fine defrost
               v                         v
            S_2 COOL                   S_10 HEAT
 
@@ -265,7 +264,7 @@
           <h3>Vantaggi del modello a cerchi/frecce</h3>
           <ul class="normative-list">
             <li><strong>Leggibile dal cliente:</strong> il diagramma a palle mostra esattamente cosa fa la macchina in ogni stato, senza dettagli implementativi</li>
-            <li><strong>Modificabile dal cliente:</strong> &ldquo;aggiungi una freccia da S_2 a S_6 se T_bat &lt; -1&deg;C per 8 minuti&rdquo; &mdash; il cliente pu&ograve; specificare nuove transizioni in linguaggio naturale</li>
+            <li><strong>Modificabile dal cliente:</strong> &ldquo;aggiungi una freccia da S_2 a S_6 se T_bat &lt; -1?C per 8 minuti&rdquo; &mdash; il cliente pu&ograve; specificare nuove transizioni in linguaggio naturale</li>
             <li><strong>Isolamento degli stati:</strong> ogni stato &egrave; una subroutine indipendente; modificare S_2 non impatta S_10</li>
             <li><strong>Output autodocumentato:</strong> la sezione OUTPUT di ogni stato elenca esplicitamente tutti gli attuatori, rendendo immediato verificare cosa accende/spegne</li>
             <li><strong>Timer interni per stato:</strong> ogni stato ha timer (<code>Sat_Timer1</code>, <code>Sat_Timer2</code>, <code>Roll_Timer</code>) resettati all&rsquo;ingresso, che permettono transizioni temporizzate senza variabili globali aggiuntive</li>
@@ -277,8 +276,8 @@
       <div class="auth-grid">
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Esempio di modifica richiesta dal cliente</h3>
-          <p>Il cliente dice: <em>&ldquo;Nello stato COOL, se la batteria scende sotto -1&deg;C per 8 minuti, voglio che la macchina vada in Thermo Off invece di continuare a raffreddare.&rdquo;</em></p>
-          <p>Si aggiunge una freccia nel diagramma a palle da S_2 a S_6 con condizione <code>T_bat &lt; -1&deg;C AND timer &gt; 8 min</code>. Nel codice, si aggiungono poche righe nella sezione delle condizioni di S_2:</p>
+          <p>Il cliente dice: <em>&ldquo;Nello stato COOL, se la batteria scende sotto -1?C per 8 minuti, voglio che la macchina vada in Thermo Off invece di continuare a raffreddare.&rdquo;</em></p>
+          <p>Si aggiunge una freccia nel diagramma a palle da S_2 a S_6 con condizione <code>T_bat &lt; -1?C AND timer &gt; 8 min</code>. Nel codice, si aggiungono poche righe nella sezione delle condizioni di S_2:</p>
           <pre class="code-block"><span class="cmt">; Freccia: protezione antibrinamento</span>
 <span class="def">#ifreg</span> _T_Bat &lt; @T_BAT_NEG_1
     <span class="def">#ifreg</span> Sat_Timer2 &gt; @SAT_TIMER_7_MIN
@@ -300,8 +299,25 @@
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

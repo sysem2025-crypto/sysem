@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.protocolloTlc.metaTitle">Protocollo TLC Seriale | SYSEM</title>
   <meta name="description" content="Protocollo di comunicazione seriale TLC tra termostato e fan coil: encoding/decoding bit-bang, ricezione da interrupt on-change.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="protocollo-tlc" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.protocolloTlc.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.protocolloTlc.title">Protocollo TLC Seriale</h1>
-      <p class="hero-subtitle" data-i18n="page.protocolloTlc.subtitle">Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.protocolloTlc.title">Protocollo TLC Seriale</h1>
+        <p class="page-subtitle" data-i18n="page.protocolloTlc.subtitle">Comunicazione seriale tra termostato e fan coil con encoding bit-bang su singolo filo</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -89,9 +88,9 @@
     <span class="kwd">goto</span>    <span class="lab">Tlc_High</span>
 
 <span class="cmt">; Fronte di discesa: fine bit</span>
-    <span class="cmt">; Timer2 gi&agrave; partito: carica il valore di timeout</span>
+    <span class="cmt">; Timer2 gi? partito: carica il valore di timeout</span>
     <span class="kwd">BANK</span>    <span class="num">1</span>
-    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; abilita interrupt Timer2</span>
+    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> &amp; <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; abilita interrupt Timer2</span>
     <span class="kwd">BANK</span>    <span class="num">0</span>
 
     <span class="kwd">incf</span>    <span class="reg">Bit_Count</span>,same
@@ -112,21 +111,21 @@
 
     <span class="cmt">; Avvia Timer2 (timeout per fine trasmissione)</span>
     <span class="kwd">BANK</span>    <span class="num">1</span>
-    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
+    <span class="kwd">bsf</span>     <span class="reg">PIE1</span> &amp; <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
     <span class="kwd">BANK</span>    <span class="num">0</span>
     <span class="kwd">goto</span>    <span class="lab">End_Test_Tlc</span>
 
-<span class="cmt">; Timer2 overflow -> fine trasmissione</span>
+<span class="cmt">; Timer2 overflow -&gt; fine trasmissione</span>
 <span class="lab">Test_Ovf_Timer</span>
     <span class="kwd">btfss</span>   <span class="reg">PIR1</span>,<span class="reg">TMR2IF</span>
     <span class="kwd">goto</span>    <span class="lab">Test_Timer1</span>
     <span class="kwd">BANK</span>    <span class="num">1</span>
-    <span class="kwd">btfss</span>   <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
+    <span class="kwd">btfss</span>   <span class="reg">PIE1</span> &amp; <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>
     <span class="kwd">goto</span>    <span class="lab">Test_Timer1</span>
     <span class="kwd">BANK</span>    <span class="num">0</span>
     <span class="kwd">bcf</span>     <span class="reg">PIR1</span>,<span class="reg">TMR2IF</span>
     <span class="kwd">BANK</span>    <span class="num">1</span>
-    <span class="kwd">bcf</span>     <span class="reg">PIE1</span> & <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; disabilita Timer2</span>
+    <span class="kwd">bcf</span>     <span class="reg">PIE1</span> &amp; <span class="num">0x7f</span>,<span class="reg">TMR2IE</span>   <span class="cmt">; disabilita Timer2</span>
 
     <span class="cmt">; Verifica numero bit ricevuti</span>
     <span class="kwd">movlw</span>   MAX_RX_BYTES
@@ -191,8 +190,8 @@
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Schema della comunicazione</h3>
           <pre><code>+------------------+         cavo 2 fili        +------------------+
-|  Telecomando      |---- TLC (singolo filo) --->|  Scheda Split    |
-|  (termostato)     |---- GND ------------------>|  PIC16C65A       |
+|  Telecomando      |---- TLC (singolo filo) ---&gt;|  Scheda Split    |
+|  (termostato)     |---- GND ------------------&gt;|  PIC16C65A       |
 +------------------+                             |  RB4 (TLC IN)   |
                                                   +------------------+
 
@@ -200,16 +199,16 @@ Segnale TLC (encoding a finestra):
                     _______         _______
   START       ____|       |_______|       |______
                     |   |   |       |   |   |
-                    |<->|   |       |<->|   |
+                    |&lt;-&gt;|   |       |&lt;-&gt;|   |
                   bit 0   bit 1   bit 2   bit 3
                   (200 us)       (400 us)
                   = '0' logico   = '1' logico
 
-  Timer2 watchdog: se nessun fronte per > 2 ms,
+  Timer2 watchdog: se nessun fronte per &gt; 2 ms,
   la trasmissione &egrave; completa (max 8 byte).
 
 Flusso completo:
-  [START] [BIT0] [BIT1] ... [BIT7] [STOP] -> ogni byte
+  [START] [BIT0] [BIT1] ... [BIT7] [STOP] -&gt; ogni byte
   max 8 byte per comando</code></pre>
         </article>
       </div>
@@ -236,15 +235,25 @@ Flusso completo:
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

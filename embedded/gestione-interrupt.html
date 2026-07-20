@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="gestione-interrupt" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.gestioneInterrupt.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.gestioneInterrupt.title">Gestione Interrupt su PIC16Cxx</h1>
-      <p class="hero-subtitle" data-i18n="page.gestioneInterrupt.subtitle">Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.gestioneInterrupt.title">Gestione Interrupt su PIC16Cxx</h1>
+        <p class="page-subtitle" data-i18n="page.gestioneInterrupt.subtitle">Salvataggio contesto, interrupt on-change, decoder a cascata e sincronismo per triac, tacho e temperatura</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -114,7 +113,7 @@
     <span class="kwd">xorwf</span>   <span class="reg">PORTB</span>,w            <span class="cmt">; quali bit sono cambiati?</span>
     <span class="kwd">movwf</span>   <span class="reg">Save_Port</span>
 
-<span class="cmt">; Decodifica a catena: ogni gestore pu&ograve; "prendersi" l'interrupt</span>
+<span class="cmt">; Decodifica a catena: ogni gestore pub "prendersi" l'interrupt</span>
     <span class="kwd">SCLR</span>    FL_TLC             <span class="cmt">; linea telecomando ?</span>
     <span class="kwd">goto</span>    <span class="lab">Decode_Tlc</span>
 <span class="lab">End_Test_Tlc</span>
@@ -205,7 +204,7 @@
          |
          v
 +-----------------------+
-| PORTB change?         |---SI---> Decode_Tlc
+| PORTB change?         |---SI---&gt; Decode_Tlc
 |                       |         Decode_Sync
 |                       |         Decode_Tacho
 |                       |         Decode_Ntc
@@ -214,19 +213,19 @@
          NO
          v
 +-----------------------+
-| Timer2 overflow?      |---SI---> TLC timeout
+| Timer2 overflow?      |---SI---&gt; TLC timeout
 +-----------------------+         (fine ricezione seriale)
          |
          NO
          v
 +-----------------------+
-| Timer1 overflow?      |---SI---> NTC timeout
+| Timer1 overflow?      |---SI---&gt; NTC timeout
 +-----------------------+         (fine carica condensatore)
          |
          NO
          v
 +-----------------------+
-| Timer0 overflow?      |---SI---> OS step
+| Timer0 overflow?      |---SI---&gt; OS step
 |                       |         + innesco triac
 +-----------------------+         (zippillo a tempo)
          |
@@ -260,8 +259,25 @@
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

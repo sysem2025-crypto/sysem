@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.letturaTacho.metaTitle">Lettura Tachimetrica | SYSEM</title>
   <meta name="description" content="Lettura velocit&agrave; motore tramite sensore Hall su PIC: interrupt on-change, accumulo periodi, filtro mobile, protezione rotore bloccato.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="lettura-tachimetrica" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.letturaTacho.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.letturaTacho.title">Lettura Tachimetrica</h1>
-      <p class="hero-subtitle" data-i18n="page.letturaTacho.subtitle">Rilevare la velocit&agrave; del motore con un sensore Hall e un pin di interrupt on-change</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.letturaTacho.title">Lettura Tachimetrica</h1>
+        <p class="page-subtitle" data-i18n="page.letturaTacho.subtitle">Rilevare la velocit&agrave; del motore con un sensore Hall e un pin di interrupt on-change</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -162,7 +161,7 @@
           <h3>Schema del sistema di misura</h3>
           <pre><code>+----------+     impulsi      +-------------------+
 |  Motore  |----+----------&gt;| PORTB (RB7)       |
-|  Ventola |    |             | Interrupt On-     |
+|  Ventola  |    |             | Interrupt On-     |
 |  + Hall  |    |             | Change            |
 +----------+    |             |                   |
                 |             +-------------------+
@@ -218,8 +217,25 @@
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

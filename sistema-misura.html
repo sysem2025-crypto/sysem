@@ -8,55 +8,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.sistemaMisura.metaTitle">Sistema di Misura | SYSEM</title>
   <meta name="description" content="Panoramica tecnica del sistema di misura: catena misura e quadro normativo.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="sistema-misura" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.sistemaMisura.overline">Panoramica tecnica</p>
-      <h1 id="page-title" data-i18n="page.sistemaMisura.title">Sistema di Misura</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Catena di misura</h2>
-          <p>Il sistema ruota attorno alla qualita della catena completa: misuratore, correttore, sensori di pressione/temperatura, alimentazione, comunicazione e backend di raccolta.</p>
-          <p>Ogni anello influisce sul dato finale e sulla continuita operativa: il presidio tecnico non riguarda solo il dispositivo, ma l'intero flusso dal campo al sistema centrale.</p>
-        </article>
-
-        <article class="auth-card">
-          <h2>Normative e conformita</h2>
-          <p>Le attivita sui correttori devono restare coerenti con i requisiti metrologici, di tracciabilita e di audit del settore gas.</p>
-          <p>La gestione operativa include controllo versioni firmware/configurazioni, storicizzazione interventi, coerenza parametri e allineamento documentale rispetto alle prescrizioni applicabili.</p>
-        </article>
-
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.sistemaMisura.title">Sistema di Misura</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Catena di misura</h2>
+            <p>Il sistema ruota attorno alla qualita della catena completa: misuratore, correttore, sensori di pressione/temperatura, alimentazione, comunicazione e backend di raccolta.</p>
+            <p>Ogni anello influenza il dato finale e sulla continuita operativa: il presidio tecnico non riguarda solo il dispositivo, ma l'intero flusso dal campo al sistema centrale.</p>
+          </article>
+
+          <article class="auth-card">
+            <h2>Normative e conformita</h2>
+            <p>Le attivita sui correttori devono restare coerenti con i requisiti metrologici, di tracciabilita e di audit del settore gas.</p>
+            <p>La gestione operativa include controllo versioni firmware/configurazioni, storicizzazione interventi, coerenza parametri e allineamento documentale rispetto alle prescrizioni applicabili.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

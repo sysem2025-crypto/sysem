@@ -8,106 +8,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.protocolli.metaTitle">Protocolli | SYSEM</title>
   <meta name="description" content="Documentazione tecnica sui protocolli di comunicazione e misura per sistemi utilities.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 <body data-page="protocolli" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.protocolli.overline">Documentazione tecnica</p>
-      <h1 id="page-title" data-i18n="page.protocolli.title">Protocolli</h1>
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Comunicazione</h2>
-          <p>Raccolta tecnica su protocolli seriali e IP utilizzati per telelettura, diagnostica e integrazione sistemi.</p>
-        </article>
-
-        <article class="auth-card">
-          <h2>Misura</h2>
-          <p>Riferimenti operativi per validazione dato, coerenza parametri e gestione anomalie nei flussi di misura.</p>
-        </article>
-
-        <article class="auth-card" id="dlms-section">
-          <h2>Sezione DLMS - UNI/TS 11291-4</h2>
-          <p>Specifiche per l'interoperabilità dei gruppi di misura gas con protocollo DLMS/COSEM e modello dati a oggetti.</p>
-          <ul class="normative-list">
-            <li>Ambito: contatori gas di grossa taglia (Qmax > 65 m³/h)</li>
-            <li>Modello Dati: oggetti COSEM identificati tramite codici OBIS</li>
-            <li>Comunicazione: profili TCP/UDP su IP e interfaccia ottica/seriale</li>
-            <li>Sicurezza: autenticazione e cifratura dati (AES-128 GCM/GMAC)</li>
-            <li>Funzioni: lettura registri, profili di carico e gestione eventi</li>
-          </ul>
-          <p>La documentazione tecnica DLMS approfondisce la struttura dei messaggi e il dizionario degli oggetti.</p>
-          <p><a class="btn-download" href="#">Sezione DLMS in arrivo</a></p>
-        </article>
-
-        <article class="auth-card" id="ctr-section">
-          <h2>Sezione CTR - UNI/TS 11291-3:2021</h2>
-          <p>Protocollo di comunicazione per gruppi di misura gas su base oraria, con gestione trame, profili e sicurezza applicativa.</p>
-          <ul class="normative-list">
-            <li>Ambito: telelettura e telecontrollo dei sistemi di misura gas</li>
-            <li>Struttura messaggi: campi indirizzo, funzione, struttura dati e canale</li>
-            <li>Sicurezza: autenticazione CPA e cifratura AES-128 (quando prevista)</li>
-            <li>Funzioni: query, write, execute, voluntary, sessione e download</li>
-            <li>Modello dati: oggetti, attributi, profili e permessi di accesso</li>
-          </ul>
-          <p>La scheda operativa CTR e disponibile con dettaglio tecnico completo in pagina dedicata.</p>
-          <p><a class="btn-download" href="protocollo-ctr.html">Apri sezione CTR</a></p>
-        </article>
-
-        <article class="auth-card" id="pot-section">
-          <h2>Sezione POT - UNI 11629:2021</h2>
-          <p>Riferimento operativo POT per gestione tecnica del sistema, criteri di esercizio, controlli e tracciabilita documentale.</p>
-          <ul class="normative-list">
-            <li>Ambito: processo operativo e requisiti tecnici in esercizio</li>
-            <li>Requisiti: configurazione, parametri, controlli e verifiche periodiche</li>
-            <li>Sicurezza: gestione accessi, modifiche e audit delle attivita</li>
-            <li>Documentazione: registrazioni prova, esiti e storico interventi</li>
-            <li>Integrazione: allineamento tra protocollo, misura e procedure interne</li>
-          </ul>
-          <p>La scheda POT e disponibile in pagina dedicata, con impostazione pratica per team tecnici e qualita.</p>
-          <p><a class="btn-download" href="protocollo-pot.html">Apri sezione POT</a></p>
-        </article>
-
-        <article class="auth-card" id="dlms-section">
-          <h2>Sezione DLMS - UNI/TS 11291-14-2</h2>
-          <p>Protocollo DLMS/COSEM per la comunicazione con gruppi di misura gas su base oraria: modello dati, oggetti e profili di comunicazione.</p>
-          <ul class="normative-list">
-            <li>Ambito: interoperabilita e intercambiabilita dei gruppi di misura gas</li>
-            <li>Modello dati: oggetti DLMS/COSEM secondo Green Book</li>
-            <li>Comunicazione: formati APDU, timeout e parametri di rete</li>
-            <li>Supporto: mezzi trasmissivi GSM/GPRS, NB-IoT, radio 169 MHz</li>
-            <li>Riferimento: specifica tecnica UNI/TS 11291-14-2 (Modello dati)</li>
-          </ul>
-          <p>La scheda DLMS e disponibile in pagina dedicata, con dettaglio su oggetti e profili di comunicazione.</p>
-          <p><a class="btn-download" href="protocollo-dlms.html">Apri sezione DLMS</a></p>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.protocolli.title">Protocolli</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Comunicazione</h2>
+            <p>Raccolta tecnica su protocolli seriali e IP utilizzati per telelettura, diagnostica e integrazione sistemi.</p>
+          </article>
+
+          <article class="auth-card">
+            <h2>Misura</h2>
+            <p>Riferimenti operativi per validazione dato, coerenza parametri e gestione anomalie nei flussi di misura.</p>
+          </article>
+
+          <article class="auth-card" id="dlms-section">
+            <h2>Sezione DLMS - UNI/TS 11291-4</h2>
+            <p>Specifiche per l'interoperabilità dei gruppi di misura gas con protocollo DLMS/COSEM e modello dati a oggetti.</p>
+            <ul class="normative-list">
+              <li>Ambito: contatori gas di grossa taglia (Qmax > 65 m³/h)</li>
+              <li>Modello Dati: oggetti COSEM identificati tramite codici OBIS</li>
+              <li>Comunicazione: profili TCP/UDP su IP e interfaccia ottica/seriale</li>
+              <li>Sicurezza: autenticazione e cifratura dati (AES-128 GCM/GMAC)</li>
+              <li>Funzioni: lettura registri, profili di carico e gestione eventi</li>
+            </ul>
+            <p>La documentazione tecnica DLMS approfondisce la struttura dei messaggi e il dizionario degli oggetti.</p>
+            <p><a class="btn-download" href="#">Sezione DLMS in arrivo</a></p>
+          </article>
+
+          <article class="auth-card" id="ctr-section">
+            <h2>Sezione CTR - UNI/TS 11291-3:2021</h2>
+            <p>Protocollo di comunicazione per gruppi di misura gas su base oraria, con gestione trame, profili e sicurezza applicativa.</p>
+            <ul class="normative-list">
+              <li>Ambito: telelettura e telecontrollo dei sistemi di misura gas</li>
+              <li>Struttura messaggi: campi indirizzo, funzione, struttura dati e canale</li>
+              <li>Sicurezza: autenticazione CPA e cifratura AES-128 (quando prevista)</li>
+              <li>Funzioni: query, write, execute, voluntary, sessione e download</li>
+              <li>Modello dati: oggetti, attributi, profili e permessi di accesso</li>
+            </ul>
+            <p>La scheda operativa CTR e disponibile con dettaglio tecnico completo in pagina dedicata.</p>
+            <p><a class="btn-download" href="protocollo-ctr.html">Apri sezione CTR</a></p>
+          </article>
+
+          <article class="auth-card" id="pot-section">
+            <h2>Sezione POT - UNI 11629:2021</h2>
+            <p>Riferimento operativo POT per gestione tecnica del sistema, criteri di esercizio, controlli e tracciabilita documentale.</p>
+            <ul class="normative-list">
+              <li>Ambito: processo operativo e requisiti tecnici in esercizio</li>
+              <li>Requisiti: configurazione, parametri, controlli e verifiche periodiche</li>
+              <li>Sicurezza: gestione accessi, modifiche e audit delle attivita</li>
+              <li>Documentazione: registrazioni prova, esiti e storico interventi</li>
+              <li>Integrazione: allineamento tra protocollo, misura e procedure interne</li>
+            </ul>
+            <p>La scheda POT e disponibile in pagina dedicata, con impostazione pratica per team tecnici e qualita.</p>
+            <p><a class="btn-download" href="protocollo-pot.html">Apri sezione POT</a></p>
+          </article>
+
+          <article class="auth-card" id="dlms-section">
+            <h2>Sezione DLMS - UNI/TS 11291-14-2</h2>
+            <p>Protocollo DLMS/COSEM per la comunicazione con gruppi di misura gas su base oraria: modello dati, oggetti e profili di comunicazione.</p>
+            <ul class="normative-list">
+              <li>Ambito: interoperabilita e intercambiabilita dei gruppi di misura gas</li>
+              <li>Modello dati: oggetti DLMS/COSEM secondo Green Book</li>
+              <li>Comunicazione: formati APDU, timeout e parametri di rete</li>
+              <li>Supporto: mezzi trasmissivi GSM/GPRS, NB-IoT, radio 169 MHz</li>
+              <li>Riferimento: specifica tecnica UNI/TS 11291-14-2 (Modello dati)</li>
+            </ul>
+            <p>La scheda DLMS e disponibile in pagina dedicata, con dettaglio su oggetti e profili di comunicazione.</p>
+            <p><a class="btn-download" href="protocollo-dlms.html">Apri sezione DLMS</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

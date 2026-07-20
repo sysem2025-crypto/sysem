@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.controlloTriac.metaTitle">Controllo Triac e Utenze | SYSEM</title>
   <meta name="description" content="Controllo di carichi AC con triac su PIC: taglio di fase, sincronismo di rete, finestra di innesco, zippillo a tempo da interrupt.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="controllo-triac" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.controlloTriac.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.controlloTriac.title">Controllo Triac e Utenze</h1>
-      <p class="hero-subtitle" data-i18n="page.controlloTriac.subtitle">Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.controlloTriac.title">Controllo Triac e Utenze</h1>
+        <p class="page-subtitle" data-i18n="page.controlloTriac.subtitle">Azionamento di carichi AC in ambiente domestico: taglio di fase, sincronismo di rete, zippillo a tempo da interrupt</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -175,7 +174,7 @@
 ; con un algoritmo proporzionale-integrale software.</span>
 
 <span class="lab">Triac_Power</span>
-    <span class="cmt">; Legge velocit&agrave; tachimetrica (4 campioni sommati)</span>
+    <span class="cmt">; Legge velocit? tachimetrica (4 campioni sommati)</span>
     <span class="kwd">movlw</span>   V_Tacho
     <span class="kwd">movwf</span>   <span class="reg">FSR</span>
     <span class="kwd">movfw</span>   <span class="reg">INDF</span>
@@ -191,7 +190,7 @@
     <span class="kwd">movlw</span>   VEL_MIN_ROT_LOCK
     <span class="kwd">subwf</span>   <span class="reg">RB0_0</span>,w
     <span class="kwd">skpc</span>
-    <span class="kwd">goto</span>    <span class="lab">Test_Rotore</span>       <span class="cmt">; velocit&agrave; troppo bassa</span>
+    <span class="kwd">goto</span>    <span class="lab">Test_Rotore</span>       <span class="cmt">; velocit? troppo bassa</span>
 
     <span class="cmt">; Limita tra START_RIT e END_RIT</span>
     <span class="kwd">DEC_BIN_OVF</span>  Integr_Term, END_RIT
@@ -202,8 +201,8 @@
 
     <span class="cmt">; Conversione: START_RIT = massima potenza (ritardo minimo)
     ;              END_RIT   = minima potenza (ritardo massimo)
-    ; START_RIT = 3000 us  -> ventola a fondo
-    ; END_RIT   = 7000 us  -> ventola al minimo</span></pre>
+    ; START_RIT = 3000 us  -&gt; ventola a fondo
+    ; END_RIT   = 7000 us  -&gt; ventola al minimo</span></pre>
         </article>
       </div>
 
@@ -229,8 +228,25 @@
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

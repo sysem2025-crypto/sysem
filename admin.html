@@ -8,39 +8,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.admin.metaTitle">Admin Accessi | SYSEM</title>
   <meta name="description" content="Gestione ruoli utenti per accesso alla documentazione.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-client.js?v=20260615"></script>
-  <script src="assets/js/auth-supabase.js?v=20260615"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 <body data-page="admin" data-required-role="admin">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav>
-        <ul></ul>
-      </nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero admin-hero" aria-labelledby="page-title">
-      <p data-i18n="page.admin.overline">Controllo accessi</p>
-      <h1 id="page-title" data-i18n="page.admin.title">Gestione Accessi</h1>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.admin.title">Gestione Accessi</h1>
+      </div>
+      <div class="page-body">
         <div class="admin-panel">
           <div class="admin-toolbar">
             <input id="admin-search" type="search" placeholder="Cerca per email" data-i18n="admin.searchPlaceholder">
@@ -68,15 +59,27 @@
           <p id="admin-feedback" class="auth-feedback" aria-live="polite"></p>
         </div>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav>
+    <ul></ul>
+  </nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

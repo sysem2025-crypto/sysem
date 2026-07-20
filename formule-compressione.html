@@ -8,72 +8,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.formule.metaTitle">Formule di compressione | SYSEM</title>
   <meta name="description" content="Formule di compressione e fattore Z per il calcolo del volume corretto nei sistemi gas.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="formule-compressione" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.formule.overline">Approfondimento tecnico</p>
-      <h1 id="page-title" data-i18n="page.formule.title">Formule di compressione</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Obiettivo del calcolo</h2>
-          <p>Il correttore converte il volume misurato in volume alle condizioni base usando pressione, temperatura e comprimibilita del gas.</p>
-          <ul class="normative-list">
-            <li>Volume base: Vb = Vm x (P/Pb) x (Tb/T) x (Zb/Z)</li>
-            <li>Vm: volume misurato; Vb: volume corretto alle condizioni base</li>
-            <li>P, T, Z: grandezze in esercizio; Pb, Tb, Zb: grandezze di riferimento</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Fattore di comprimibilita</h2>
-          <p>Il fattore Z puo essere ricavato con formule semplificate o equazioni piu complete, in funzione del contesto normativo e del livello di precisione richiesto.</p>
-          <ul class="normative-list">
-            <li>Approcci pratici: formule tabellari, correlazioni AGA o metodi dedicati</li>
-            <li>Input tipici: composizione gas, pressione assoluta, temperatura</li>
-            <li>Validazione: confronto con benchmark e verifica consistenza su range operativo</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Buone pratiche implementative</h2>
-          <p>Per evitare errori sistematici servono unita coerenti, gestione robusta dei limiti e tracciabilita delle versioni formula/configurazione.</p>
-          <ul class="normative-list">
-            <li>Uniformare unita di misura prima del calcolo (bar, kPa, K, degC)</li>
-            <li>Gestire fallback e allarmi quando mancano dati di ingresso</li>
-            <li>Versionare parametri e coefficenti per audit tecnico e diagnostica</li>
-          </ul>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.formule.title">Formule di compressione</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Obiettivo del calcolo</h2>
+            <p>Il correttore converte il volume misurato in volume alle condizioni base usando pressione, temperatura e comprimibilita del gas.</p>
+            <ul class="normative-list">
+              <li>Volume base: Vb = Vm x (P/Pb) x (Tb/T) x (Zb/Z)</li>
+              <li>Vm: volume misurato; Vb: volume corretto alle condizioni base</li>
+              <li>P, T, Z: grandezze in esercizio; Pb, Tb, Zb: grandezze di riferimento</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Fattore di comprimibilita</h2>
+            <p>Il fattore Z puo essere ricavato con formule semplificate o equazioni piu complete, in funzione del contesto normativo e del livello di precisione richiesto.</p>
+            <ul class="normative-list">
+              <li>Approcci pratici: formule tabellari, correlazioni AGA o metodi dedicati</li>
+              <li>Input tipici: composizione gas, pressione assoluta, temperatura</li>
+              <li>Validazione: confronto con benchmark e verifica consistenza su range operativo</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Buone pratiche implementative</h2>
+            <p>Per evitare errori sistematici servono unita coerenti, gestione robusta dei limiti e tracciabilita delle versioni formula/configurazione.</p>
+            <ul class="normative-list">
+              <li>Uniformare unita di misura prima del calcolo (bar, kPa, K, degC)</li>
+              <li>Gestire fallback e allarmi quando mancano dati di ingresso</li>
+              <li>Versionare parametri e coefficenti per audit tecnico e diagnostica</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

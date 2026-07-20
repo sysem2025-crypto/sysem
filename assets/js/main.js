@@ -238,6 +238,9 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var key = el.dataset.i18n;
     var finalText = i18next.t(key);
+    if (el.classList.contains('page-subtitle') && finalText === key) {
+      return;
+    }
     var tag = el.tagName;
     if (tag === 'TITLE') {
       el.textContent = finalText + ' | SYSEM';
@@ -453,6 +456,58 @@ var NAV_STRUCTURE = [
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
   { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' }
 ];
+
+var PAGE_MENU_MAP = {
+  'systema': 'nav.systema',
+  'datacenter': 'nav.systema',
+  'ticketing': 'nav.tiketing',
+  'resource': 'nav.tiketing',
+  'program-access': 'nav.tiketing',
+  'progetti': 'nav.progetti',
+  'embedded': 'nav.progetti',
+  'os-cooperativo': 'nav.progetti',
+  'architettura-modulare': 'nav.progetti',
+  'gestione-interrupt': 'nav.progetti',
+  'gestione-eeprom': 'nav.progetti',
+  'protocollo-tlc': 'nav.progetti',
+  'debug-produzione': 'nav.progetti',
+  'controllo-triac': 'nav.progetti',
+  'macchina-a-stati': 'nav.progetti',
+  'lettura-tachimetrica': 'nav.progetti',
+  'lettura-ntc': 'nav.progetti',
+  'utility': 'nav.utility',
+  'telecontrollo': 'nav.telecontrollo',
+  'cedam3': 'nav.telecontrollo',
+  'sistemi': 'nav.sysem',
+  'sistema-correttori': 'nav.sysem',
+  'about': 'nav.sysem',
+  'services': 'nav.sysem',
+  'industries': 'nav.sysem',
+  'ai': 'nav.sysem',
+  'contact': 'nav.sysem',
+  'protocolli': 'nav.sysem',
+  'sensori-caratterizzazione': 'nav.sysem',
+  'formule-compressione': 'nav.sysem',
+  'normative': 'nav.sysem',
+  'guida-norme': 'nav.sysem',
+  'sistema-misura': 'nav.sysem',
+  'ctr': 'nav.sysem',
+  'pot': 'nav.sysem',
+  'dlms': 'nav.sysem',
+  'download-applicativi': 'nav.sysem',
+  'volume-corrector': 'nav.sysem',
+  'access': null,
+  'admin': null,
+  'home': null
+};
+
+function updateMenuLabel() {
+  var label = document.getElementById('menu-label');
+  if (!label) return;
+  var page = document.body.dataset.page;
+  var key = PAGE_MENU_MAP[page];
+  label.textContent = key ? t(key) : '';
+}
 
 const ROLE_OPTIONS = ['base', 'pro', 'admin'];
 
@@ -802,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }).then(function() {
     renderNavigation(currentPage);
+    updateMenuLabel();
     const menuToggle = document.getElementById('menu-toggle');
     const overlayMenu = document.getElementById('overlay-menu');
     if (menuToggle && overlayMenu) {
@@ -904,5 +960,33 @@ document.addEventListener('DOMContentLoaded', function() {
           lastUpdateEl.textContent = 'n/d';
         });
     }
+    loadChangelog();
   });
 });
+
+function loadChangelog() {
+  var list = document.getElementById('changelog-list');
+  if (!list) return;
+  fetch(SITE_BASE + 'changelog.json?v=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(entries) {
+      var lastThree = entries.slice(-3).reverse();
+      list.innerHTML = '';
+      lastThree.forEach(function(entry) {
+        var row = document.createElement('div');
+        row.className = 'changelog-entry';
+        var time = document.createElement('time');
+        time.className = 'changelog-date';
+        time.textContent = entry.date;
+        var text = document.createElement('span');
+        text.className = 'changelog-text';
+        text.textContent = entry.text;
+        row.appendChild(time);
+        row.appendChild(text);
+        list.appendChild(row);
+      });
+    })
+    .catch(function() {
+      list.innerHTML = '<p class="changelog-empty">Nessun aggiornamento registrato.</p>';
+    });
+}

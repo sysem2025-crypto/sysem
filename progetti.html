@@ -12,48 +12,59 @@
 </head>
 
 <body data-page="progetti" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.progetti.overline">Progetti</p>
-      <h1 id="page-title" data-i18n="page.progetti.title">Progetti</h1>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.progetti.title">Progetti</h1>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
           <article class="auth-card">
             <h2>Progetti Embedded</h2>
-            <p>Progetti di sistemi embedded per applicazioni industriali, basati su microcontrollori PIC 8-bit.</p>
+            <p>Progetti di sistemi embedded per applicazioni industriali, basati su microcontrollori PIC 8-bit: scheduler cooperativo, interrupt, lettura sensori, comunicazione e gestione memoria.</p>
             <p><a class="btn-download" href="embedded.html">Apri progetti embedded</a></p>
+          </article>
+          <article class="auth-card">
+            <h2>Progetti Industriali</h2>
+            <p>Macchine per assemblaggio SMT: forni rifusione, stampanti pasta saldante, dispenser, profiler termici e taglierine. Firmware embedded su microcontrollori 8051/PIC.</p>
+            <p><a class="btn-download" href="progetti-industriali.html">Apri progetti industriali &rarr;</a></p>
           </article>
         </div>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

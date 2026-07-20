@@ -8,36 +8,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.contact.metaTitle">Contact | SYSEM</title>
   <meta name="description" content="Contattaci per maggiori informazioni.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="contact" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.contact.overline">Get in touch</p>
-      <h1 id="page-title" data-i18n="page.contact.title">Contact</h1>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.contact.title">Contact</h1>
+      </div>
+      <div class="page-body">
         <article class="auth-card">
           <h2>Servicedesk</h2>
           <p>Per supporto tecnico e richieste operative puoi scriverci qui:</p>
@@ -45,16 +40,25 @@
           <p><a class="btn-download" href="mailto:servicedesk@sysem.it">servicedesk@sysem.it</a></p>
         </article>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 
-  <script src="assets/js/main.js?v=20260718c"></script>
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

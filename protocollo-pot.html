@@ -8,83 +8,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.pot.metaTitle">Protocollo POT | SYSEM</title>
   <meta name="description" content="Sezione POT secondo UNI 11629:2021: ambito, requisiti, controlli e gestione operativa.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="pot" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.pot.overline">Norma tecnica</p>
-      <h1 id="page-title" data-i18n="page.pot.title">Sezione POT</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Riferimento normativo</h2>
-          <ul class="normative-list">
-            <li>UNI 11629:2021</li>
-            <li>Applicazione operativa nel contesto sistemi misura/correttori</li>
-            <li>Uso interno per standardizzazione procedure tecniche</li>
-          </ul>
-          <p><strong>Nota:</strong> questa pagina e un supporto operativo. Per valutazioni formali fa fede il testo ufficiale della norma.</p>
-        </article>
-
-        <article class="auth-card">
-          <h2>Perimetro POT</h2>
-          <ul class="normative-list">
-            <li>Definizione campo di applicazione e responsabilita</li>
-            <li>Struttura parametri e controlli di coerenza</li>
-            <li>Regole di esercizio, manutenzione e ripristino</li>
-            <li>Allineamento con requisiti qualita e auditabilita</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Controlli e verifiche</h2>
-          <ul class="normative-list">
-            <li>Checklist di avvio e validazione configurazione</li>
-            <li>Verifiche periodiche su parametri critici</li>
-            <li>Gestione non conformita e azioni correttive</li>
-            <li>Tracciamento interventi, versioni e storico eventi</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Output documentali</h2>
-          <ul class="normative-list">
-            <li>Registro controlli tecnici e prove effettuate</li>
-            <li>Report modifiche e autorizzazioni</li>
-            <li>Evidenze per riesame interno e verifica esterna</li>
-          </ul>
-          <p><a class="btn-download" href="protocolli.html#pot-section">Torna alla sezione POT</a></p>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.pot.title">Sezione POT</h1>
       </div>
-    </section>
-  </main>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Riferimento normativo</h2>
+            <ul class="normative-list">
+              <li>UNI 11629:2021</li>
+              <li>Applicazione operativa nel contesto sistemi misura/correttori</li>
+              <li>Uso interno per standardizzazione procedure tecniche</li>
+            </ul>
+            <p><strong>Nota:</strong> questa pagina e un supporto operativo. Per valutazioni formali fa fede il testo ufficiale della norma.</p>
+          </article>
 
-  <script src="assets/js/main.js?v=20260718c"></script>
+          <article class="auth-card">
+            <h2>Perimetro POT</h2>
+            <ul class="normative-list">
+              <li>Definizione campo di applicazione e responsabilita</li>
+              <li>Struttura parametri e controlli di coerenza</li>
+              <li>Regole di esercizio, manutenzione e ripristino</li>
+              <li>Allineamento con requisiti qualita e auditabilita</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Controlli e verifiche</h2>
+            <ul class="normative-list">
+              <li>Checklist di avvio e validazione configurazione</li>
+              <li>Verifiche periodiche su parametri critici</li>
+              <li>Gestione non conformita e azioni correttive</li>
+              <li>Tracciamento interventi, versioni e storico eventi</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Output documentali</h2>
+            <ul class="normative-list">
+              <li>Registro controlli tecnici e prove effettuate</li>
+              <li>Report modifiche e autorizzazioni</li>
+              <li>Evidenze per riesame interno e verifica esterna</li>
+            </ul>
+            <p><a class="btn-download" href="protocolli.html#pot-section">Torna alla sezione POT</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

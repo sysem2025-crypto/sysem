@@ -8,88 +8,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.home.metaTitle">SYSEM | Soluzioni software per utilities</title>
   <meta name="description" content="SYSEM sviluppa soluzioni software e integrazioni per il settore utilities.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="home" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero hero-home" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.home.overline">Studio Tecnico Informatico</p>
-      <h1 id="page-title" data-i18n="page.home.title">SYSEM</h1>
-      <p class="hero-subtitle" data-i18n="page.home.subtitle">soluzioni digitali per telecontrollo utilities</p>
-      <span class="under-construction-badge"><span>⚠ Site under construction ⚠ Site under construction ⚠ Site under construction ⚠ Site under construction</span></span>
-    </section>
+  <div class="site-body">
+    <div class="content-frame content-frame--center">
+      <div class="page-heading page-heading--center">
+        <h1 class="page-title" data-i18n="page.home.title">SYSEM</h1>
+        <p class="page-subtitle" data-i18n="page.home.subtitle">soluzioni digitali per telecontrollo utilities</p>
+      </div>
+      <div class="page-body">
+      </div>
+    </div>
+  </div>
 
-    <section class="changelog-section" aria-label="Registro modifiche">
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
       <div class="changelog-header">
-        <span class="changelog-badge" id="changelog-badge">Modifiche recenti</span>
+        <span class="changelog-badge">Modifiche recenti</span>
       </div>
       <div class="changelog-list" id="changelog-list">
         <p class="changelog-loading">Caricamento...</p>
       </div>
-    </section>
+    </div>
+  </footer>
+</div>
 
-  </main>
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-client.js?v=20260615"></script>
-  <script src="assets/js/auth-supabase.js?v=20260615"></script>
-  <script src="assets/js/main.js?v=20260718c"></script>
-  <script>
-    (function () {
-      var list = document.getElementById('changelog-list');
-      if (!list) return;
-      fetch('changelog.json?v=' + Date.now())
-        .then(function (r) { return r.json(); })
-        .then(function (entries) {
-          var lastThree = entries.slice(-3).reverse();
-          list.innerHTML = '';
-          lastThree.forEach(function (entry) {
-            var row = document.createElement('div');
-            row.className = 'changelog-entry';
-
-            var time = document.createElement('time');
-            time.className = 'changelog-date';
-            time.textContent = entry.date;
-
-            var text = document.createElement('span');
-            text.className = 'changelog-text';
-            text.textContent = entry.text;
-
-            row.appendChild(time);
-            row.appendChild(text);
-            list.appendChild(row);
-          });
-        })
-        .catch(function () {
-          list.innerHTML = '<p class="changelog-empty">Nessun aggiornamento registrato.</p>';
-        });
-    })();
-  </script>
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

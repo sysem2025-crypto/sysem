@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lettura NTC a Condensatore | SYSEM</title>
   <meta name="description" content="Misura di temperatura con termistore NTC su PIC: metodo carica/scarica RC, normalizzazione a 130 count, lookup indiretto.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -33,29 +33,28 @@
   </style>
 </head>
 <body data-page="lettura-ntc" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p class="hero-overline" data-i18n="page.letturaNtc.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.letturaNtc.title">Lettura NTC a Condensatore</h1>
-      <p class="hero-subtitle" data-i18n="page.letturaNtc.subtitle">Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.letturaNtc.title">Lettura NTC a Condensatore</h1>
+        <p class="page-subtitle" data-i18n="page.letturaNtc.subtitle">Misurare la temperatura con un termistore NTC su PIC, usando il metodo carica/scarica RC senza ADC</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -213,7 +212,7 @@ MAX_INDEX_NTC <span class="def">EQU</span>   <span class="num">3</span>    <span
      |
      R_CAL (R rif.)
      |
-     +-----> PORTB (sense input)
+     +-----&gt; PORTB (sense input)
      |
      C (condensatore esterno 100nF)
      |
@@ -224,19 +223,19 @@ MAX_INDEX_NTC <span class="def">EQU</span>   <span class="num">3</span>    <span
 
 Timing della misura:
 
-    Phase 0:  [R_CAL]  carica    -> interrupt -> salva T_CAL
+    Phase 0:  [R_CAL]  carica    -&gt; interrupt -&gt; salva T_CAL
               attesa scarica 50ms
 
-    Phase 1:  [NTC_AMB] carica   -> interrupt -> salva T_AMB
+    Phase 1:  [NTC_AMB] carica   -&gt; interrupt -&gt; salva T_AMB
               attesa scarica 50ms
 
-    Phase 2:  [NTC_BAT] carica   -> interrupt -> salva T_BAT
+    Phase 2:  [NTC_BAT] carica   -&gt; interrupt -&gt; salva T_BAT
               attesa scarica 50ms
 
-    Phase 3:  [NTC_VENT] carica  -> interrupt -> salva T_VENT
+    Phase 3:  [NTC_VENT] carica  -&gt; interrupt -&gt; salva T_VENT
               attesa scarica 50ms
-              -> normalizza tutte le temperature
-              -> ricomincia
+              -&gt; normalizza tutte le temperature
+              -&gt; ricomincia
 
     Periodo totale: 4 x 100ms = 400ms (aggiornamento completo ogni ~0.4s)</code></pre>
         </article>
@@ -246,15 +245,15 @@ Timing della misura:
         <article class="auth-card" style="grid-column: 1 / -1;">
           <h3>Lookup e normalizzazione</h3>
           <p>Il valore grezzo del timer (16 bit, count Timer1) viene normalizzato a 130 passi tramite una lookup table. La costante <code>NORMALIZED_NTC = 130</code> definisce il numero di iterazioni del loop di normalizzazione. Ad ogni iterazione viene chiamata <code>Cmd_Ntc</code> che, mediante una tabella di retlw, converte il conteggio in temperatura effettiva:</p>
-          <pre class="code-block"><span class="cmt">; Tabella di conversione count -> temperatura
+          <pre class="code-block"><span class="cmt">; Tabella di conversione count -&gt; temperatura
 ; (tipicamente 130 entry, indicizzate dal valore normalizzato)</span>
 <span class="lab">Cmd_Ntc</span>
     <span class="kwd">addwf</span>   Pc,Same
-    <span class="kwd">retlw</span>   <span class="num">00h</span>    <span class="cmt">; count = 0   -> T = 0 (corto)</span>
-    <span class="kwd">retlw</span>   <span class="num">01h</span>    <span class="cmt">; count = 1   -> T = 1</span>
+    <span class="kwd">retlw</span>   <span class="num">00h</span>    <span class="cmt">; count = 0   -&gt; T = 0 (corto)</span>
+    <span class="kwd">retlw</span>   <span class="num">01h</span>    <span class="cmt">; count = 1   -&gt; T = 1</span>
     <span class="kwd">retlw</span>   <span class="num">02h</span>
     ...
-    <span class="kwd">retlw</span>   <span class="num">7Fh</span>    <span class="cmt">; count = 130 -> T = max (circuito aperto)</span></pre>
+    <span class="kwd">retlw</span>   <span class="num">7Fh</span>    <span class="cmt">; count = 130 -&gt; T = max (circuito aperto)</span></pre>
         </article>
       </div>
 
@@ -266,7 +265,7 @@ Timing della misura:
             <li><strong>Calibrazione via R_CAL:</strong> una resistenza fissa di riferimento compensa derive termiche del condensatore e del clock</li>
             <li><strong>Multiplexing a tre-state:</strong> le sonde inattive sono in alta impedenza; solo quella attiva partecipa alla carica RC</li>
             <li><strong>Aggiornamento in background:</strong> la lettura NTC &egrave; una task cooperativa che non blocca mai il sistema</li>
-            <li><strong>Risoluzione 16 bit:</strong> Timer1 a 16 bit fornisce una risoluzione teorica di ~0.1&deg;C</li>
+            <li><strong>Risoluzione 16 bit:</strong> Timer1 a 16 bit fornisce una risoluzione teorica di ~0.1?C</li>
           </ul>
         </article>
       </div>
@@ -281,8 +280,25 @@ Timing della misura:
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

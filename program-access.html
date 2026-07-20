@@ -8,85 +8,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.programAccess.metaTitle">Program Access | SYSEM</title>
   <meta name="description" content="Accesso ai programmi SYSEM.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-client.js?v=20260615"></script>
-  <script src="assets/js/auth-supabase.js?v=20260615"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 <body data-page="program-access" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav>
-        <ul></ul>
-      </nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.programAccess.overline">Program access</p>
-      <h1 id="page-title" data-i18n="page.programAccess.title">Accesso Programma</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2 data-i18n="auth.loginTitle">Accedi al programma</h2>
-          <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nei download software.</p>
-          <form id="login-form" class="auth-form">
-            <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
-            <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
-            <datalist id="login-email-list"></datalist>
-            <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
-            <input id="login-password" name="password" type="password" required>
-            <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
-          </form>
-          <p class="auth-hint" data-i18n="auth.authorizedOnly">Solo utenti autorizzati.</p>
-          <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.programAccess.title">Accesso Programma</h1>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js?v=20260718c"></script>
-  <script>
-    (function () {
-      const loginForm = document.getElementById('login-form');
-      const feedback = document.getElementById('auth-feedback');
-      if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          feedback.textContent = '';
-          const email = document.getElementById('login-email').value.trim().toLowerCase();
-          const password = document.getElementById('login-password').value;
-          if (!email || password.length < 8) {
-            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
-            return;
-          }
-          try {
-            await window.supabaseLogin(email, password);
-            window.location.href = 'resource.html';
-          } catch (err) {
-            feedback.textContent = err.message || 'Credenziali non valide';
-          }
-        });
-      }
-    })();
-  </script>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2 data-i18n="auth.loginTitle">Accedi al programma</h2>
+            <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nei download software.</p>
+            <form id="login-form" class="auth-form">
+              <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
+              <input id="login-email" name="email" type="email" list="login-email-list" required placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
+              <datalist id="login-email-list"></datalist>
+              <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
+              <input id="login-password" name="password" type="password" required>
+              <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
+            </form>
+            <p class="auth-hint" data-i18n="auth.authorizedOnly">Solo utenti autorizzati.</p>
+            <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

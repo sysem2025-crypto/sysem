@@ -8,85 +8,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.dlms.metaTitle">Protocollo DLMS | SYSEM</title>
   <meta name="description" content="Protocollo DLMS/COSEM UNI/TS 11291-14-2: modello dati, oggetti, APDU e profili di comunicazione per gruppi di misura gas.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260615">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
 <body data-page="dlms" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.dlms.overline">Specifica tecnica</p>
-      <h1 id="page-title" data-i18n="page.dlms.title">Sezione DLMS</h1>
-
-      <div class="auth-grid">
-        <article class="auth-card">
-          <h2>Riferimento normativo</h2>
-          <ul class="normative-list">
-            <li>UNI/TS 11291-14-2 (Modello dati)</li>
-            <li>DLMS/COSEM Green Book</li>
-            <li>IEC 62056 serie</li>
-            <li>Applicazione nel contesto gas mass-market e industriali</li>
-          </ul>
-          <p><strong>Nota:</strong> questa pagina e un supporto operativo. Per valutazioni formali fa fede il testo ufficiale della norma.</p>
-        </article>
-
-        <article class="auth-card">
-          <h2>Modello dati DLMS/COSEM</h2>
-          <ul class="normative-list">
-            <li>Oggetti: register, profile generic, clock, association LN</li>
-            <li>Attributi e metodi per accesso ai dati di misura</li>
-            <li>Struttura gerarchica: logical device, objects, attributes</li>
-            <li>Interface class: definizione standardizzata dei comportamenti</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Comunicazione e APDU</h2>
-          <ul class="normative-list">
-            <li>Formati APDU definiti secondo Green Book</li>
-            <li>Protocollo di trasporto: HDLC, TCP/UDP, wireless M-Bus</li>
-            <li>Parametri di rete: timeout Tg, Tnb, Tresp</li>
-            <li>Cifratura e autenticazione: sicurezza a livello applicativo</li>
-          </ul>
-        </article>
-
-        <article class="auth-card">
-          <h2>Oggetti necessari (CTT)</h2>
-          <ul class="normative-list">
-            <li>Appendice F: oggetti per conformita DLMS/COSEM</li>
-            <li>Registro volumi: Vm, Vb, totalizzatori orari/giornalieri</li>
-            <li>Parametri: P, T, Pb, Tb, fattori di comprimibilita</li>
-            <li>Eventi e allarmi: log con timestamp e codice evento</li>
-          </ul>
-          <p><a class="btn-download" href="protocolli.html#dlms-section">Torna alla sezione DLMS</a></p>
-        </article>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.dlms.title">Sezione DLMS</h1>
       </div>
-    </section>
-  </main>
+      <div class="page-body">
+        <div class="auth-grid">
+          <article class="auth-card">
+            <h2>Riferimento normativo</h2>
+            <ul class="normative-list">
+              <li>UNI/TS 11291-14-2 (Modello dati)</li>
+              <li>DLMS/COSEM Green Book</li>
+              <li>IEC 62056 serie</li>
+              <li>Applicazione nel contesto gas mass-market e industriali</li>
+            </ul>
+            <p><strong>Nota:</strong> questa pagina e un supporto operativo. Per valutazioni formali fa fede il testo ufficiale della norma.</p>
+          </article>
 
-  <script src="assets/js/main.js?v=20260718c"></script>
+          <article class="auth-card">
+            <h2>Modello dati DLMS/COSEM</h2>
+            <ul class="normative-list">
+              <li>Oggetti: register, profile generic, clock, association LN</li>
+              <li>Attributi e metodi per accesso ai dati di misura</li>
+              <li>Struttura gerarchica: logical device, objects, attributes</li>
+              <li>Interface class: definizione standardizzata dei comportamenti</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Comunicazione e APDU</h2>
+            <ul class="normative-list">
+              <li>Formati APDU definiti secondo Green Book</li>
+              <li>Protocollo di trasporto: HDLC, TCP/UDP, wireless M-Bus</li>
+              <li>Parametri di rete: timeout Tg, Tnb, Tresp</li>
+              <li>Cifratura e autenticazione: sicurezza a livello applicativo</li>
+            </ul>
+          </article>
+
+          <article class="auth-card">
+            <h2>Oggetti necessari (CTT)</h2>
+            <ul class="normative-list">
+              <li>Appendice F: oggetti per conformita DLMS/COSEM</li>
+              <li>Registro volumi: Vm, Vb, totalizzatori orari/giornalieri</li>
+              <li>Parametri: P, T, Pb, Tb, fattori di comprimibilita</li>
+              <li>Eventi e allarmi: log con timestamp e codice evento</li>
+            </ul>
+            <p><a class="btn-download" href="protocolli.html#dlms-section">Torna alla sezione DLMS</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-

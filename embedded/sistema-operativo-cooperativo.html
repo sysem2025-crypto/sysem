@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.osCooperativo.metaTitle">Scheduler Semplificato Round-Robin | SYSEM</title>
   <meta name="description" content="Scheduler cooperativo per PIC16Cxx con task a tempo e a evento, wake-up table, implementazione in Assembly.">
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260717b">
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260718c">
   <style>
     .code-block {
       background: #1e1e1e;
@@ -31,29 +31,28 @@
   </style>
 </head>
 <body data-page="os-cooperativo" data-required-role="guest">
-  <main class="home">
-    <header class="topbar" aria-label="Intestazione sito">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
       <a class="brand" href="/" aria-label="SYSEM home">
         <img src="../assets/img/logo.png" alt="Logo SYSEM">
       </a>
-      <div class="nav-container">
-        <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-    <div class="overlay-menu" id="overlay-menu">
-      <nav><ul></ul></nav>
+      <span class="site-header__menu" id="menu-label"></span>
     </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <section class="hero auth-hero" aria-labelledby="page-title">
-      <p data-i18n="page.osCooperativo.overline">Embedded &mdash; Progettazione Firmware</p>
-      <h1 id="page-title" data-i18n="page.osCooperativo.title">Scheduler Semplificato Round-Robin</h1>
-      <p class="hero-subtitle" data-i18n="page.osCooperativo.subtitle">Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno</p>
-    </section>
-
-    <section class="content-section">
-      <div class="tutorial-container">
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title" data-i18n="page.osCooperativo.title">Scheduler Semplificato Round-Robin</h1>
+        <p class="page-subtitle" data-i18n="page.osCooperativo.subtitle">Scheduler a task multiple con wake-up a tempo o a evento su PIC a 8 bit, senza RTOS esterno</p>
+      </div>
+      <div class="page-body">
         <div class="auth-grid">
         <article class="auth-card">
           <h2>Problema</h2>
@@ -104,7 +103,7 @@
     <span class="kwd">xorwf</span>   <span class="reg">Curr_Task</span>,W               <span class="cmt">; ho superato l'ultima?</span>
     <span class="kwd">clrc</span>
     <span class="kwd">skpnz</span>
-    <span class="kwd">clrf</span>    <span class="reg">Curr_Task</span>                 <span class="cmt">; se sì, riparto da 0</span>
+    <span class="kwd">clrf</span>    <span class="reg">Curr_Task</span>                 <span class="cmt">; se s&igrave;, riparto da 0</span>
 
     <span class="kwd">rlf</span>     <span class="reg">Curr_Task</span>,w               <span class="cmt">; indice * 2 (tabella 16 bit)</span>
     <span class="kwd">addlw</span>   Ret_Add + 1               <span class="cmt">; puntatore alla tabella ritorni</span>
@@ -186,12 +185,12 @@ Ret_Add     DS  MAX_TASK*2   ; 2 byte per indirizzo (PCLATH + PCL)
          v
 +-------------------+
 | Startup           |
-| Init HW & Var     |
+| Init HW &amp; Var     |
 +-------------------+
          |
          v
 +-------------------+
-| Operative_System  |<-------------------+
+| Operative_System  |&lt;-------------------+
 |   attesa ~0.5ms   |                    |
 |   (poll TMR0)     |                    |
 +-------------------+                    |
@@ -204,18 +203,18 @@ Ret_Add     DS  MAX_TASK*2   ; 2 byte per indirizzo (PCLATH + PCL)
 |     Curr_Task = 0 |                    |
 +-------------------+                    |
          |                               |
-         +--> Task a tempo?              |
+         +--&gt; Task a tempo?              |
          |      SI: decrementa cont.     |
-         |          se 0 -> esegui       |
+         |          se 0 -&gt; esegui       |
          |      NO: Task a evento?       |
          |          SI: flag attivo?     |
-         |              se SI -> esegui  |
+         |              se SI -&gt; esegui  |
          |          NO: prox task        |
          |                               |
-         +--> Esegui_Task                |
+         +--&gt; Esegui_Task                |
               carica PCLATH, PCL         |
               da Ret_Add[Curr_Task]      |
-              -> esecuzione task         |
+              -&gt; esecuzione task         |
          |                               |
          v                               |
 +-------------------+                    |
@@ -269,15 +268,25 @@ NtcTask
         </article>
       </div>
       </div>
-    </section>
-  </main>
-  <script src="../assets/js/main.js?v=20260718c"></script>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="../assets/js/main.js?v=20260718c"></script>
 </body>
 </html>
-
-
-
-
-
-
-
