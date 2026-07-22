@@ -6,8 +6,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="page.ticketing.metaTitle">Ticketing | SYSEM</title>
-  <meta name="description" content="Sistema di ticketing SYSEM: gestione richieste di supporto, segnalazioni e interventi tecnici.">
+  <title data-i18n="page.ticketing.metaTitle">Assistenza | SYSEM</title>
+  <meta name="description" content="Assistenza tecnica SYSEM: ticket di supporto, knowledge base applicativi e download firmware/software per utenti registrati.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
@@ -30,7 +30,7 @@
   <div class="site-body">
     <div class="content-frame">
       <div class="page-heading">
-        <h1 class="page-title" data-i18n="page.ticketing.title">Sistema di Ticketing</h1>
+        <h1 class="page-title" data-i18n="page.ticketing.title">Assistenza</h1>
       </div>
       <div class="page-body">
         <div class="auth-grid" id="ticketStatsGrid">
@@ -58,13 +58,28 @@
 
           <article class="auth-card">
             <h2>Knowledge base</h2>
-            <p>Raccolta di articoli tecnici, guide rapide e FAQ per la risoluzione autonoma dei problemi pi&ugrave; comuni.</p>
+            <p>Raccolta di articoli tecnici, guide rapide e applicativi per l&rsquo;assistenza tecnica.</p>
             <ul class="normative-list">
-              <li>Guide alla configurazione dispositivi</li>
-              <li>Procedure di diagnostica e ripristino</li>
-              <li>FAQ su normative e protocolli</li>
+              <li><strong>NetSupport</strong> &mdash; controllo remoto e assistenza su postazioni cliente</li>
+              <li><strong>TeamViewer</strong> &mdash; collegamento remoto per diagnosi e configurazione</li>
+              <li><strong>Wireshark</strong> &mdash; analisi pacchetti e debug protocolli di comunicazione</li>
+              <li><strong>Putty / Tera Term</strong> &mdash; terminale seriale per accesso a dispositivi e apparati</li>
+              <li><strong>Docker Desktop (Portainer)</strong> &mdash; gestione ambienti containerizzati di produzione</li>
+              <li><strong>VS Code + SSH</strong> &mdash; editor remoto per configurazione server e manutenzione</li>
             </ul>
-            <p><a class="btn-download" id="linkKnowledgeBase" href="https://sf-service-web.vercel.app/procedure" target="_blank" rel="noopener noreferrer">Accedi alla knowledge base</a></p>
+          </article>
+
+          <article class="auth-card" id="cardDownloadFirmware">
+            <h2>Download firmware e software</h2>
+            <p>Accedi all&rsquo;area riservata per scaricare firmware, aggiornamenti software e utilit&agrave; dedicate ai dispositivi SYSEM.</p>
+            <ul class="normative-list">
+              <li>Firmware correttori volumi e misuratori</li>
+              <li>Software di configurazione e diagnostica</li>
+              <li>Driver e librerie di comunicazione</li>
+              <li>Documentazione tecnica e release note</li>
+            </ul>
+            <p id="fw-auth-guest"><a class="btn-download" href="access.html">Accedi con account autorizzato</a></p>
+            <p id="fw-auth-user" hidden><a class="btn-download" href="resource.html">Vai ai download</a></p>
           </article>
         </div>
       </div>
@@ -105,8 +120,7 @@
         if (token) {
           var links = [
             document.getElementById('linkNuovoTicket'),
-            document.getElementById('linkStorico'),
-            document.getElementById('linkKnowledgeBase')
+            document.getElementById('linkStorico')
           ];
           links.forEach(function(link) {
             if (!link) return;
@@ -114,6 +128,8 @@
             var redirect = href.replace(baseUrl, '');
             link.href = baseUrl + ssoPath + '?token=' + encodeURIComponent(token) + '&redirect=' + encodeURIComponent(redirect);
           });
+          document.getElementById('fw-auth-guest').hidden = true;
+          document.getElementById('fw-auth-user').hidden = false;
         }
       });
     })();

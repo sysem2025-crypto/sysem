@@ -101,7 +101,7 @@ var IT_TRANSLATIONS = {
     "systema": "Systema", "datacenter": "Datacenter comunicazione dati",
     "volumeCorrector": "Correttore Volumi",
     "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
-    "tiketing": "Tiketing", "ticketing": "Sistema di ticketing",
+    "assistenza": "Assistenza",
     "utility": "Utility",
     "sistemi": "Sistemi", "download": "Download applicativi",
     "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
@@ -450,7 +450,7 @@ const SITE_BASE = (function() {
 
 var NAV_STRUCTURE = [
   { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
-  { labelKey: 'nav.tiketing', href: SITE_BASE + 'ticketing.html' },
+  { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
   { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
@@ -460,9 +460,9 @@ var NAV_STRUCTURE = [
 var PAGE_MENU_MAP = {
   'systema': 'nav.systema',
   'datacenter': 'nav.systema',
-  'ticketing': 'nav.tiketing',
-  'resource': 'nav.tiketing',
-  'program-access': 'nav.tiketing',
+  'ticketing': 'nav.assistenza',
+  'resource': 'nav.assistenza',
+  'program-access': 'nav.assistenza',
   'progetti': 'nav.progetti',
   'embedded': 'nav.progetti',
   'os-cooperativo': 'nav.progetti',

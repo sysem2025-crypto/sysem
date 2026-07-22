@@ -8,7 +8,7 @@
   },
   "nav": {
     "systema": "Systema", "datacenter": "Datacenter",
-    "tiketing": "Tiketing", "ticketing": "Ticketing",
+    "assistenza": "Assistance", "ticketing": "Assistance",
     "progetti": "Projects", "progettiHome": "Projects",
     "sensori": "Sensors", "formule": "Compression formulas",
     "protocolli": "Protocols", "normative": "Regulations",
@@ -54,7 +54,7 @@
     "telecontrollo": { "overline": "Telecontrol", "title": "Telecontrol Applications", "subtitle": "Remote monitoring and automation for utility plants", "metaTitle": "Telecontrol" },
     "cedam3": { "overline": "Telecontrol", "title": "Cedam 3", "subtitle": "Telecontrol system for water lifting plants", "metaTitle": "Cedam 3" },
     "datacenter": { "overline": "Infrastructure", "title": "Datacenter", "metaTitle": "Datacenter" },
-    "ticketing": { "overline": "Management", "title": "Ticketing", "metaTitle": "Ticketing" },
+    "ticketing": { "overline": "Support", "title": "Assistance", "metaTitle": "Assistance" },
     "embedded": { "overline": "Embedded Projects", "title": "PIC Firmware", "subtitle": "Tutorials and firmware projects for 8-bit PIC microcontrollers", "metaTitle": "Embedded" },
     "download": { "overline": "Software", "title": "Downloads", "metaTitle": "Downloads" },
     "resource": { "overline": "Resources", "title": "Resource", "metaTitle": "Resource" },
