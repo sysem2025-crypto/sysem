@@ -2,7 +2,7 @@
 (() => {
   const SUPABASE_URL = "https://auzzyobxnoliswpvcvsa.supabase.co";
   const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNzI4MDAsImV4cCI6MjA1ODk0ODgwMH0.Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8Ej8"; // TODO: sostituisci con la tua anon key reale
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxNzM4NTIsImV4cCI6MjA4OTc0OTg1Mn0.3t4QxdhjCAIaZ7Ae-29hptAkcDg0vPYjkRPuAkZF7eA";
 
   let supabaseClient = null;
 
