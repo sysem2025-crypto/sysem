@@ -454,7 +454,8 @@ var NAV_STRUCTURE = [
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
   { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
-  { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' }
+  { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' },
+  { labelKey: 'nav.contatti', href: SITE_BASE + 'contact.html' }
 ];
 
 var PAGE_MENU_MAP = {
