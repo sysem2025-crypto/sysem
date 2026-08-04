@@ -8,32 +8,36 @@ on:
 
 jobs:
   deploy:
-    name: Upload via SFTP
+    name: Upload via FTPS (implicit)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      - name: FTPS Deploy (port 990)
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          local_path: './'
-          remote_path: '/public_html/'
+          port: 990
+          protocol: ftps
+          local-dir: './'
+          server-dir: './'
           exclude: |
-            .git/
-            .github/
-            .gitignore
-            docker-compose.yml
-            Dockerfile
-            ddns-config.json
-            **/*.py
-            **/*.docx
-            **/*.pdf
+            **/.git/**
+            **/.git*/**
+            **/.github/**
             **/README.md
             **/AGGIORNAMENTO_RELEASE_WEB.md
             **/AI_STATUS_BAR_CHANGES.md
+            docker-compose.yml
+            Dockerfile
+            ddns-config.json
+            .gitignore
+            **/*.py
+            **/*.docx
+            **/*.pdf
+          log-level: verbose
+          dangerous-clean-slate: false
