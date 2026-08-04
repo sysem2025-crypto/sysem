@@ -888,8 +888,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const lastUpdateEl = document.getElementById('diag-last-update');
     if (resourceSelectEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
       const programs = [
-        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php' },
-        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php' }
+        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
+        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' }
       ];
       const renderActions = function(program) {
         detailActionsEl.innerHTML = '';
@@ -929,8 +929,29 @@ document.addEventListener('DOMContentLoaded', function() {
         renderMeta(selected);
         diagnosticsEl.hidden = false;
         renderActions(selected);
+        renderReleaseHistory(selected);
         resourceSelectEl.value = selected.id;
       };
+      const releaseHistorySection = document.getElementById('release-history-section');
+      const releaseHistoryContent = document.getElementById('release-history-content');
+      function renderReleaseHistory(program) {
+        if (!releaseHistorySection || !releaseHistoryContent) return;
+        if (!program.releaseHistoryUrl) { releaseHistorySection.hidden = true; return; }
+        releaseHistorySection.hidden = false;
+        releaseHistoryContent.innerHTML = '<p class="changelog-loading">Caricamento...</p>';
+        fetch(program.releaseHistoryUrl, { cache: 'no-store' })
+          .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
+          .then(function(md) { releaseHistoryContent.innerHTML = parseSimpleMarkdown(md); })
+          .catch(function() { releaseHistoryContent.innerHTML = '<p>Storico non disponibile.</p>'; });
+      }
+      function parseSimpleMarkdown(md) {
+        return md.split('\n').map(function(line) {
+          if (line.match(/^## /)) return '<h5>' + line.replace(/^## /, '') + '</h5>';
+          if (line.match(/^- /)) return '<li>' + line.replace(/^- /, '') + '</li>';
+          if (line.match(/^# /)) return '';
+          return line.trim() ? '<p>' + line + '</p>' : '';
+        }).join('\n');
+      }
       programs.forEach(function(program) {
         const option = document.createElement('option');
         option.value = program.id;

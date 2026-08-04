@@ -34,7 +34,7 @@
       </div>
       <div class="page-body">
         <div class="auth-grid" id="ticketStatsGrid">
-          <article class="auth-card">
+          <article class="auth-card" hidden>
             <h2>Apri un ticket</h2>
             <p>Segnala un problema, richiedi assistenza tecnica o proponi un miglioramento. Il team SYSEM prender&agrave; in carico la tua richiesta.</p>
             <ul class="normative-list">
@@ -45,7 +45,7 @@
             <p><a class="btn-download" id="linkNuovoTicket" href="https://sf-service-web.vercel.app/ticket/nuovo" target="_blank" rel="noopener noreferrer">Apri un ticket</a></p>
           </article>
 
-          <article class="auth-card">
+          <article class="auth-card" hidden>
             <h2>Storico ticket</h2>
             <p>Consulta lo stato delle tue richieste passate e verifica la cronologia degli interventi effettuati.</p>
             <ul class="normative-list">
@@ -78,8 +78,7 @@
               <li>Driver e librerie di comunicazione</li>
               <li>Documentazione tecnica e release note</li>
             </ul>
-            <p id="fw-auth-guest"><a class="btn-download" href="access.html">Accedi con account autorizzato</a></p>
-            <p id="fw-auth-user" hidden><a class="btn-download" href="resource.html">Vai ai download</a></p>
+            <p><a class="btn-download" href="resource.html">Vai ai download</a></p>
           </article>
         </div>
       </div>
@@ -102,37 +101,6 @@
   <nav><ul></ul></nav>
 </div>
 
-<script src="assets/js/main.js?v=20260718c"></script>
-<script>
-    (function() {
-      var baseUrl = 'https://sf-service-web.vercel.app';
-      var ssoPath = '/api/auth/sso';
-      var getToken = async function() {
-        var sb = window.supabaseClient;
-        if (sb) {
-          var { data: { session } } = await sb.auth.getSession();
-          return session?.access_token;
-        }
-        return localStorage.getItem('sysem_token');
-      };
-
-      getToken().then(function(token) {
-        if (token) {
-          var links = [
-            document.getElementById('linkNuovoTicket'),
-            document.getElementById('linkStorico')
-          ];
-          links.forEach(function(link) {
-            if (!link) return;
-            var href = link.getAttribute('href');
-            var redirect = href.replace(baseUrl, '');
-            link.href = baseUrl + ssoPath + '?token=' + encodeURIComponent(token) + '&redirect=' + encodeURIComponent(redirect);
-          });
-          document.getElementById('fw-auth-guest').hidden = true;
-          document.getElementById('fw-auth-user').hidden = false;
-        }
-      });
-    })();
-  </script>
+  <script src="assets/js/main.js?v=20260718c"></script>
 </body>
 </html>

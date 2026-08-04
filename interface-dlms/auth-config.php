@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-define('DOWNLOAD_DIR', __DIR__ . '/../downloads');
+define('DOWNLOAD_DIR', __DIR__ . '/../download');
 
 function verifyDownloadToken(string $token): ?array
 {

@@ -5,9 +5,13 @@ param(
 )
 
 $files = @(
+  "ticketing.html",
+  "resource.html",
   "utility.html",
   "assets\js\main.js",
-  "assets\lang\it.json"
+  "assets\css\style.css",
+  "assets\lang\it.json",
+  "interface-dlms\auth-config.php"
 )
 
 $webClient = New-Object System.Net.WebClient
