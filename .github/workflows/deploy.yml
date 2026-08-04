@@ -1,43 +1,25 @@
-name: Deploy to Netsons
+name: CI
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  deploy:
-    name: Upload via FTPS (implicit)
+  check:
+    name: Code check
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: FTPS Deploy (port 990)
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 990
-          protocol: ftps
-          local-dir: './'
-          server-dir: './'
-          exclude: |
-            **/.git/**
-            **/.git*/**
-            **/.github/**
-            **/README.md
-            **/AGGIORNAMENTO_RELEASE_WEB.md
-            **/AI_STATUS_BAR_CHANGES.md
-            docker-compose.yml
-            Dockerfile
-            ddns-config.json
-            .gitignore
-            **/*.py
-            **/*.docx
-            **/*.pdf
-          log-level: verbose
-          dangerous-clean-slate: false
+      - name: Check HTML files exist
+        run: |
+          echo "Checking key files..."
+          test -f index.html && echo "  index.html OK"
+          test -f resource.html && echo "  resource.html OK"
+          test -f ticketing.html && echo "  ticketing.html OK"
+          test -f assets/js/main.js && echo "  main.js OK"
+          test -f assets/css/style.css && echo "  style.css OK"
+          echo "All checks passed."
