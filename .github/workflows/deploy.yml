@@ -15,63 +15,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: SFTP Deploy (tentativo 1/2)
-        id: sftp1
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        continue-on-error: true
+      - name: Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
-          protocol: sftp
-          local-dir: './'
-          server-dir: './'
+          local_path: './'
+          remote_path: '/public_html/'
           exclude: |
-            **/.git/**
-            **/.git*/**
-            **/.github/**
-            **/README.md
-            **/AGGIORNAMENTO_RELEASE_WEB.md
-            **/AI_STATUS_BAR_CHANGES.md
+            .git/
+            .github/
+            .gitignore
             docker-compose.yml
             Dockerfile
             ddns-config.json
-            .gitignore
             **/*.py
             **/*.docx
             **/*.pdf
-          log-level: verbose
-          dangerous-clean-slate: false
-
-      - name: Attesa prima del retry (10s)
-        if: steps.sftp1.outcome == 'failure'
-        run: sleep 10
-
-      - name: SFTP Deploy (tentativo 2/2)
-        if: steps.sftp1.outcome == 'failure'
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          protocol: sftp
-          local-dir: './'
-          server-dir: './'
-          exclude: |
-            **/.git/**
-            **/.git*/**
-            **/.github/**
             **/README.md
             **/AGGIORNAMENTO_RELEASE_WEB.md
             **/AI_STATUS_BAR_CHANGES.md
-            docker-compose.yml
-            Dockerfile
-            ddns-config.json
-            .gitignore
-            **/*.py
-            **/*.docx
-            **/*.pdf
-          log-level: verbose
-          dangerous-clean-slate: false
