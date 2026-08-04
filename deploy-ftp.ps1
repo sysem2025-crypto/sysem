@@ -11,13 +11,14 @@ $files = @(
   "assets\js\main.js",
   "assets\css\style.css",
   "assets\lang\it.json",
-  "interface-dlms\auth-config.php"
+  "interface-dlms\auth-config.php",
+  "interface-dlms\update.json"
 )
 
 $webClient = New-Object System.Net.WebClient
 $webClient.Credentials = New-Object System.Net.NetworkCredential($Username, $Password)
 
-$baseUri = "ftp://$Server/public_html/"
+$baseUri = "ftp://$Server/"
 
 foreach ($file in $files) {
   $localPath = Join-Path "$PSScriptRoot" $file

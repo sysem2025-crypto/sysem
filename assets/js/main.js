@@ -888,9 +888,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const lastUpdateEl = document.getElementById('diag-last-update');
     if (resourceSelectEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
       const programs = [
-        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
-        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' }
+        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md', versionUrl: 'interface-dlms/update.json' },
+        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatabilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '', versionUrl: '' }
       ];
+      const versionBadgeEl = document.getElementById('resource-version-badge');
       const renderActions = function(program) {
         detailActionsEl.innerHTML = '';
         const link = document.createElement('a');
@@ -901,6 +902,16 @@ document.addEventListener('DOMContentLoaded', function() {
         link.rel = 'noopener noreferrer';
         link.textContent = 'Download ' + program.title;
         detailActionsEl.appendChild(link);
+      };
+      const renderVersion = function(program) {
+        if (!versionBadgeEl || !program.versionUrl) { if (versionBadgeEl) versionBadgeEl.hidden = true; return; }
+        fetch(program.versionUrl, { cache: 'no-store' })
+          .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+          .then(function(data) {
+            versionBadgeEl.textContent = 'v' + (data.latest_version || '--');
+            versionBadgeEl.hidden = false;
+          })
+          .catch(function() { versionBadgeEl.hidden = true; });
       };
       const renderMeta = function(program) {
         detailMetaEl.innerHTML = '';
@@ -927,6 +938,7 @@ document.addEventListener('DOMContentLoaded', function() {
         detailDescriptionEl.textContent = description;
         detailDescriptionEl.hidden = description.length === 0;
         renderMeta(selected);
+        renderVersion(selected);
         diagnosticsEl.hidden = false;
         renderActions(selected);
         renderReleaseHistory(selected);

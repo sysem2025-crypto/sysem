@@ -73,12 +73,13 @@
             <h2>Download firmware e software</h2>
             <p>Accedi all&rsquo;area riservata per scaricare firmware, aggiornamenti software e utilit&agrave; dedicate ai dispositivi SYSEM.</p>
             <ul class="normative-list">
+              <li><strong>GeniusMonitor</strong> &mdash; software desktop di monitoraggio e diagnostica</li>
+              <li><strong>RTU Terminal</strong> &mdash; terminale seriale per configurazione dispositivi</li>
               <li>Firmware correttori volumi e misuratori</li>
-              <li>Software di configurazione e diagnostica</li>
               <li>Driver e librerie di comunicazione</li>
-              <li>Documentazione tecnica e release note</li>
             </ul>
-            <p><a class="btn-download" href="resource.html">Vai ai download</a></p>
+            <p id="dl-guest"><a class="btn-download" href="access.html?return=/ticketing.html">Accedi per scaricare</a></p>
+            <p id="dl-user" hidden><a class="btn-download" href="resource.html">Vai ai download</a></p>
           </article>
         </div>
       </div>
@@ -102,5 +103,20 @@
 </div>
 
   <script src="assets/js/main.js?v=20260718c"></script>
+  <script>
+    (function() {
+      var dlGuest = document.getElementById('dl-guest');
+      var dlUser = document.getElementById('dl-user');
+      if (!dlGuest || !dlUser) return;
+      try {
+        var raw = localStorage.getItem('sysem_user');
+        var user = raw ? JSON.parse(raw) : null;
+        if (user && user.email) {
+          dlGuest.hidden = true;
+          dlUser.hidden = false;
+        }
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
