@@ -879,6 +879,21 @@ document.addEventListener('DOMContentLoaded', function() {
     initAdminPage();
     var resourceListEl = document.getElementById('resource-list');
     if (resourceListEl) {
+      var params = new URLSearchParams(window.location.search);
+      var error = params.get('error');
+      if (error === 'login') {
+        var banner = document.createElement('div');
+        banner.className = 'resource-error-banner';
+        banner.textContent = 'Effettua il login per scaricare i programmi.';
+        resourceListEl.parentNode.insertBefore(banner, resourceListEl);
+        history.replaceState(null, '', window.location.pathname);
+      } else if (error === 'expired') {
+        var banner = document.createElement('div');
+        banner.className = 'resource-error-banner';
+        banner.textContent = 'Sessione scaduta. Effettua di nuovo il login.';
+        resourceListEl.parentNode.insertBefore(banner, resourceListEl);
+        history.replaceState(null, '', window.location.pathname);
+      }
       var programs = [
         { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
         { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' }

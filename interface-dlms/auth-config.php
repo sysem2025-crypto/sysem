@@ -31,15 +31,13 @@ function requireAuth(): array
 {
     $token = $_GET['token'] ?? '';
     if ($token === '') {
-        http_response_code(403);
-        echo json_encode(['error' => 'Token richiesto']);
+        header('Location: /resource.html?error=login');
         exit;
     }
 
     $user = verifyDownloadToken($token);
     if ($user === null) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Token non valido o scaduto']);
+        header('Location: /resource.html?error=expired');
         exit;
     }
 
