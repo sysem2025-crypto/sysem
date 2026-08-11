@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (parsed.version && badgeEl) {
               badgeEl.textContent = 'v' + parsed.version;
             }
-            if (parsed.description) {
+            if (parsed.description && parsed.description !== 'Storico Release') {
               var descEl = resourceListEl.querySelector('[data-program-id="' + program.id + '"] .resource-card-description');
               if (descEl) descEl.textContent = parsed.description;
             }

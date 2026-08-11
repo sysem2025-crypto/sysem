@@ -7,19 +7,6 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 $downloadDir = __DIR__ . '/../download';
 $statsPath = __DIR__ . '/stats-store.json';
 
-$programs = [
-    [
-        'id' => 'genius-monitor',
-        'dir' => $downloadDir,
-        'statsKey' => 'manual_downloads',
-    ],
-    [
-        'id' => 'rtu-terminal',
-        'dir' => $downloadDir . '/rtu-terminal',
-        'statsKey' => 'rtu_downloads',
-    ],
-];
-
 $stats = [];
 if (file_exists($statsPath)) {
     $raw = file_get_contents($statsPath);
@@ -33,19 +20,24 @@ if (file_exists($statsPath)) {
 
 $result = [];
 
+$programs = [
+    ['id' => 'genius-monitor', 'dir' => $downloadDir, 'exePattern' => '*.exe'],
+    ['id' => 'rtu-terminal', 'dir' => $downloadDir . '/rtu-terminal', 'exePattern' => '*.exe'],
+];
+
 foreach ($programs as $program) {
     $info = [
         'id' => $program['id'],
-        'downloads' => (int)($stats[$program['statsKey']] ?? $stats['manual_downloads'] ?? 0),
+        'downloads' => (int)($stats['manual_downloads'] ?? 0),
         'file_size' => null,
         'last_update' => null,
     ];
 
     $dir = $program['dir'];
     if (is_dir($dir)) {
-        $files = glob($dir . DIRECTORY_SEPARATOR . '*.exe');
-        if ($files !== false && $files !== []) {
-            usort($files, static function (string $a, string $b): int {
+        $files = glob($dir . '/' . $program['exePattern']);
+        if ($files !== false && count($files) > 0) {
+            usort($files, function ($a, $b) {
                 return filemtime($b) <=> filemtime($a);
             });
             $latest = $files[0];
