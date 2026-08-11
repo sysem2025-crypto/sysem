@@ -5,10 +5,12 @@ param(
 )
 
 $files = @(
+  "access.html",
   "ticketing.html",
   "resource.html",
   "utility.html",
   "assets\js\main.js",
+  "assets\js\auth-supabase.js",
   "assets\css\style.css",
   "assets\lang\it.json",
   "interface-dlms\auth-config.php",

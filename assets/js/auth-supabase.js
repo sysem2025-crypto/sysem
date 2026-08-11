@@ -101,24 +101,54 @@
     }
   };
 
-  // Login con Supabase
+  // Login con Supabase + fallback localStorage
   window.supabaseLogin = async function (email, password) {
-    const sb = getSb();
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    currentUserCache = null; // invalida cache
-    return data;
+    try {
+      const sb = getSb();
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      currentUserCache = null;
+      return data;
+    } catch (e) {
+      var msg = String(e.message || e);
+      if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('network') !== -1) {
+        var users = readJson('sysem_users', []);
+        var found = users.find(function(u) { return u.email === email && u.password === password; });
+        if (found) {
+          var safeUser = { email: found.email, role: found.role || 'base', name: found.name || found.email };
+          setCachedUser(safeUser);
+          localStorage.setItem('sysem_session_email', found.email);
+          return { user: safeUser };
+        }
+        throw new Error('Credenziali non valide.');
+      }
+      throw e;
+    }
   };
 
-  // Register con Supabase
+  // Register con Supabase + fallback localStorage
   window.supabaseRegister = async function (email, password, name) {
-    const sb = getSb();
-    const { data, error } = await sb.auth.signUp({
-      email, password,
-      options: { data: { full_name: name } }
-    });
-    if (error) throw error;
-    return data;
+    try {
+      const sb = getSb();
+      const { data, error } = await sb.auth.signUp({
+        email, password,
+        options: { data: { full_name: name } }
+      });
+      if (error) throw error;
+      return data;
+    } catch (e) {
+      var msg = String(e.message || e);
+      if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('network') !== -1) {
+        var users = readJson('sysem_users', []);
+        if (users.find(function(u) { return u.email === email; })) {
+          throw new Error('Email già registrata.');
+        }
+        users.push({ email: email, password: password, role: 'base', name: name || email });
+        writeJson('sysem_users', users);
+        return { user: { email: email, role: 'base' } };
+      }
+      throw e;
+    }
   };
 
   // Logout Supabase

@@ -106,7 +106,12 @@
               : 'index.html';
             window.location.href = safeReturnUrl;
           } catch (err) {
-            feedback.textContent = err.message || 'Credenziali non valide';
+            var msg = String(err.message || '');
+            if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('network') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('Failed') !== -1) {
+              feedback.textContent = 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.';
+            } else {
+              feedback.textContent = 'Credenziali non valide.';
+            }
           }
         });
       }
@@ -127,7 +132,12 @@
             feedback.textContent = 'Registrazione inviata. Controlla la tua email per confermare.';
             registerForm.reset();
           } catch (err) {
-            feedback.textContent = err.message || 'Errore registrazione';
+            var msg = String(err.message || '');
+            if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('network') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('Failed') !== -1) {
+              feedback.textContent = 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.';
+            } else {
+              feedback.textContent = 'Errore durante la registrazione.';
+            }
           }
         });
       }
