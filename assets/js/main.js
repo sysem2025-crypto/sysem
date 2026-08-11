@@ -634,52 +634,62 @@ function initAccessPage() {
   if (registerForm) {
     registerForm.addEventListener('submit', function(event) {
       event.preventDefault();
+      var feedbackEl = document.getElementById('auth-feedback');
+      if (feedbackEl) feedbackEl.textContent = '';
       var formData = new FormData(registerForm);
       var email = normalizeEmail(formData.get('email'));
       var password = String(formData.get('password') || '');
       if (!email) {
-        feedback.textContent = tFeedback('auth.invalidEmail');
+        if (feedbackEl) feedbackEl.textContent = tFeedback('auth.invalidEmail');
         return;
       }
       if (password.length < 8) {
-        feedback.textContent = tFeedback('auth.passwordLength');
+        if (feedbackEl) feedbackEl.textContent = tFeedback('auth.passwordLength');
         return;
       }
-      apiPost('/api/auth/signup', { email: email, password: password, name: email.split('@')[0] })
+      window.supabaseRegister(email, password, email.split('@')[0])
         .then(function() {
           registerForm.reset();
-          feedback.textContent = tFeedback('auth.registered', { email: email });
-          refreshLoginOptions();
+          if (feedbackEl) feedbackEl.textContent = tFeedback('auth.registered', { email: email });
         })
         .catch(function(err) {
-          feedback.textContent = err.message || 'Errore registrazione';
+          var msg = String(err.message || '');
+          if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('network') !== -1) {
+            if (feedbackEl) feedbackEl.textContent = 'Servizio temporaneamente non disponibile.';
+          } else {
+            if (feedbackEl) feedbackEl.textContent = msg || 'Errore registrazione.';
+          }
         });
     });
   }
   loginForm.addEventListener('submit', function(event) {
     event.preventDefault();
+    var feedbackEl = document.getElementById('auth-feedback');
+    if (feedbackEl) feedbackEl.textContent = '';
     const formData = new FormData(loginForm);
     const email = normalizeEmail(formData.get('email'));
     const password = String(formData.get('password') || '');
     if (!email) {
-      feedback.textContent = tFeedback('auth.invalidEmail');
+      if (feedbackEl) feedbackEl.textContent = tFeedback('auth.invalidEmail');
       return;
     }
     if (password.length < 8) {
-      feedback.textContent = tFeedback('auth.passwordLength');
+      if (feedbackEl) feedbackEl.textContent = tFeedback('auth.passwordLength');
       return;
     }
-    apiPost('/api/auth/token-login', { email: email, password: password })
-      .then(function(data) {
-        localStorage.setItem(STORAGE_KEYS.token, data.access_token);
-        setCachedUser(data.user);
-        localStorage.setItem(STORAGE_KEYS.sessionEmail, data.user.email);
+    window.supabaseLogin(email, password)
+      .then(function() {
         var params = new URLSearchParams(window.location.search);
-        var returnUrl = getSafeReturnUrl(params.get('return'), getAllowedLanding(data.user.role));
+        var returnUrl = getSafeReturnUrl(params.get('return'), getAllowedLanding('base'));
         window.location.href = returnUrl;
       })
       .catch(function(err) {
-        feedback.textContent = err.message || 'Credenziali non valide';
+        var msg = String(err.message || '');
+        if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('network') !== -1) {
+          if (feedbackEl) feedbackEl.textContent = 'Servizio temporaneamente non disponibile.';
+        } else {
+          if (feedbackEl) feedbackEl.textContent = msg || 'Credenziali non valide.';
+        }
       });
   });
   if (changePasswordForm) {
