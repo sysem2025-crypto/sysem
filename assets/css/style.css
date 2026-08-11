@@ -1105,6 +1105,62 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ==============================
+   DATACENTER PAGE
+   ============================== */
+.datacenter-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(47, 74, 69, 0.06);
+}
+
+.datacenter-hero h2 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.datacenter-hero p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: rgba(31, 26, 22, 0.65);
+}
+
+.datacenter-hero .btn-download {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.datacenter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .datacenter-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+  }
+
+  .datacenter-hero .btn-download {
+    width: 100%;
+    text-align: center;
+  }
+
+  .datacenter-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* ==============================
    FLOATING "Under Construction" BADGE
    ============================== */
 .construction-float {

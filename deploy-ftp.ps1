@@ -6,6 +6,7 @@ param(
 
 $files = @(
   "access.html",
+  "datacenter.html",
   "ticketing.html",
   "resource.html",
   "utility.html",

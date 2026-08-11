@@ -23,6 +23,7 @@ $result = [];
 $programs = [
     ['id' => 'genius-monitor', 'dir' => $downloadDir, 'exePattern' => '*.exe'],
     ['id' => 'rtu-terminal', 'dir' => $downloadDir . '/rtu-terminal', 'exePattern' => '*.exe'],
+    ['id' => 'interface-dlms', 'dir' => $downloadDir . '/InterfaceDLMS', 'exePattern' => '*.exe'],
 ];
 
 foreach ($programs as $program) {
