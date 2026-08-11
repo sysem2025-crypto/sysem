@@ -946,8 +946,12 @@ document.addEventListener('DOMContentLoaded', function() {
           + '</div>';
 
         var hasRelease = !!program.releaseHistoryUrl;
-        var actionsHtml = '<div class="resource-card-actions">'
-          + '<a class="btn-download" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';
+        var actionsHtml = '<div class="resource-card-actions">';
+        if (token) {
+          actionsHtml += '<a class="btn-download" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';
+        } else {
+          actionsHtml += '<button class="btn-download btn-download-guest" type="button">Download ' + program.title + '</button>';
+        }
         if (hasRelease) {
           actionsHtml += '<button class="btn-release-toggle" aria-expanded="false" aria-controls="' + releaseId + '" data-toggle-release="' + program.id + '">Storico release <span class="chevron">&#9662;</span></button>';
         }
@@ -970,6 +974,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       resourceListEl.addEventListener('click', function(e) {
+        var guestBtn = e.target.closest('.btn-download-guest');
+        if (guestBtn) {
+          e.preventDefault();
+          alert('Effettua il login per scaricare il programma.');
+          return;
+        }
         var btn = e.target.closest('[data-toggle-release]');
         if (!btn) return;
         var progId = btn.getAttribute('data-toggle-release');
