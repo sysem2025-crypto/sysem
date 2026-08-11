@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="assets/css/style.css?v=20260718c">
 </head>
 
-<body data-page="resource" data-required-role="base">
+<body data-page="resource" data-required-role="guest">
 <div class="site">
   <header class="site-header">
     <div class="site-header__left">
@@ -33,32 +33,7 @@
         <h1 class="page-title" data-i18n="page.resource.title">Resource</h1>
       </div>
       <div class="page-body">
-        <article class="resource-card resource-detail-panel" id="resource-detail" aria-live="polite">
-          <div class="resource-select-wrap">
-            <select id="resource-select" class="resource-select" aria-label="Seleziona programma da scaricare" data-i18n="resource.selectLabel"></select>
-          </div>
-          <div class="resource-header-row">
-            <h3 id="resource-detail-title">--</h3>
-            <span class="resource-version-badge" id="resource-version-badge" hidden></span>
-          </div>
-          <p id="resource-detail-description" hidden></p>
-          <div class="resource-meta" id="resource-detail-meta" aria-label="Scheda risorsa"></div>
-          <div class="dlms-actions" id="resource-detail-actions"></div>
-          <div class="dlms-diagnostics" id="resource-diagnostics" aria-live="polite" hidden>
-            <p class="diag-title" data-i18n="resource.diagnosticsTitle">Indice diagnostico aggiornamenti</p>
-            <p class="diag-line diag-inline">
-              Manual: <strong id="manual-download-count">--</strong>
-              <span class="diag-sep">|</span>
-              Auto: <strong id="auto-download-count">--</strong>
-              <span class="diag-sep">|</span>
-              Agg.: <strong id="diag-last-update">--</strong>
-            </p>
-          </div>
-          <div class="release-history-section" id="release-history-section" hidden>
-            <h4 class="release-history-title">Storico Release</h4>
-            <div class="release-history-content" id="release-history-content"></div>
-          </div>
-        </article>
+        <div class="resource-list" id="resource-list" aria-live="polite"></div>
       </div>
     </div>
   </div>

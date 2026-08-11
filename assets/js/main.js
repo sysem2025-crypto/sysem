@@ -877,122 +877,151 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initAccessPage();
     initAdminPage();
-    const resourceSelectEl = document.getElementById('resource-select');
-    const detailTitleEl = document.getElementById('resource-detail-title');
-    const detailDescriptionEl = document.getElementById('resource-detail-description');
-    const detailMetaEl = document.getElementById('resource-detail-meta');
-    const detailActionsEl = document.getElementById('resource-detail-actions');
-    const diagnosticsEl = document.getElementById('resource-diagnostics');
-    const manualCountEl = document.getElementById('manual-download-count');
-    const autoCountEl = document.getElementById('auto-download-count');
-    const lastUpdateEl = document.getElementById('diag-last-update');
-    if (resourceSelectEl && detailTitleEl && detailDescriptionEl && detailMetaEl && detailActionsEl && diagnosticsEl) {
-      const programs = [
-        { id: 'genius-monitor', title: 'GeniusMonitor', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatibilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md', versionUrl: 'interface-dlms/update.json' },
-        { id: 'rtu-terminal', title: 'RTU Terminal', description: '', meta: [['Tipologia', 'Software desktop'], ['Formato', 'Installer .exe'], ['Compatabilita', 'Windows 10/11'], ['Canale', 'Release stabile']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '', versionUrl: '' }
+    var resourceListEl = document.getElementById('resource-list');
+    if (resourceListEl) {
+      var programs = [
+        { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
+        { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' }
       ];
-      const versionBadgeEl = document.getElementById('resource-version-badge');
-      const renderActions = function(program) {
-        detailActionsEl.innerHTML = '';
-        const link = document.createElement('a');
-        link.className = 'btn-download';
-        const token = generateDownloadToken();
-        link.href = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = 'Download ' + program.title;
-        detailActionsEl.appendChild(link);
-      };
-      const renderVersion = function(program) {
-        if (!versionBadgeEl || !program.versionUrl) { if (versionBadgeEl) versionBadgeEl.hidden = true; return; }
-        fetch(program.versionUrl, { cache: 'no-store' })
-          .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-          .then(function(data) {
-            versionBadgeEl.textContent = 'v' + (data.latest_version || '--');
-            versionBadgeEl.hidden = false;
-          })
-          .catch(function() { versionBadgeEl.hidden = true; });
-      };
-      const renderMeta = function(program) {
-        detailMetaEl.innerHTML = '';
-        program.meta.forEach(function(entry) {
-          const row = document.createElement('p');
-          row.className = 'resource-meta-line';
-          const label = document.createElement('span');
-          label.className = 'resource-meta-label';
-          label.textContent = entry[0] + ':';
-          const value = document.createElement('strong');
-          value.className = 'resource-meta-value';
-          value.textContent = entry[1];
-          row.appendChild(label);
-          row.appendChild(document.createTextNode(' '));
-          row.appendChild(value);
-          detailMetaEl.appendChild(row);
+
+      function parseReleaseHistory(md) {
+        var lines = md.split('\n');
+        var version = '';
+        var description = '';
+        var html = '';
+        var inRelease = false;
+        var firstHeading = true;
+        lines.forEach(function(line) {
+          if (line.match(/^# /) && firstHeading) {
+            var title = line.replace(/^# /, '').trim();
+            var dashIdx = title.indexOf(' - ');
+            if (dashIdx !== -1) {
+              description = title.substring(dashIdx + 3).trim();
+            }
+            firstHeading = false;
+            return;
+          }
+          if (line.match(/^## /)) {
+            var entry = line.replace(/^## /, '').trim();
+            var vMatch = entry.match(/v([\d.]+)/);
+            if (vMatch && !version) version = vMatch[1];
+            if (inRelease) html += '</ul>';
+            html += '<div class="release-entry"><h5>' + entry + '</h5><ul>';
+            inRelease = true;
+          } else if (line.match(/^### /)) {
+            html += '<li class="release-category">' + line.replace(/^### /, '').trim() + '</li>';
+          } else if (line.match(/^- /)) {
+            html += '<li>' + line.replace(/^- /, '') + '</li>';
+          }
         });
-      };
-      const selectProgram = function(programId) {
-        const selected = programs.find(function(item) { return item.id === programId; });
-        if (!selected) return;
-        const description = typeof selected.description === 'string' ? selected.description.trim() : '';
-        detailTitleEl.textContent = selected.title;
-        detailDescriptionEl.textContent = description;
-        detailDescriptionEl.hidden = description.length === 0;
-        renderMeta(selected);
-        renderVersion(selected);
-        diagnosticsEl.hidden = false;
-        renderActions(selected);
-        renderReleaseHistory(selected);
-        resourceSelectEl.value = selected.id;
-      };
-      const releaseHistorySection = document.getElementById('release-history-section');
-      const releaseHistoryContent = document.getElementById('release-history-content');
-      function renderReleaseHistory(program) {
-        if (!releaseHistorySection || !releaseHistoryContent) return;
-        if (!program.releaseHistoryUrl) { releaseHistorySection.hidden = true; return; }
-        releaseHistorySection.hidden = false;
-        releaseHistoryContent.innerHTML = '<p class="changelog-loading">Caricamento...</p>';
+        if (inRelease) html += '</ul></div>';
+        return { version: version, description: description, html: html };
+      }
+
+      function renderResourceCard(program) {
+        var card = document.createElement('article');
+        card.className = 'resource-card';
+        card.setAttribute('data-program-id', program.id);
+
+        var token = generateDownloadToken();
+        var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
+        var releaseId = 'release-panel-' + program.id;
+
+        var headerHtml = '<div class="resource-card-header">'
+          + '<div class="resource-card-title-row">'
+          + '<h3 class="resource-card-title">' + program.title + '</h3>'
+          + '<span class="resource-version-badge" data-version-badge="' + program.id + '"></span>'
+          + '</div>'
+          + '<p class="resource-card-description">' + program.description + '</p>'
+          + '<div class="resource-card-meta">';
+        program.meta.forEach(function(entry) {
+          headerHtml += '<span>' + entry[0] + ': <strong>' + entry[1] + '</strong></span>';
+        });
+        headerHtml += '</div>'
+          + '<div class="resource-card-stats" data-resource-stats="' + program.id + '">'
+          + '<span class="stat-item" data-stat="downloads"></span>'
+          + '<span class="stat-item" data-stat="size"></span>'
+          + '<span class="stat-item" data-stat="updated"></span>'
+          + '</div>'
+          + '</div>';
+
+        var hasRelease = !!program.releaseHistoryUrl;
+        var actionsHtml = '<div class="resource-card-actions">'
+          + '<a class="btn-download" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';
+        if (hasRelease) {
+          actionsHtml += '<button class="btn-release-toggle" aria-expanded="false" aria-controls="' + releaseId + '" data-toggle-release="' + program.id + '">Storico release <span class="chevron">&#9662;</span></button>';
+        }
+        actionsHtml += '</div>';
+
+        var releaseHtml = '';
+        if (hasRelease) {
+          releaseHtml = '<div class="resource-release-panel" id="' + releaseId + '" aria-hidden="true">'
+            + '<div class="resource-release-content" data-release-content="' + program.id + '"></div>'
+            + '</div>';
+        }
+
+        card.innerHTML = headerHtml + actionsHtml + releaseHtml;
+        return card;
+      }
+
+      programs.forEach(function(program) {
+        var card = renderResourceCard(program);
+        resourceListEl.appendChild(card);
+      });
+
+      resourceListEl.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-toggle-release]');
+        if (!btn) return;
+        var progId = btn.getAttribute('data-toggle-release');
+        var panel = document.getElementById('release-panel-' + progId);
+        if (!panel) return;
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        panel.setAttribute('aria-hidden', String(expanded));
+      });
+
+      programs.forEach(function(program) {
+        if (!program.releaseHistoryUrl) return;
+        var contentEl = resourceListEl.querySelector('[data-release-content="' + program.id + '"]');
+        var badgeEl = resourceListEl.querySelector('[data-version-badge="' + program.id + '"]');
+        if (!contentEl) return;
+        contentEl.innerHTML = '<p class="resource-card-description">Caricamento...</p>';
         fetch(program.releaseHistoryUrl, { cache: 'no-store' })
           .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
-          .then(function(md) { releaseHistoryContent.innerHTML = parseSimpleMarkdown(md); })
-          .catch(function() { releaseHistoryContent.innerHTML = '<p>Storico non disponibile.</p>'; });
-      }
-      function parseSimpleMarkdown(md) {
-        return md.split('\n').map(function(line) {
-          if (line.match(/^## /)) return '<h5>' + line.replace(/^## /, '') + '</h5>';
-          if (line.match(/^- /)) return '<li>' + line.replace(/^- /, '') + '</li>';
-          if (line.match(/^# /)) return '';
-          return line.trim() ? '<p>' + line + '</p>' : '';
-        }).join('\n');
-      }
-      programs.forEach(function(program) {
-        const option = document.createElement('option');
-        option.value = program.id;
-        option.textContent = program.title;
-        resourceSelectEl.appendChild(option);
+          .then(function(md) {
+            var parsed = parseReleaseHistory(md);
+            if (parsed.version && badgeEl) {
+              badgeEl.textContent = 'v' + parsed.version;
+            }
+            if (parsed.description) {
+              var descEl = resourceListEl.querySelector('[data-program-id="' + program.id + '"] .resource-card-description');
+              if (descEl) descEl.textContent = parsed.description;
+            }
+            contentEl.innerHTML = parsed.html || '<p class="resource-no-release">Nessun dettaglio disponibile.</p>';
+          })
+          .catch(function() {
+            contentEl.innerHTML = '<p class="resource-no-release">Storico non disponibile.</p>';
+          });
       });
-      resourceSelectEl.addEventListener('change', function(event) {
-        const target = event.target;
-        if (!(target instanceof HTMLSelectElement)) return;
-        selectProgram(target.value);
-      });
-      selectProgram(programs[0].id);
-    }
-    if (manualCountEl && autoCountEl && lastUpdateEl) {
-      var diagUrl = 'interface-dlms/stats.php';
-      var diagToken = generateDownloadToken();
-      if (diagToken) diagUrl += '?token=' + encodeURIComponent(diagToken);
-      fetch(diagUrl, { cache: 'no-store' })
+
+      fetch('interface-dlms/resource-info.php', { cache: 'no-store' })
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-        .then(function(data) {
-          manualCountEl.textContent = Number.isFinite(data.manual_downloads) ? String(data.manual_downloads) : '--';
-          autoCountEl.textContent = Number.isFinite(data.automatic_downloads) ? String(data.automatic_downloads) : '--';
-          lastUpdateEl.textContent = data.last_update && data.last_update.trim() ? data.last_update : '--';
+        .then(function(infos) {
+          infos.forEach(function(info) {
+            var statsEl = resourceListEl.querySelector('[data-resource-stats="' + info.id + '"]');
+            if (!statsEl) return;
+            var dl = statsEl.querySelector('[data-stat="downloads"]');
+            var sz = statsEl.querySelector('[data-stat="size"]');
+            var up = statsEl.querySelector('[data-stat="updated"]');
+            if (dl) dl.textContent = info.downloads + ' download';
+            if (sz && info.file_size) {
+              var mb = (info.file_size / (1024 * 1024)).toFixed(1);
+              sz.textContent = mb + ' MB';
+            }
+            if (up && info.last_update) up.textContent = 'Agg. ' + info.last_update;
+          });
         })
-        .catch(function() {
-          manualCountEl.textContent = '--';
-          autoCountEl.textContent = '--';
-          lastUpdateEl.textContent = 'n/d';
-        });
+        .catch(function() {});
     }
     loadChangelog();
   });

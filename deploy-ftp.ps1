@@ -12,6 +12,9 @@ $files = @(
   "assets\css\style.css",
   "assets\lang\it.json",
   "interface-dlms\auth-config.php",
+  "interface-dlms\manual-download-gm.php",
+  "interface-dlms\manual-download-rtu.php",
+  "interface-dlms\resource-info.php",
   "interface-dlms\update.json"
 )
 

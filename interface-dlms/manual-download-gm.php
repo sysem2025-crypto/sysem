@@ -5,7 +5,7 @@ require_once __DIR__ . '/auth-config.php';
 
 $user = requireAuth();
 
-$releaseDir = DOWNLOAD_DIR . '/genius-monitor';
+$releaseDir = DOWNLOAD_DIR;
 $storePath = __DIR__ . '/stats-store.json';
 
 function findLatestExe(string $directory): ?string

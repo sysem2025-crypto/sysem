@@ -78,8 +78,7 @@
               <li>Firmware correttori volumi e misuratori</li>
               <li>Driver e librerie di comunicazione</li>
             </ul>
-            <p id="dl-guest"><a class="btn-download" href="access.html?return=/ticketing.html">Accedi per scaricare</a></p>
-            <p id="dl-user" hidden><a class="btn-download" href="resource.html">Vai ai download</a></p>
+            <p><a class="btn-download" href="resource.html">Vai ai download</a></p>
           </article>
         </div>
       </div>
@@ -103,20 +102,5 @@
 </div>
 
   <script src="assets/js/main.js?v=20260718c"></script>
-  <script>
-    (function() {
-      var dlGuest = document.getElementById('dl-guest');
-      var dlUser = document.getElementById('dl-user');
-      if (!dlGuest || !dlUser) return;
-      try {
-        var raw = localStorage.getItem('sysem_user');
-        var user = raw ? JSON.parse(raw) : null;
-        if (user && user.email) {
-          dlGuest.hidden = true;
-          dlUser.hidden = false;
-        }
-      } catch(e) {}
-    })();
-  </script>
 </body>
 </html>
