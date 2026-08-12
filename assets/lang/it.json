@@ -30,7 +30,10 @@
     "volumeCorrector": "Correttore Volumi",
     "embedded": "Sistemi Embedded",
     "progetti": "Progetti",
-    "progettiHome": "Progetti"
+    "progettiHome": "Progetti",
+    "admin": "Admin",
+    "assistenza": "Assistenza",
+    "telecontrollo": "Telecontrollo"
   },
   "lang": {
     "it": "Italiano",

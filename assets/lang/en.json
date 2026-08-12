@@ -31,7 +31,8 @@
     "letturaTacho": "Tachometric Reading",
     "protocolloTlc": "TLC Protocol",
     "gestioneEeprom": "EEPROM Management",
-    "debugProduzione": "Debug & Production"
+    "debugProduzione": "Debug & Production",
+    "admin": "Admin"
   },
   "lang": { "it": "IT", "en": "EN" },
   "page": {

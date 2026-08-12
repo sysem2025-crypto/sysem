@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth-config.php';
+require_once __DIR__ . '/download-logger.php';
 
 $user = requireAuth();
 
@@ -39,6 +40,8 @@ if ($stats !== []) {
     $stats['last_update'] = gmdate('Y-m-d H:i') . ' UTC';
     saveStats($storePath, $stats);
 }
+
+logDownload('rtu-terminal', $user['email']);
 
 $filename = basename($exeFile);
 header('Content-Description: SYSEM Software Download');

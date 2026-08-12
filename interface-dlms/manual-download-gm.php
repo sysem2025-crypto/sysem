@@ -41,6 +41,8 @@ if ($stats !== []) {
     saveStats($storePath, $stats);
 }
 
+logDownload('genius-monitor', $user['email']);
+
 $filename = basename($exeFile);
 header('Content-Description: SYSEM Software Download');
 header('Content-Type: application/x-msdownload');

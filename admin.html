@@ -59,6 +59,56 @@
           <p id="admin-feedback" class="auth-feedback" aria-live="polite"></p>
         </div>
       </div>
+
+      <div class="page-body" style="margin-top:2rem;">
+        <h2 class="page-subtitle">Statistiche Download</h2>
+        <div class="admin-stats-grid" id="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-total">-</div>
+            <div class="admin-stat-label">Download totali</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-gm">-</div>
+            <div class="admin-stat-label">GeniusMonitor</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-rtu">-</div>
+            <div class="admin-stat-label">RTU Terminal</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-dlms">-</div>
+            <div class="admin-stat-label">InterfaceDLMS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body" style="margin-top:2rem;">
+        <h2 class="page-subtitle">Log Download</h2>
+        <div class="admin-toolbar">
+          <input id="log-search" type="search" placeholder="Filtra per email...">
+          <select id="log-program-filter">
+            <option value="">Tutti i programmi</option>
+            <option value="genius-monitor">GeniusMonitor</option>
+            <option value="rtu-terminal">RTU Terminal</option>
+            <option value="interface-dlms">InterfaceDLMS</option>
+          </select>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Data/Ora (UTC)</th>
+                <th>Email</th>
+                <th>Programma</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody id="admin-logs-body"></tbody>
+          </table>
+        </div>
+        <div id="admin-logs-pagination" style="margin-top:1rem;"></div>
+        <p id="logs-feedback" class="auth-feedback" aria-live="polite"></p>
+      </div>
     </div>
   </div>
 

@@ -6,6 +6,7 @@ param(
 
 $files = @(
   "access.html",
+  "admin.html",
   "datacenter.html",
   "ticketing.html",
   "resource.html",
@@ -15,8 +16,10 @@ $files = @(
   "assets\css\style.css",
   "assets\lang\it.json",
   "interface-dlms\auth-config.php",
+  "interface-dlms\download-logger.php",
   "interface-dlms\manual-download-gm.php",
   "interface-dlms\manual-download-rtu.php",
+  "interface-dlms\admin-stats.php",
   "interface-dlms\resource-info.php",
   "interface-dlms\update.json"
 )

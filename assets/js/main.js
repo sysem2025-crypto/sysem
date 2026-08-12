@@ -540,11 +540,21 @@ function renderNavigation(currentPage) {
     itemLi.appendChild(link);
     menuList.appendChild(itemLi);
   });
+  var currentUser = getCachedUser();
+  if (currentUser && currentUser.role === 'admin') {
+    var adminLi = document.createElement('li');
+    adminLi.className = 'nav-sub';
+    var adminLink = document.createElement('a');
+    adminLink.href = SITE_BASE + 'admin.html';
+    adminLink.textContent = t('nav.admin') || 'Admin';
+    if (currentPage === 'admin') adminLink.setAttribute('aria-current', 'page');
+    adminLi.appendChild(adminLink);
+    menuList.appendChild(adminLi);
+  }
   const topNavContainer = document.querySelector('.nav-container');
   if (!topNavContainer) return;
   var oldAuth = document.getElementById('auth-pill');
   if (oldAuth) oldAuth.remove();
-  var currentUser = getCachedUser();
   var authPill = document.createElement('div');
   authPill.id = 'auth-pill';
   authPill.className = 'auth-pill';
@@ -830,6 +840,109 @@ function initAdminPage() {
   renderTable();
 }
 
+function initAdminDashboard() {
+  var statsGrid = document.getElementById('admin-stats-grid');
+  var logsBody = document.getElementById('admin-logs-body');
+  var logSearch = document.getElementById('log-search');
+  var logProgramFilter = document.getElementById('log-program-filter');
+  var logsPagination = document.getElementById('admin-logs-pagination');
+  var logsFeedback = document.getElementById('logs-feedback');
+  if (!statsGrid || !logsBody) return;
+
+  var cached = getCachedUser();
+  if (!cached) return;
+  var token = btoa((cached.email || '') + '|' + (cached.role || '') + '|' + new Date().toISOString().slice(0, 10));
+  var logOffset = 0;
+  var logLimit = 50;
+
+  function fmtDate(iso) {
+    if (!iso) return '--';
+    try { return new Date(iso).toLocaleString('it-IT', { timeZone: 'UTC' }); } catch(e) { return iso; }
+  }
+
+  function fetchStats() {
+    fetch('/interface-dlms/admin-stats.php?action=stats&token=' + encodeURIComponent(token))
+      .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+      .then(function(data) {
+        document.getElementById('stat-total').textContent = data.total || 0;
+        document.getElementById('stat-gm').textContent = (data.by_program || {})['genius-monitor'] || 0;
+        document.getElementById('stat-rtu').textContent = (data.by_program || {})['rtu-terminal'] || 0;
+        document.getElementById('stat-dlms').textContent = (data.by_program || {})['interface-dlms'] || 0;
+      })
+      .catch(function() {
+        statsGrid.querySelectorAll('.admin-stat-value').forEach(function(el) { el.textContent = '--'; });
+      });
+  }
+
+  function fetchLogs() {
+    var emailFilter = logSearch ? logSearch.value.trim() : '';
+    var programFilter = logProgramFilter ? logProgramFilter.value : '';
+    var url = '/interface-dlms/admin-stats.php?action=logs&token=' + encodeURIComponent(token) + '&limit=' + logLimit + '&offset=' + logOffset;
+    if (programFilter) url += '&program=' + encodeURIComponent(programFilter);
+    if (emailFilter) url += '&email=' + encodeURIComponent(emailFilter);
+
+    fetch(url)
+      .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+      .then(function(data) {
+        logsBody.innerHTML = '';
+        var logs = data.logs || [];
+        if (logs.length === 0) {
+          logsBody.innerHTML = '<tr><td colspan="4">Nessun download registrato.</td></tr>';
+          logsPagination.innerHTML = '';
+          return;
+        }
+        logs.forEach(function(entry) {
+          var row = document.createElement('tr');
+          var tdDate = document.createElement('td');
+          tdDate.textContent = fmtDate(entry.timestamp);
+          var tdEmail = document.createElement('td');
+          tdEmail.textContent = entry.email || '--';
+          var tdProg = document.createElement('td');
+          tdProg.textContent = entry.program || '--';
+          var tdIp = document.createElement('td');
+          tdIp.textContent = entry.ip || '--';
+          row.appendChild(tdDate);
+          row.appendChild(tdEmail);
+          row.appendChild(tdProg);
+          row.appendChild(tdIp);
+          logsBody.appendChild(row);
+        });
+
+        logsPagination.innerHTML = '';
+        if (data.total > logLimit) {
+          var totalPages = Math.ceil(data.total / logLimit);
+          var currentPage = Math.floor(logOffset / logLimit) + 1;
+          var prevBtn = document.createElement('button');
+          prevBtn.type = 'button';
+          prevBtn.className = 'btn-download';
+          prevBtn.textContent = 'Precedente';
+          prevBtn.disabled = currentPage <= 1;
+          prevBtn.addEventListener('click', function() { logOffset = Math.max(0, logOffset - logLimit); fetchLogs(); });
+          var nextBtn = document.createElement('button');
+          nextBtn.type = 'button';
+          nextBtn.className = 'btn-download';
+          nextBtn.textContent = 'Successivo';
+          nextBtn.disabled = currentPage >= totalPages;
+          nextBtn.addEventListener('click', function() { logOffset += logLimit; fetchLogs(); });
+          var pageInfo = document.createElement('span');
+          pageInfo.textContent = ' Pagina ' + currentPage + ' di ' + totalPages + ' ';
+          logsPagination.appendChild(prevBtn);
+          logsPagination.appendChild(pageInfo);
+          logsPagination.appendChild(nextBtn);
+        }
+      })
+      .catch(function() {
+        logsBody.innerHTML = '<tr><td colspan="4">Errore caricamento log.</td></tr>';
+      });
+  }
+
+  if (logSearch) logSearch.addEventListener('input', function() { logOffset = 0; fetchLogs(); });
+  if (logProgramFilter) logProgramFilter.addEventListener('change', function() { logOffset = 0; fetchLogs(); });
+
+  fetchStats();
+  fetchLogs();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   ensureDefaultAdminUser();
 
@@ -887,6 +1000,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initAccessPage();
     initAdminPage();
+    initAdminDashboard();
     var resourceListEl = document.getElementById('resource-list');
     if (resourceListEl) {
       var params = new URLSearchParams(window.location.search);
