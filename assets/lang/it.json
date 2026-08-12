@@ -215,7 +215,7 @@
     "noUsers": "Nessun utente trovato.",
     "noChange": "Nessuna modifica per {email}.",
     "confirmPromotion": "Confermi promozione admin per {email}?",
-    "roleUpdated": "Ruolo aggiornato: {email} -> {newRole}.",
+    "roleUpdated": "Ruolo aggiornato: {email} è ora di tipo {newRole}.",
     "saveBtn": "Salva"
   },
   "download": {

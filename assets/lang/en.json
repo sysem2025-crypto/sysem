@@ -96,7 +96,7 @@
     "thEmail": "Email", "thRole": "Role", "thCreated": "Created", "thAction": "Action",
     "noUsers": "No users.", "noChange": "No changes for {{email}}.",
     "confirmPromotion": "Confirm admin promotion for {{email}}?",
-    "roleUpdated": "Role updated: {{email}} -> {{newRole}}.", "saveBtn": "Save"
+    "roleUpdated": "Role updated: {{email}} is now of type {{newRole}}.", "saveBtn": "Save"
   },
   "download": {
     "appTitle": "Downloads",
