@@ -1240,6 +1240,15 @@ document.addEventListener('DOMContentLoaded', function() {
       card.innerHTML = buildCard(programs[0]);
       resourceListEl.appendChild(card);
 
+      // Click handler for manual modal buttons
+      resourceListEl.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-modal-md]');
+        if (!btn) return;
+        var mdUrl = btn.getAttribute('data-modal-md');
+        var modalTitle = btn.getAttribute('data-modal-title') || 'Manuale operatore';
+        openManualModal(mdUrl, modalTitle);
+      });
+
       select.addEventListener('change', function() {
         var prog = programs.find(function(p) { return p.id === select.value; });
         if (prog) {
