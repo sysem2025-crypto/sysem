@@ -451,7 +451,6 @@ const SITE_BASE = (function() {
 var NAV_STRUCTURE = [
   { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
   { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
-  { labelKey: 'nav.gurux', href: SITE_BASE + 'gurux.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
   { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
@@ -464,7 +463,6 @@ var PAGE_MENU_MAP = {
   'datacenter': 'nav.systema',
   'ticketing': 'nav.assistenza',
   'resource': 'nav.assistenza',
-  'gurux': 'nav.gurux',
   'program-access': 'nav.assistenza',
   'progetti': 'nav.progetti',
   'embedded': 'nav.progetti',
@@ -655,7 +653,7 @@ function initAccessPage() {
         if (feedbackEl) feedbackEl.textContent = tFeedback('auth.invalidEmail');
         return;
       }
-      if (password.length < 8) {
+if (password.length < 8) {
         if (feedbackEl) feedbackEl.textContent = tFeedback('auth.passwordLength');
         return;
       }
@@ -667,9 +665,23 @@ function initAccessPage() {
         .catch(function(err) {
           var msg = String(err.message || '');
           if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('network') !== -1) {
-            if (feedbackEl) feedbackEl.textContent = 'Servizio temporaneamente non disponibile.';
+            // Fallback to localStorage
+            var cached = getCachedUser();
+            var users = readJson(STORAGE_KEYS.users, []);
+            var name = email.split('@')[0];
+            if (!users.some(function(u) { return u.email === email; })) {
+              users.push({ email: email, role: 'guest', name: name, created_at: new Date().toISOString() });
+              writeJson(STORAGE_KEYS.users, users);
+              setCachedUser({ email: email, role: 'guest', name: name });
+              var token = btoa(email + '|guest|' + new Date().toISOString().slice(0, 10));
+              localStorage.setItem(STORAGE_KEYS.token, token);
+              localStorage.setItem(STORAGE_KEYS.sessionEmail, email);
+              if (feedbackEl) feedbackEl.textContent = 'Registrazione completata in locale. L\'admin deve validare l\'accesso. Effettua il login.';
+            } else {
+              if (feedbackEl) feedbackEl.textContent = tFeedback('auth.emailExists');
+            }
           } else {
-            if (feedbackEl) feedbackEl.textContent = msg || 'Errore registrazione.';
+            if (feedbackEl) feedbackEl.textContent = tFeedback('auth.registrationError', { error: msg });
           }
         });
     });
@@ -1023,8 +1035,13 @@ document.addEventListener('DOMContentLoaded', function() {
       var programs = [
         { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
         { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' },
-        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'download/InterfaceDLMS/InterfaceDLMS_Setup.exe', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md' }
+        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'download/InterfaceDLMS/InterfaceDLMS_Setup.exe', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md' },
+        { id: 'gurux', title: 'Modus Gurux Client', description: 'Strumento Windows da riga di comando per la comunicazione con dispositivi DLMS/COSEM tramite rete TCP/IP o porta seriale.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Applicazione da riga di comando']], downloadHref: '', releaseHistoryUrl: 'download/gurux/Modus-Gurux-Client-release-history.md', dynamic: true }
       ];
+
+      var releaseCache = {};
+      var statsCache = {};
+      var guruxManifest = null;
 
       function parseReleaseHistory(md) {
         var lines = md.split('\n');
@@ -1060,120 +1077,191 @@ document.addEventListener('DOMContentLoaded', function() {
         return { version: version, description: description, html: html };
       }
 
-      function renderResourceCard(program) {
-        var card = document.createElement('article');
-        card.className = 'resource-card';
-        card.setAttribute('data-program-id', program.id);
+      function fmtSize(bytes) {
+        if (!bytes) return '';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
 
+      function buildCard(program) {
         var token = generateDownloadToken();
-        var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
-        var releaseId = 'release-panel-' + program.id;
-
-        var headerHtml = '<div class="resource-card-header">'
+        var html = '<div class="resource-card-header">'
           + '<div class="resource-card-title-row">'
-          + '<h3 class="resource-card-title">' + program.title + '</h3>'
-          + '<span class="resource-version-badge" data-version-badge="' + program.id + '"></span>'
+          + '<h3 class="resource-card-title" id="rc-title">' + program.title + '</h3>'
+          + '<span class="resource-version-badge" id="rc-version"></span>'
           + '</div>'
-          + '<p class="resource-card-description">' + program.description + '</p>'
-          + '<div class="resource-card-meta">';
+          + '<p class="resource-card-description" id="rc-description">' + program.description + '</p>'
+          + '<div class="resource-card-meta" id="rc-meta">';
         program.meta.forEach(function(entry) {
-          headerHtml += '<span>' + entry[0] + ': <strong>' + entry[1] + '</strong></span>';
+          html += '<span>' + entry[0] + ': <strong>' + entry[1] + '</strong></span>';
         });
-        headerHtml += '</div>'
-          + '<div class="resource-card-stats" data-resource-stats="' + program.id + '">'
-          + '<span class="stat-item" data-stat="downloads"></span>'
-          + '<span class="stat-item" data-stat="size"></span>'
-          + '<span class="stat-item" data-stat="updated"></span>'
-          + '</div>'
-          + '</div>';
+        html += '</div>'
+          + '<div class="resource-card-stats" id="rc-stats">'
+          + '<span class="stat-item" id="rc-stat-dl"></span>'
+          + '<span class="stat-item" id="rc-stat-size"></span>'
+          + '<span class="stat-item" id="rc-stat-up"></span>'
+          + '</div></div>';
 
-        var hasRelease = !!program.releaseHistoryUrl;
-        var actionsHtml = '<div class="resource-card-actions">';
-        if (token) {
-          actionsHtml += '<a class="btn-download" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';
-        } else {
-          actionsHtml += '<button class="btn-download btn-download-guest" type="button">Download ' + program.title + '</button>';
+        html += '<div class="resource-card-actions" id="rc-actions">';
+        if (program.dynamic) {
+          html += '<a class="btn-download btn-download-pending" id="rc-download-btn" href="#" style="opacity:0.5;pointer-events:none;">Download in caricamento...</a>';
+          html += '<button class="btn-release-toggle" data-modal-md="/download/gurux/Modus-Gurux-Client-manuale-operatore.md" data-modal-title="Manuale operatore">Manuale operatore</button>';
+        } else if (program.downloadHref) {
+          var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
+          if (token) {
+            html += '<a class="btn-download" id="rc-download-btn" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';
+          } else {
+            html += '<button class="btn-download btn-download-guest" id="rc-download-btn" type="button">Download ' + program.title + '</button>';
+          }
         }
-        if (hasRelease) {
-          actionsHtml += '<button class="btn-release-toggle" aria-expanded="false" aria-controls="' + releaseId + '" data-toggle-release="' + program.id + '">Storico release <span class="chevron">&#9662;</span></button>';
+        if (program.releaseHistoryUrl) {
+          html += '<button class="btn-release-toggle" id="rc-release-btn" aria-expanded="false">Storico release <span class="chevron">&#9662;</span></button>';
         }
-        actionsHtml += '</div>';
+        html += '</div>';
 
-        var releaseHtml = '';
-        if (hasRelease) {
-          releaseHtml = '<div class="resource-release-panel" id="' + releaseId + '" aria-hidden="true">'
-            + '<div class="resource-release-content" data-release-content="' + program.id + '"></div>'
+        if (program.releaseHistoryUrl) {
+          html += '<div class="resource-release-panel" id="rc-release-panel" aria-hidden="true">'
+            + '<div class="resource-release-content" id="rc-release-content"></div>'
             + '</div>';
         }
 
-        card.innerHTML = headerHtml + actionsHtml + releaseHtml;
-        return card;
+        return html;
       }
 
-      programs.forEach(function(program) {
-        var card = renderResourceCard(program);
-        resourceListEl.appendChild(card);
-      });
+      function updateCard(program) {
+        var card = resourceListEl.querySelector('.resource-card');
+        if (!card) return;
+        card.innerHTML = buildCard(program);
 
-      resourceListEl.addEventListener('click', function(e) {
-        var guestBtn = e.target.closest('.btn-download-guest');
-        if (guestBtn) {
-          e.preventDefault();
-          alert('Effettua il login per scaricare il programma.');
-          return;
-        }
-        var btn = e.target.closest('[data-toggle-release]');
-        if (!btn) return;
-        var progId = btn.getAttribute('data-toggle-release');
-        var panel = document.getElementById('release-panel-' + progId);
-        if (!panel) return;
-        var expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', String(!expanded));
-        panel.setAttribute('aria-hidden', String(expanded));
-      });
-
-      programs.forEach(function(program) {
-        if (!program.releaseHistoryUrl) return;
-        var contentEl = resourceListEl.querySelector('[data-release-content="' + program.id + '"]');
-        var badgeEl = resourceListEl.querySelector('[data-version-badge="' + program.id + '"]');
-        if (!contentEl) return;
-        contentEl.innerHTML = '<p class="resource-card-description">Caricamento...</p>';
-        fetch(program.releaseHistoryUrl, { cache: 'no-store' })
-          .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
-          .then(function(md) {
-            var parsed = parseReleaseHistory(md);
-            if (parsed.version && badgeEl) {
-              badgeEl.textContent = 'v' + parsed.version;
+        var releaseBtn = document.getElementById('rc-release-btn');
+        if (releaseBtn) {
+          releaseBtn.addEventListener('click', function() {
+            var panel = document.getElementById('rc-release-panel');
+            var expanded = releaseBtn.getAttribute('aria-expanded') === 'true';
+            releaseBtn.setAttribute('aria-expanded', String(!expanded));
+            panel.setAttribute('aria-hidden', String(expanded));
+            if (!expanded && !panel.dataset.loaded) {
+              panel.dataset.loaded = '1';
+              var content = document.getElementById('rc-release-content');
+              content.innerHTML = '<p class="resource-card-description">Caricamento...</p>';
+              fetch(program.releaseHistoryUrl, { cache: 'no-store' })
+                .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
+                .then(function(md) {
+                  var parsed = parseReleaseHistory(md);
+                  if (parsed.version) {
+                    var badge = document.getElementById('rc-version');
+                    if (badge) badge.textContent = 'v' + parsed.version;
+                  }
+                  content.innerHTML = parsed.html || '<p class="resource-no-release">Nessun dettaglio disponibile.</p>';
+                })
+                .catch(function() {
+                  content.innerHTML = '<p class="resource-no-release">Storico non disponibile.</p>';
+                });
             }
-            if (parsed.description && parsed.description !== 'Storico Release') {
-              var descEl = resourceListEl.querySelector('[data-program-id="' + program.id + '"] .resource-card-description');
-              if (descEl) descEl.textContent = parsed.description;
-            }
-            contentEl.innerHTML = parsed.html || '<p class="resource-no-release">Nessun dettaglio disponibile.</p>';
-          })
-          .catch(function() {
-            contentEl.innerHTML = '<p class="resource-no-release">Storico non disponibile.</p>';
           });
+        }
+
+        var dlBtn = document.getElementById('rc-download-btn');
+        if (dlBtn && dlBtn.classList.contains('btn-download-guest')) {
+          dlBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Effettua il login per scaricare il programma.');
+          });
+        }
+
+        if (program.id === 'gurux' && guruxManifest) {
+          populateGurux(guruxManifest);
+        } else if (statsCache[program.id]) {
+          populateStats(program.id, statsCache[program.id]);
+        } else if (program.id !== 'gurux' && program.releaseHistoryUrl && releaseCache[program.id]) {
+          var badge = document.getElementById('rc-version');
+          if (badge && releaseCache[program.id].version) badge.textContent = 'v' + releaseCache[program.id].version;
+        }
+      }
+
+      function populateStats(id, info) {
+        var dl = document.getElementById('rc-stat-dl');
+        var sz = document.getElementById('rc-stat-size');
+        var up = document.getElementById('rc-stat-up');
+        if (dl) dl.textContent = info.downloads + ' download';
+        if (sz && info.file_size) sz.textContent = fmtSize(info.file_size);
+        if (up && info.last_update) up.textContent = 'Agg. ' + info.last_update;
+      }
+
+      function populateGurux(data) {
+        var badge = document.getElementById('rc-version');
+        if (badge) badge.textContent = 'v' + data.version;
+        var sz = document.getElementById('rc-stat-size');
+        if (sz && data.size) sz.textContent = fmtSize(data.size);
+        var up = document.getElementById('rc-stat-up');
+        if (up && data.published_at) {
+          try { up.textContent = 'Agg. ' + new Date(data.published_at).toLocaleDateString('it-IT'); } catch(e) {}
+        }
+        var dlBtn = document.getElementById('rc-download-btn');
+        if (dlBtn && data.file) {
+          dlBtn.href = '/download/gurux/' + encodeURIComponent(data.file);
+          dlBtn.textContent = 'Scarica ' + data.file;
+          dlBtn.style.opacity = '';
+          dlBtn.style.pointerEvents = '';
+          dlBtn.classList.remove('btn-download-pending');
+        }
+      }
+
+      var select = document.createElement('select');
+      select.className = 'resource-select';
+      select.id = 'resource-program-select';
+      programs.forEach(function(p) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.title;
+        select.appendChild(opt);
+      });
+      resourceListEl.appendChild(select);
+
+      var card = document.createElement('article');
+      card.className = 'resource-card';
+      card.innerHTML = buildCard(programs[0]);
+      resourceListEl.appendChild(card);
+
+      select.addEventListener('change', function() {
+        var prog = programs.find(function(p) { return p.id === select.value; });
+        if (prog) {
+          updateCard(prog);
+        }
       });
 
       fetch('interface-dlms/resource-info.php', { cache: 'no-store' })
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
         .then(function(infos) {
           infos.forEach(function(info) {
-            var statsEl = resourceListEl.querySelector('[data-resource-stats="' + info.id + '"]');
-            if (!statsEl) return;
-            var dl = statsEl.querySelector('[data-stat="downloads"]');
-            var sz = statsEl.querySelector('[data-stat="size"]');
-            var up = statsEl.querySelector('[data-stat="updated"]');
-            if (dl) dl.textContent = info.downloads + ' download';
-            if (sz && info.file_size) {
-              var mb = (info.file_size / (1024 * 1024)).toFixed(1);
-              sz.textContent = mb + ' MB';
-            }
-            if (up && info.last_update) up.textContent = 'Agg. ' + info.last_update;
+            statsCache[info.id] = info;
           });
+          var current = programs.find(function(p) { return p.id === select.value; });
+          if (current && statsCache[current.id]) {
+            populateStats(current.id, statsCache[current.id]);
+          }
         })
         .catch(function() {});
+
+      fetch('/download/gurux/version.json?t=' + Date.now(), { cache: 'no-store' })
+        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function(data) {
+          if (!data || !data.product || !data.version || !data.file) return;
+          guruxManifest = data;
+          if (select.value === 'gurux') {
+            populateGurux(data);
+          }
+        })
+        .catch(function() {});
+
+      programs.forEach(function(program) {
+        if (!program.releaseHistoryUrl) return;
+        fetch(program.releaseHistoryUrl, { cache: 'no-store' })
+          .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
+          .then(function(md) {
+            releaseCache[program.id] = parseReleaseHistory(md);
+          })
+          .catch(function() {});
+      });
     }
     loadChangelog();
   });
