@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modus Gurux Client | SYSEM</title>
+  <meta name="description" content="Modus Gurux Client - strumento Windows per comunicazione DLMS/COSEM tramite TCP/IP o porta seriale.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260812a">
+</head>
+
+<body data-page="gurux" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="/" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">Modus Gurux Client</h1>
+      </div>
+      <div class="page-body">
+        <div id="gurux-card-container" aria-live="polite">
+          <p class="gurux-loading">Caricamento informazioni release...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="changelog-section" aria-label="Registro modifiche">
+      <div class="changelog-header">
+        <span class="changelog-badge">Modifiche recenti</span>
+      </div>
+      <div class="changelog-list" id="changelog-list">
+        <p class="changelog-loading">Caricamento...</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/auth-supabase.js?v=20260812a"></script>
+<script src="assets/js/main.js?v=20260812a"></script>
+<script>
+(function() {
+  var container = document.getElementById('gurux-card-container');
+  if (!container) return;
+
+  var BASE = '/download/gurux/';
+  var MANIFEST_URL = BASE + 'version.json';
+  var CACHE_TTL = 5 * 60 * 1000;
+
+  function fmtSize(bytes) {
+    if (typeof bytes !== 'number' || isNaN(bytes)) return '--';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '--';
+    try {
+      return new Date(iso).toLocaleString('it-IT', { dateStyle: 'long', timeStyle: 'short' });
+    } catch(e) { return iso; }
+  }
+
+  function parseReleaseHistory(md) {
+    var lines = md.split('\n');
+    var html = '';
+    var inRelease = false;
+    var firstHeading = true;
+    lines.forEach(function(line) {
+      if (line.match(/^# /) && firstHeading) { firstHeading = false; return; }
+      if (line.match(/^## /)) {
+        if (inRelease) html += '</ul>';
+        html += '<div class="release-entry"><h5>' + line.replace(/^## /, '').trim() + '</h5><ul>';
+        inRelease = true;
+      } else if (line.match(/^### /)) {
+        html += '<li class="release-category">' + line.replace(/^### /, '').trim() + '</li>';
+      } else if (line.match(/^- /)) {
+        html += '<li>' + line.replace(/^- /, '') + '</li>';
+      }
+    });
+    if (inRelease) html += '</ul></div>';
+    return html;
+  }
+
+  fetch(MANIFEST_URL + '?t=' + Date.now())
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data || !data.product || !data.version || !data.file) {
+        throw new Error('Manifesto non valido');
+      }
+
+      var exeUrl = BASE + encodeURIComponent(data.file);
+      var manualUrl = data.manual ? BASE + encodeURIComponent(data.manual) : '';
+      var releaseUrl = BASE + 'Modus-Gurux-Client-release-history.md';
+
+      var html = '<article class="resource-card gurux-card">'
+        + '<div class="resource-card-header">'
+        + '<div class="resource-card-title-row">'
+        + '<h3 class="resource-card-title">' + data.product + '</h3>'
+        + '<span class="resource-version-badge">v' + data.version + '</span>'
+        + '</div>'
+        + '<p class="resource-card-description">Modus Gurux Client e uno strumento Windows da riga di comando per la comunicazione con dispositivi DLMS/COSEM tramite rete TCP/IP o porta seriale. Consente lettura di attributi OBIS, scrittura di parametri ed esecuzione di metodi DLMS da parte di personale autorizzato.</p>'
+        + '<div class="resource-card-meta">'
+        + '<span>Piattaforma: <strong>Windows 10/11</strong></span>'
+        + '<span>Formato: <strong>Applicazione da riga di comando</strong></span>'
+        + '<span>Dimensione: <strong>' + fmtSize(data.size) + '</strong></span>'
+        + '<span>Pubblicato: <strong>' + fmtDate(data.published_at) + '</strong></span>'
+        + '</div>'
+        + '</div>'
+        + '<div class="resource-card-actions">'
+        + '<a class="btn-download" href="' + exeUrl + '">Scarica ' + data.file + '</a>';
+
+      if (manualUrl) {
+        html += '<a class="btn-release-toggle" href="' + manualUrl + '" target="_blank" rel="noopener noreferrer">Manuale operatore</a>';
+      }
+
+      html += '<button class="btn-release-toggle" aria-expanded="false" aria-controls="gurux-release-panel" data-toggle-gurux-release>Storico release <span class="chevron">&#9662;</span></button>'
+        + '</div>';
+
+      if (data.sha256) {
+        html += '<div class="gurux-sha-section">'
+        + '<button class="btn-release-toggle" aria-expanded="false" aria-controls="gurux-sha-panel" data-toggle-gurux-sha>SHA-256 <span class="chevron">&#9662;</span></button>'
+        + '<div class="resource-release-panel" id="gurux-sha-panel" aria-hidden="true">'
+        + '<div class="resource-release-content"><code class="gurux-sha-value">' + data.sha256 + '</code></div>'
+        + '</div>'
+        + '</div>';
+      }
+
+      html += '<div class="resource-release-panel" id="gurux-release-panel" aria-hidden="true">'
+        + '<div class="resource-release-content" id="gurux-release-content"></div>'
+        + '</div>'
+        + '</article>';
+
+      container.innerHTML = html;
+
+      document.querySelectorAll('[data-toggle-gurux-release]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var panel = document.getElementById('gurux-release-panel');
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          panel.setAttribute('aria-hidden', String(expanded));
+          if (!expanded && !panel.dataset.loaded) {
+            panel.dataset.loaded = '1';
+            var content = document.getElementById('gurux-release-content');
+            fetch(releaseUrl + '?t=' + Date.now())
+              .then(function(r) { return r.ok ? r.text() : ''; })
+              .then(function(md) { content.innerHTML = parseReleaseHistory(md); })
+              .catch(function() { content.innerHTML = '<p>Storico non disponibile.</p>'; });
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-toggle-gurux-sha]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var panel = document.getElementById('gurux-sha-panel');
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          panel.setAttribute('aria-hidden', String(expanded));
+        });
+      });
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="resource-card gurux-card">'
+        + '<div class="resource-card-header">'
+        + '<p class="resource-card-description">Informazioni sulla release non disponibili al momento. Riprova piu tardi.</p>'
+        + '</div></div>';
+    });
+})();
+</script>
+</body>
+</html>

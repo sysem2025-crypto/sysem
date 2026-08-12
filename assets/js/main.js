@@ -451,6 +451,7 @@ const SITE_BASE = (function() {
 var NAV_STRUCTURE = [
   { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
   { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
+  { labelKey: 'nav.gurux', href: SITE_BASE + 'gurux.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
   { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
@@ -463,6 +464,7 @@ var PAGE_MENU_MAP = {
   'datacenter': 'nav.systema',
   'ticketing': 'nav.assistenza',
   'resource': 'nav.assistenza',
+  'gurux': 'nav.gurux',
   'program-access': 'nav.assistenza',
   'progetti': 'nav.progetti',
   'embedded': 'nav.progetti',

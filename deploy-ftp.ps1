@@ -8,6 +8,7 @@ $files = @(
   "access.html",
   "admin.html",
   "datacenter.html",
+  "gurux.html",
   "ticketing.html",
   "resource.html",
   "utility.html",

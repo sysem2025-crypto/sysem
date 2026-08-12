@@ -32,7 +32,8 @@
     "protocolloTlc": "TLC Protocol",
     "gestioneEeprom": "EEPROM Management",
     "debugProduzione": "Debug & Production",
-    "admin": "Admin"
+    "admin": "Admin",
+    "gurux": "Gurux Client"
   },
   "lang": { "it": "IT", "en": "EN" },
   "page": {
