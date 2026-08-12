@@ -1206,6 +1206,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 
+      function openManualModal(mdUrl, title) {
+        var modalTitle = document.getElementById('modal-title');
+        var modalBody = document.getElementById('modal-body');
+        if (!modalTitle || !modalBody) return;
+        modalTitle.textContent = title;
+        modalBody.innerHTML = '<p class="resource-card-description">Caricamento manual...</p>';
+        modalOverlay.setAttribute('aria-hidden', 'false');
+        fetch(mdUrl + '?t=' + Date.now(), { cache: 'no-store' })
+          .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
+          .then(function(md) {
+            var html = parseReleaseHistory(md);
+            modalBody.innerHTML = html || '<p>Contenuto non disponibile.</p>';
+          })
+          .catch(function() {
+            modalBody.innerHTML = '<p>Impossibile caricare il manuale.</p>';
+          });
+      }
+
       var select = document.createElement('select');
       select.className = 'resource-select';
       select.id = 'resource-program-select';
