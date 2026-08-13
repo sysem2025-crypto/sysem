@@ -58,18 +58,15 @@
       var iframe = document.getElementById('ai-iframe');
       var overlay = document.getElementById('ai-overlay');
       if (!iframe) return;
-      var sb = typeof window.getSupabase === 'function' ? window.getSupabase() : window.supabaseClient;
-      if (sb) {
-        sb.auth.getSession().then(function(res) {
-          if (res.data.session) {
-            var url = new URL(iframe.dataset.src || iframe.src, window.location.href);
-            url.searchParams.set('token', res.data.session.access_token);
-            url.searchParams.set('email', res.data.session.user.email);
-            iframe.src = url.toString();
-            if (overlay) overlay.style.display = 'none';
-          }
-        });
-      }
+      if (typeof window.getCurrentUser !== 'function') return;
+      window.getCurrentUser().then(function(user) {
+        if (!user) return;
+        var url = new URL(iframe.dataset.src || iframe.src, window.location.href);
+        url.searchParams.set('email', user.email);
+        if (user.token) url.searchParams.set('token', user.token);
+        iframe.src = url.toString();
+        if (overlay) overlay.style.display = 'none';
+      });
     })();
   </script>
 </body>
