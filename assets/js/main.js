@@ -1035,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var programs = [
         { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
         { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' },
-        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'download/InterfaceDLMS/InterfaceDLMS_Setup.exe', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md' },
+        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-interface.php', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md' },
         { id: 'gurux', title: 'Modus Gurux Client', description: 'Strumento Windows da riga di comando per la comunicazione con dispositivi DLMS/COSEM tramite rete TCP/IP o porta seriale.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Applicazione da riga di comando']], downloadHref: '', releaseHistoryUrl: 'download/gurux/Modus-Gurux-Client-release-history.md', dynamic: true }
       ];
 
@@ -1103,8 +1103,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         html += '<div class="resource-card-actions" id="rc-actions">';
         if (program.dynamic) {
-          html += '<a class="btn-download btn-download-pending" id="rc-download-btn" href="#" style="opacity:0.5;pointer-events:none;">Download in caricamento...</a>';
-          html += '<button class="btn-release-toggle" target="_blank" rel="noopener noreferrer" href="/download/gurux/Modus-Gurux-Client-manuale-operatore.md">Manuale operatore</button>';
+          if (token) {
+            var guruxUrl = 'interface-dlms/manual-download-gurux.php?token=' + encodeURIComponent(token);
+            html += '<a class="btn-download btn-download-pending" id="rc-download-btn" href="' + guruxUrl + '" target="_blank" rel="noopener noreferrer" style="opacity:0.5;">Download in caricamento...</a>';
+          } else {
+            html += '<button class="btn-download btn-download-guest" id="rc-download-btn" type="button">Download Modus Gurux Client</button>';
+          }
+          html += '<a class="btn-release-toggle" href="/download/gurux/Modus-Gurux-Client-manuale-operatore.md" target="_blank" rel="noopener noreferrer">Manuale operatore</a>';
         } else if (program.downloadHref) {
           var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
           if (token) {
@@ -1197,8 +1202,7 @@ document.addEventListener('DOMContentLoaded', function() {
           try { up.textContent = 'Agg. ' + new Date(data.published_at).toLocaleDateString('it-IT'); } catch(e) {}
         }
         var dlBtn = document.getElementById('rc-download-btn');
-        if (dlBtn && data.file) {
-          dlBtn.href = '/download/gurux/' + encodeURIComponent(data.file);
+        if (dlBtn && data.file && dlBtn.tagName === 'A') {
           dlBtn.textContent = 'Scarica ' + data.file;
           dlBtn.style.opacity = '';
           dlBtn.style.pointerEvents = '';
