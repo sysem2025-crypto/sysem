@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.ai.metaTitle">AI | SYSEM</title>
   <meta name="description" content="Assistente AI SYSEM per supporto tecnico su utility, normative e diagnostica.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260813b">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
 </head>
 
 <body data-page="ai" data-required-role="guest">
@@ -31,22 +31,14 @@
     <div class="content-frame">
       <div class="page-heading">
         <h1 class="page-title" data-i18n="page.ai.title">Intelligenza Artificiale</h1>
-        <p class="page-subtitle" data-i18n="page.ai.subtitle">Modalita guest disponibile, login opzionale</p>
+        <p class="page-subtitle" data-i18n="page.ai.subtitle">Assistente AI SYSEM per supporto tecnico</p>
       </div>
       <div class="page-body">
-        <div class="ai-gate" id="ai-gate">
-          <p class="ai-gate-label">Modalita guest</p>
-          <p class="ai-gate-copy">
-            Puoi usare l'assistente subito. Se accedi con l'account SYSEM, la sessione viene passata
-            automaticamente anche all'AI.
-          </p>
-          <div class="ai-gate-actions">
-            <a class="btn-download" href="access.html?return=ai.html">Accedi</a>
-            <span class="ai-gate-note">Nessuna registrazione separata</span>
-          </div>
-        </div>
-
         <div class="ai-frame" id="ai-frame">
+          <div class="ai-overlay" id="ai-overlay">
+            <p>Accedi per usare l'assistente</p>
+            <a class="btn-download" href="access.html?return=ai.html">Accedi</a>
+          </div>
           <iframe id="ai-iframe" data-src="https://gianluca-ai-ten.vercel.app" src="https://gianluca-ai-ten.vercel.app" title="Assistente AI SYSEM" allow="clipboard-read; clipboard-write" loading="lazy"></iframe>
         </div>
       </div>
@@ -64,7 +56,7 @@
 <script>
     (function() {
       var iframe = document.getElementById('ai-iframe');
-      var gate = document.getElementById('ai-gate');
+      var overlay = document.getElementById('ai-overlay');
       if (!iframe) return;
       var sb = typeof window.getSupabase === 'function' ? window.getSupabase() : window.supabaseClient;
       if (sb) {
@@ -74,10 +66,7 @@
             url.searchParams.set('token', res.data.session.access_token);
             url.searchParams.set('email', res.data.session.user.email);
             iframe.src = url.toString();
-            if (gate) {
-              gate.querySelector('.ai-gate-label').textContent = 'Sessione SYSEM attiva';
-              gate.querySelector('.ai-gate-copy').textContent = "L'account principale e collegato all'assistente AI.";
-            }
+            if (overlay) overlay.style.display = 'none';
           }
         });
       }
