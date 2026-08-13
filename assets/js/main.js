@@ -1285,9 +1285,51 @@ document.addEventListener('DOMContentLoaded', function() {
           .catch(function() {});
       });
     }
+    renderFooter();
     loadChangelog();
   });
 });
+
+function renderFooter() {
+  var el = document.getElementById('site-footer');
+  if (!el) return;
+  el.className = 'site-footer';
+  el.innerHTML =
+    '  <div class="footer-grid">' +
+    '    <div class="footer-col footer-brand">' +
+    '      <a class="brand" href="/" aria-label="SYSEM home">' +
+    '        <img src="/assets/img/logo.png" alt="Logo SYSEM">' +
+    '      </a>' +
+    '      <p>Studio Tecnico Informatico - soluzioni digitali per telecontrollo utilities.</p>' +
+    '    </div>' +
+    '    <div class="footer-col">' +
+    '      <h4>Contatti</h4>' +
+    '      <ul>' +
+    '        <li><a href="mailto:servicedesk@sysem.it">servicedesk@sysem.it</a></li>' +
+    '        <li><a href="tel:+393534020735">353 402 0735</a></li>' +
+    '      </ul>' +
+    '    </div>' +
+    '    <div class="footer-col">' +
+    '      <h4>Navigazione</h4>' +
+    '      <ul>' +
+    '        <li><a href="/datacenter.html">Systema</a></li>' +
+    '        <li><a href="/ticketing.html">Assistenza</a></li>' +
+    '        <li><a href="/resource.html">Download</a></li>' +
+    '        <li><a href="/contact.html">Contatti</a></li>' +
+    '      </ul>' +
+    '    </div>' +
+    '    <div class="footer-col changelog-section">' +
+    '      <h4>Modifiche recenti</h4>' +
+    '      <div class="changelog-list" id="changelog-list">' +
+    '        <p class="changelog-loading">Caricamento...</p>' +
+    '      </div>' +
+    '    </div>' +
+    '  </div>' +
+    '  <div class="footer-bottom">' +
+    '    <span>&copy; 2026 SYSEM - Studio Tecnico Informatico</span>' +
+    '    <span>P.IVA: [segnaposto]</span>' +
+    '  </div>';
+}
 
 function loadChangelog() {
   var list = document.getElementById('changelog-list');
