@@ -1104,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         html += '<div class="resource-card-actions" id="rc-actions">';
         if (program.dynamic) {
           html += '<a class="btn-download btn-download-pending" id="rc-download-btn" href="#" style="opacity:0.5;pointer-events:none;">Download in caricamento...</a>';
-          html += '<button class="btn-release-toggle" data-modal-md="/download/gurux/Modus-Gurux-Client-manuale-operatore.md" data-modal-title="Manuale operatore">Manuale operatore</button>';
+          html += '<button class="btn-release-toggle" target="_blank" rel="noopener noreferrer" href="/download/gurux/Modus-Gurux-Client-manuale-operatore.md">Manuale operatore</button>';
         } else if (program.downloadHref) {
           var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
           if (token) {
@@ -1239,15 +1239,6 @@ document.addEventListener('DOMContentLoaded', function() {
       card.className = 'resource-card';
       card.innerHTML = buildCard(programs[0]);
       resourceListEl.appendChild(card);
-
-      // Click handler for manual modal buttons
-      resourceListEl.addEventListener('click', function(e) {
-        var btn = e.target.closest('[data-modal-md]');
-        if (!btn) return;
-        var mdUrl = btn.getAttribute('data-modal-md');
-        var modalTitle = btn.getAttribute('data-modal-title') || 'Manuale operatore';
-        openManualModal(mdUrl, modalTitle);
-      });
 
       select.addEventListener('change', function() {
         var prog = programs.find(function(p) { return p.id === select.value; });
