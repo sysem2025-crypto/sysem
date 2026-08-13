@@ -58,9 +58,19 @@
       var iframe = document.getElementById('ai-iframe');
       var overlay = document.getElementById('ai-overlay');
       if (!iframe) return;
-      if (typeof window.getCurrentUser !== 'function') return;
-      window.getCurrentUser().then(function(user) {
-        if (!user) return;
+
+      function resolveUser() {
+        if (typeof window.getCurrentUser === 'function') {
+          return window.getCurrentUser().then(function(u) {
+            if (u) return u;
+            return typeof window.getCachedUser === 'function' ? window.getCachedUser() : null;
+          });
+        }
+        return Promise.resolve(typeof window.getCachedUser === 'function' ? window.getCachedUser() : null);
+      }
+
+      resolveUser().then(function(user) {
+        if (!user) { overlay.style.display = 'flex'; return; }
         var url = new URL(iframe.dataset.src || iframe.src, window.location.href);
         url.searchParams.set('email', user.email);
         if (user.token) url.searchParams.set('token', user.token);
