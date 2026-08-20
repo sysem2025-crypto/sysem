@@ -7,7 +7,7 @@
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.pot.metaTitle">Protocollo POT | SYSEM</title>
-  <meta name="description" content="Sezione POT secondo UNI 11629:2021: ambito, requisiti, controlli e gestione operativa.">
+  <meta name="description" content="Protocollo POT UNI 11629:2021: architettura, trame, APDU, sicurezza, funzioni, oggetti e strutture dati.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260820a">
 </head>
 
@@ -36,83 +36,145 @@
         <article class="protocol-shell" aria-label="Scheda tecnica POT">
           <header class="protocol-header">
             <span class="protocol-badge">UNI 11629:2021</span>
-            <h2>Requisiti operativi per sistemi di misura e correttori</h2>
-            <p>Scheda tecnica divulgativa: ambito, requisiti, controlli, gestione operativa e documentazione.</p>
+            <h2>Protocollo di comunicazione ottimizzato per il trasporto</h2>
+            <p>Scheda tecnica divulgativa: architettura, trame, scambio dati, sicurezza, funzioni, oggetti e strutture.</p>
             <p><strong>Nota legale:</strong> questa pagina è un riassunto originale a scopo informativo e non sostituisce il testo ufficiale della norma.</p>
           </header>
 
           <nav class="protocol-tabs" aria-label="Sezioni POT">
             <button type="button" class="protocol-tab active" data-tab="pot-overview">Panoramica</button>
-            <button type="button" class="protocol-tab" data-tab="pot-requirements">Requisiti</button>
-            <button type="button" class="protocol-tab" data-tab="pot-checks">Controlli</button>
-            <button type="button" class="protocol-tab" data-tab="pot-operation">Esercizio</button>
-            <button type="button" class="protocol-tab" data-tab="pot-documents">Documenti</button>
+            <button type="button" class="protocol-tab" data-tab="pot-frames">Trame</button>
+            <button type="button" class="protocol-tab" data-tab="pot-exchange">Scambio dati</button>
+            <button type="button" class="protocol-tab" data-tab="pot-security">Sicurezza</button>
+            <button type="button" class="protocol-tab" data-tab="pot-functions">Funzioni</button>
+            <button type="button" class="protocol-tab" data-tab="pot-objects">Oggetti</button>
+            <button type="button" class="protocol-tab" data-tab="pot-structures">Strutture</button>
           </nav>
 
           <section id="pot-overview" class="protocol-pane active">
-            <h3>Cos'è il riferimento POT</h3>
-            <p>La sezione POT raccoglie criteri operativi per configurazione, verifica e gestione dei sistemi di misura e dei correttori. L'obiettivo è rendere controllabili le attività tecniche e mantenere tracciate le modifiche.</p>
+            <h3>Cos'è il protocollo POT</h3>
+            <p>Il <strong>POT (Protocollo di comunicazione ottimizzato per il trasporto)</strong> è il protocollo locale e remoto definito dalla UNI 11629:2021 per gli apparati dei sistemi di misura direttamente allacciati alla rete di trasporto. La versione normativa è identificata come <strong>E201</strong>.</p>
             <div class="protocol-grid">
-              <div class="protocol-card"><strong>Ambito applicativo</strong><br>Sistemi di misura, correttori, parametri operativi e attività tecniche collegate.</div>
-              <div class="protocol-card"><strong>Obiettivo</strong><br>Coerenza della configurazione, ripetibilità dei controlli e continuità delle evidenze.</div>
-              <div class="protocol-card"><strong>Destinatari</strong><br>Team tecnici, manutenzione, qualità e responsabili della documentazione.</div>
+              <div class="protocol-card"><strong>Ambito applicativo</strong><br>Flow computer (FF), data logger (DL), apparati di comunicazione e sistemi centrali di acquisizione.</div>
+              <div class="protocol-card"><strong>Architettura</strong><br>Modello ISO/OSI ridotto a tre livelli: fisico, data link e applicazione.</div>
+              <div class="protocol-card"><strong>Compatibilità</strong><br>Coesistenza con il protocollo precedente per gestire apparati e centri già installati.</div>
             </div>
             <h3>Caratteristiche principali</h3>
             <ul>
-              <li>Definizione del campo di applicazione e delle responsabilità operative.</li>
-              <li>Controllo dei parametri critici e della coerenza della configurazione.</li>
-              <li>Gestione delle attività di esercizio, manutenzione e ripristino.</li>
-              <li>Tracciabilità di interventi, autorizzazioni, versioni ed esiti.</li>
+              <li>Comunicazione punto-punto e connection-less su mezzi trasmissivi eterogenei.</li>
+              <li>Indirizzamento piramidale a tre livelli per centro, DCE e DTE.</li>
+              <li>Trame variabili fino a 1329 byte e campo dati applicativo fino a 1300 byte.</li>
+              <li>Gestione role-based di cinque profili e più operatori per profilo.</li>
+              <li>Supporto multi-drop e multi-canale fino a 24 canali di misura, oltre al canale generico 0.</li>
+              <li>Formalizzazione estendibile di funzioni, oggetti e strutture dati.</li>
             </ul>
           </section>
 
-          <section id="pot-requirements" class="protocol-pane">
-            <h3>Requisiti operativi</h3>
+          <section id="pot-frames" class="protocol-pane">
+            <h3>Struttura delle trame</h3>
+            <p>La trama mantiene un involucro di trasporto compatibile con il protocollo precedente e inserisce al suo interno l'APDU POT.</p>
+            <div class="protocol-code">STX | LUN | LIV1 | LIV2 | LIV3 | COD | APDU | PAR | ETX</div>
             <div class="protocol-table-wrap">
               <table class="protocol-table">
-                <tr><th>Area</th><th>Requisito</th><th>Evidenza attesa</th></tr>
-                <tr><td>Configurazione</td><td>Parametri identificati, coerenti e sottoposti a controllo.</td><td>Scheda configurazione e versione applicata.</td></tr>
-                <tr><td>Responsabilità</td><td>Ruoli e autorizzazioni definiti per modifica e verifica.</td><td>Registro autorizzazioni e operatore.</td></tr>
-                <tr><td>Modifiche</td><td>Ogni variazione deve essere motivata e verificabile.</td><td>Report modifica con esito del controllo.</td></tr>
-                <tr><td>Ripristino</td><td>Disponibilità di configurazioni valide e procedure di recupero.</td><td>Backup, versione precedente e prova di ripristino.</td></tr>
+                <tr><th>Campo APDU</th><th>Lunghezza</th><th>Descrizione</th></tr>
+                <tr><td>ALUN</td><td>2 byte</td><td>Lunghezza dell'APDU da ALUN a CRC compresi.</td></tr>
+                <tr><td>UUID</td><td>8 byte</td><td>Identificativo univoco del dispositivo SdM, presente in ogni trama.</td></tr>
+                <tr><td>PROFI</td><td>1 byte</td><td>Profilo e identificativo dell'operatore associato al messaggio.</td></tr>
+                <tr><td>CRIPTO</td><td>4 byte</td><td>Tipo di cifratura e contatore di trama a 30 bit.</td></tr>
+                <tr><td>FUNCT</td><td>1 byte</td><td>Codice della funzione richiesta.</td></tr>
+                <tr><td>STRUCT</td><td>1 byte</td><td>Codice della struttura dati utilizzata.</td></tr>
+                <tr><td>CHAN</td><td>1 byte</td><td>Canale generico 0 o canale di misura da 1 a 24.</td></tr>
+                <tr><td>DATI</td><td>0-1300 byte</td><td>Contenuto applicativo relativo a funzione e struttura.</td></tr>
+                <tr><td>CPA</td><td>8 byte</td><td>Codice di autenticazione del messaggio.</td></tr>
+                <tr><td>CRC</td><td>2 byte</td><td>Controllo di integrità della trama POT.</td></tr>
               </table>
             </div>
+            <p>L'indirizzamento usa LIV1 per il centro, LIV2 per gli apparati di comunicazione e LIV3 per gli apparati periferici; LIV2 e LIV3 possono formare un indirizzo esteso.</p>
           </section>
 
-          <section id="pot-checks" class="protocol-pane">
-            <h3>Controlli e verifiche</h3>
+          <section id="pot-exchange" class="protocol-pane">
+            <h3>Procedura di scambio dati</h3>
+            <p>Client e Server verificano separatamente trasporto, contenuto applicativo e autenticità prima di interpretare il comando.</p>
             <div class="protocol-grid">
-              <div class="protocol-card"><strong>Avvio</strong><br>Identificazione apparato, verifica versione, parametri iniziali e comunicazione.</div>
-              <div class="protocol-card"><strong>Controllo periodico</strong><br>Verifica dei parametri critici, degli eventi e della coerenza delle misure.</div>
-              <div class="protocol-card"><strong>Dopo modifica</strong><br>Confronto configurazione, prova funzionale e registrazione dell'esito.</div>
+              <div class="protocol-card"><strong>Trasporto non valido</strong><br>CRC, lunghezza o campi incoerenti comportano lo scarto della trama senza interpretazione applicativa.</div>
+              <div class="protocol-card"><strong>Applicazione non valida</strong><br>Il Server risponde con NACK e sottocodice coerente con l'errore rilevato.</div>
+              <div class="protocol-card"><strong>Autenticità errata</strong><br>Il messaggio è rifiutato; dopo errori ripetuti la sessione limita ulteriori risposte.</div>
             </div>
-            <div class="protocol-code">Identifica → Configura → Verifica → Registra → Autorizza → Archivia</div>
-            <p>Le anomalie devono essere gestite come non conformità, indicando causa, azione correttiva, responsabile e verifica conclusiva.</p>
-          </section>
-
-          <section id="pot-operation" class="protocol-pane">
-            <h3>Gestione in esercizio</h3>
+            <div class="protocol-code">Identificazione → Richiesta → Verifica trasporto → Verifica sicurezza → Esecuzione → ACK / NACK → Fine sessione</div>
             <ul>
-              <li>Usare checklist coerenti per avvio, manutenzione e sostituzione.</li>
-              <li>Registrare data, operatore, apparato, configurazione e risultato dell'intervento.</li>
-              <li>Conservare lo storico dei parametri prima e dopo ogni modifica.</li>
-              <li>Prevedere una procedura di ripristino per configurazioni non valide.</li>
-              <li>Riesaminare periodicamente eventi, anomalie e azioni correttive.</li>
+              <li>La procedura di identificazione inizializza il dialogo e i riferimenti di sicurezza.</li>
+              <li>Le risposte applicative distinguono conferma ACK e rifiuto NACK con codici diagnostici.</li>
+              <li>Il comando End Of Session chiude il dialogo; una nuova comunicazione richiede una nuova identificazione.</li>
+              <li>I contatori di trama permettono di riconoscere duplicati e messaggi fuori finestra.</li>
             </ul>
-            <p>La gestione operativa deve mantenere allineati apparato, configurazione installata e documentazione disponibile.</p>
           </section>
 
-          <section id="pot-documents" class="protocol-pane">
-            <h3>Output documentali</h3>
+          <section id="pot-security" class="protocol-pane">
+            <h3>Sicurezza del messaggio</h3>
+            <p>POT separa autenticazione, cifratura e controllo anti-replay. Salvo le eccezioni previste per l'identificazione, i messaggi devono essere almeno autenticati.</p>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>Autenticazione</strong><br>CPA di 8 byte calcolato con AES-128-CMAC sui campi applicativi della trama.</div>
+              <div class="protocol-card"><strong>Cifratura</strong><br>AES-128 in modalità CTR applicata a FUNCT, STRUCT, CHAN e DATI.</div>
+              <div class="protocol-card"><strong>Anti-replay</strong><br>Contatore CRIPTO.FC indipendente per profilo e chiave, con finestra di accettazione controllata.</div>
+            </div>
+            <ul>
+              <li>Cinque profili: amministratore del servizio e quattro profili operativi.</li>
+              <li>Fino a dieci operatori per profilo, con password e privilegi di lettura/scrittura sugli oggetti.</li>
+              <li>Chiavi di esercizio KEYC, chiave temporanea KEYT e chiave di fabbrica/servizio KEYF.</li>
+              <li>Identità verificabile tramite password, UUID, indirizzo Server, CPA e Caller ID quando supportato.</li>
+              <li>Le risposte usano la stessa chiave impiegata dal Client per il comando.</li>
+            </ul>
+          </section>
+
+          <section id="pot-functions" class="protocol-pane">
+            <h3>Funzioni applicative</h3>
             <div class="protocol-table-wrap">
               <table class="protocol-table">
-                <tr><th>Documento</th><th>Contenuto</th><th>Aggiornamento</th></tr>
-                <tr><td>Scheda configurazione</td><td>Identificazione apparato, parametri e versione.</td><td>Avvio e modifica.</td></tr>
-                <tr><td>Registro controlli</td><td>Prove effettuate, valori verificati ed esito.</td><td>Ogni verifica.</td></tr>
-                <tr><td>Report intervento</td><td>Motivazione, operatore, azioni e autorizzazioni.</td><td>Ogni intervento.</td></tr>
-                <tr><td>Storico versioni</td><td>Configurazioni precedenti e riferimenti di ripristino.</td><td>Ogni rilascio.</td></tr>
+                <tr><th>Codice</th><th>Funzione</th><th>Uso</th></tr>
+                <tr><td>K</td><td>Application ACK</td><td>Conferma positiva del livello applicativo.</td></tr>
+                <tr><td>N</td><td>Application NACK</td><td>Risposta negativa con sottocodice diagnostico.</td></tr>
+                <tr><td>I / J</td><td>Identification</td><td>Identificazione iniziale e risposta del Server.</td></tr>
+                <tr><td>Q / A</td><td>Query / Answer</td><td>Lettura di attributi organizzati in una struttura.</td></tr>
+                <tr><td>W</td><td>Write</td><td>Scrittura autorizzata degli attributi.</td></tr>
+                <tr><td>F</td><td>Execute</td><td>Esecuzione di azioni e modifica dello stato del Server.</td></tr>
+                <tr><td>E</td><td>End Of Session</td><td>Terminazione controllata della sessione.</td></tr>
+                <tr><td>S</td><td>Secret</td><td>Gestione protetta delle chiavi di sicurezza.</td></tr>
+                <tr><td>T</td><td>Tunneling</td><td>Trasporto di protocolli o dati incapsulati.</td></tr>
+                <tr><td>$</td><td>Download</td><td>Aggiornamento software segmentato e autenticato.</td></tr>
               </table>
             </div>
+            <h3>Download software</h3>
+            <p>Il processo distingue autorizzazione, trasferimento, verifica e attivazione. L'apparato attiva il software soltanto dopo avere verificato completezza, integrità e autenticità; il trasferimento può proseguire su più sessioni.</p>
+            <div class="protocol-code">Autorizzazione → Inizializzazione → Segmenti + ACK → Verifica HASH/autenticità → Attivazione</div>
+          </section>
+
+          <section id="pot-objects" class="protocol-pane">
+            <h3>Oggetti e attributi</h3>
+            <p>Gli oggetti sono gli elementi dell'applicazione e sono identificati tramite categoria, specializzazione e dettaglio. Ogni oggetto espone attributi standard.</p>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>.id</strong><br>Identificatore univoco a 2 byte dell'oggetto.</div>
+              <div class="protocol-card"><strong>.qlf</strong><br>Qualificatore: validità, stato operativo e fattore moltiplicativo.</div>
+              <div class="protocol-card"><strong>.val</strong><br>Valore o insieme di campi associati all'oggetto.</div>
+              <div class="protocol-card"><strong>.acces</strong><br>Privilegi di lettura e scrittura per i profili operativi.</div>
+              <div class="protocol-card"><strong>.def</strong><br>Valore assunto al primo avvio o dopo un ripristino.</div>
+            </div>
+            <p>Il qualificatore distingue valori non configurati, normali, in manutenzione o in verifica e associa il fattore moltiplicativo alla grandezza.</p>
+          </section>
+
+          <section id="pot-structures" class="protocol-pane">
+            <h3>Strutture dati</h3>
+            <div class="protocol-table-wrap">
+              <table class="protocol-table">
+                <tr><th>Struttura</th><th>Organizzazione</th><th>Impiego</th></tr>
+                <tr><td>TABLE</td><td>Oggetti identificati dalla posizione nello schema.</td><td>Strutture predefinite o personalizzate.</td></tr>
+                <tr><td>REGISTER</td><td>Oggetti identificati esplicitamente tramite .id.</td><td>Lettura e scrittura selettiva degli attributi.</td></tr>
+                <tr><td>ARRAY</td><td>Elementi dello stesso oggetto ordinati per indice o riferimento.</td><td>Serie di eventi o registrazioni.</td></tr>
+                <tr><td>TRACE</td><td>Valori dello stesso oggetto ordinati cronologicamente.</td><td>Profili e storici a passo definito.</td></tr>
+                <tr><td>OPTIONAL</td><td>Elenco delle funzioni e strutture implementate.</td><td>Descrizione delle capacità del Server.</td></tr>
+                <tr><td>SCHEMA</td><td>Sequenza degli attributi contenuti nelle TABLE.</td><td>Interpretazione delle strutture posizionali.</td></tr>
+              </table>
+            </div>
+            <p>La compatibilità tra funzione e struttura determina quali operazioni sono consentite sul canale richiesto.</p>
             <p><a class="btn-download" href="protocolli.html#pot-section">Torna alla panoramica protocolli</a></p>
           </section>
         </article>
