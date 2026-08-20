@@ -39,7 +39,7 @@
             <p>Accedi per usare l'assistente</p>
             <a class="btn-download" href="access.html?return=ai.html">Accedi</a>
           </div>
-          <iframe id="ai-iframe" data-src="https://gianluca-ai-ten.vercel.app" src="https://gianluca-ai-ten.vercel.app" title="Assistente AI SYSEM" allow="clipboard-read; clipboard-write" loading="lazy"></iframe>
+          <iframe id="ai-iframe" data-src="https://gianluca-ai-ten.vercel.app?embed=1" src="https://gianluca-ai-ten.vercel.app?embed=1" title="Assistente AI SYSEM" allow="clipboard-read; clipboard-write" loading="lazy"></iframe>
         </div>
       </div>
     </div>
@@ -52,12 +52,18 @@
   <nav><ul></ul></nav>
 </div>
 
-<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260813b"></script>
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260814a"></script>
 <script>
     (function() {
       var iframe = document.getElementById('ai-iframe');
       var overlay = document.getElementById('ai-overlay');
       if (!iframe) return;
+
+      function makeToken(user) {
+        var today = new Date().toISOString().slice(0, 10);
+        var role = user.role || 'base';
+        return btoa(user.email + '|' + role + '|' + today);
+      }
 
       function resolveUser() {
         if (typeof window.getCurrentUser === 'function') {
@@ -73,7 +79,7 @@
         if (!user) { overlay.style.display = 'flex'; return; }
         var url = new URL(iframe.dataset.src || iframe.src, window.location.href);
         url.searchParams.set('email', user.email);
-        if (user.token) url.searchParams.set('token', user.token);
+        url.searchParams.set('token', makeToken(user));
         iframe.src = url.toString();
         if (overlay) overlay.style.display = 'none';
       });

@@ -1033,10 +1033,10 @@ document.addEventListener('DOMContentLoaded', function() {
         history.replaceState(null, '', window.location.pathname);
       }
       var programs = [
-        { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md' },
-        { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '' },
-        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-interface.php', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md' },
-        { id: 'gurux', title: 'Modus Gurux Client', description: 'Strumento Windows da riga di comando per la comunicazione con dispositivi DLMS/COSEM tramite rete TCP/IP o porta seriale.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Applicazione da riga di comando']], downloadHref: '', releaseHistoryUrl: 'download/gurux/Modus-Gurux-Client-release-history.md', dynamic: true }
+        { id: 'genius-monitor', title: 'GeniusMonitor', description: 'Software di monitoraggio per dispositivi DLMS/COSEM.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-gm.php', releaseHistoryUrl: 'download/Genius_Monitor-release-history.md', manualUrl: 'download/GeniusMonitor/MANUALE_UTENTE.md' },
+        { id: 'rtu-terminal', title: 'RTU Terminal', description: 'Terminale seriale per la configurazione e il debugging di dispositivi RTU e apparati di comunicazione.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-rtu.php', releaseHistoryUrl: '', manualUrl: 'download/RTU_Terminal/RTU-Terminal-manuale-operatore.md' },
+        { id: 'interface-dlms', title: 'InterfaceDLMS', description: 'Applicativo per attivita di comunicazione e diagnostica DLMS.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Installer .exe']], downloadHref: 'interface-dlms/manual-download-interface.php', releaseHistoryUrl: 'download/InterfaceDLMS/InterfaceDLMS-release-history.md', manualUrl: 'download/InterfaceDLMS/MANUALE_UTENTE.md' },
+        { id: 'gurux', title: 'Modus Gurux Client', description: 'Strumento Windows da riga di comando per la comunicazione con dispositivi DLMS/COSEM tramite rete TCP/IP o porta seriale.', meta: [['Piattaforma', 'Windows 10/11'], ['Formato', 'Applicazione da riga di comando']], downloadHref: '', releaseHistoryUrl: 'download/gurux/Modus-Gurux-Client-release-history.md', dynamic: true, manualUrl: '/download/gurux/Modus-Gurux-Client-manuale-operatore.md' }
       ];
 
       var releaseCache = {};
@@ -1109,8 +1109,11 @@ document.addEventListener('DOMContentLoaded', function() {
           } else {
             html += '<button class="btn-download btn-download-guest" id="rc-download-btn" type="button">Download Modus Gurux Client</button>';
           }
-          html += '<a class="btn-release-toggle" href="/download/gurux/Modus-Gurux-Client-manuale-operatore.md" target="_blank" rel="noopener noreferrer">Manuale operatore</a>';
-        } else if (program.downloadHref) {
+        }
+        if (program.manualUrl) {
+          html += '<a class="btn-release-toggle" href="' + program.manualUrl + '" target="_blank" rel="noopener noreferrer">Manuale operatore</a>';
+        }
+        if (program.downloadHref) {
           var downloadUrl = token ? program.downloadHref + '?token=' + encodeURIComponent(token) : program.downloadHref;
           if (token) {
             html += '<a class="btn-download" id="rc-download-btn" href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer">Download ' + program.title + '</a>';

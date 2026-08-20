@@ -8,6 +8,17 @@ Template statico HTML/CSS in palette verde petrolio e azzurro metano.
 - assets/css/style.css
 - assets/img/logo.png
 
+## Nota tecnica
+
+Piano operativo Secure Code:
+
+- separare il firmware in **Bootloader**, **Codice metrologico** e **Applicativo**;
+- usare un manifesto firmato per descrivere la release completa;
+- trasferire solo le sezioni modificate, ma verificare sempre la composizione totale;
+- proteggere l'interfaccia tra **Applicativo** e **Codice metrologico** con API controllata;
+- prevedere staging, verifica, rollback e audit trail per gli aggiornamenti;
+- mantenere tracciati versione, CRC e hash delle sezioni rilevanti.
+
 ## Anteprima locale
 
 Apri `index.html` con doppio clic oppure usa VS Code con Live Server.

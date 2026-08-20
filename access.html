@@ -38,29 +38,26 @@
             <p data-i18n="auth.loginDesc">Inserisci le credenziali per entrare nell'area riservata.</p>
             <form id="login-form" class="auth-form">
               <label for="login-email" data-i18n="auth.loginLabel">Utente</label>
-              <input id="login-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="username" data-i18n="auth.emailPlaceholder">
+              <input id="login-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="username" required data-i18n="auth.emailPlaceholder">
               <label for="login-password" data-i18n="auth.passwordLabel">Password</label>
-              <input id="login-password" name="password" type="password">
+              <input id="login-password" name="password" type="password" required>
               <button type="submit" class="btn-download" data-i18n="auth.signinBtn">Accedi</button>
             </form>
-            <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
           </article>
 
-<article class="auth-card" id="register-section">
+          <article class="auth-card" id="register-section">
             <h2 data-i18n="auth.registerTitle">Registrazione</h2>
             <p data-i18n="auth.registerDesc">Crea un account per accedere all'area riservata.</p>
             <form id="register-form" class="auth-form">
               <label for="register-email" data-i18n="auth.loginLabel">Email</label>
-              <input id="register-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="email" data-i18n="auth.emailPlaceholder">
-              <label for="register-name" data-i18n="auth.nameLabel">Nome</label>
-              <input id="register-name" name="name" type="text" placeholder="Tuo nome" autocomplete="name" data-i18n="auth.namePlaceholder">
+              <input id="register-email" name="email" type="email" placeholder="nome@azienda.it" autocomplete="email" required data-i18n="auth.emailPlaceholder">
               <label for="register-password" data-i18n="auth.passwordLabel">Password</label>
-              <input id="register-password" name="password" type="password">
+              <input id="register-password" name="password" type="password" required>
               <button type="submit" class="btn-download" data-i18n="auth.registerBtn">Registrati</button>
             </form>
-            <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
           </article>
         </div>
+        <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
       </div>
     </div>
   </div>
@@ -75,67 +72,6 @@
 </div>
 
 <script src="assets/js/auth-supabase.js?v=20260811a"></script>
-<script src="assets/js/main.js?v=20260813b"></script>
-<script>
-    (function () {
-      const loginForm = document.getElementById('login-form');
-      const registerForm = document.getElementById('register-form');
-      const feedback = document.getElementById('auth-feedback');
-
-      if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          feedback.textContent = '';
-          const email = document.getElementById('login-email').value.trim().toLowerCase();
-          const password = document.getElementById('login-password').value;
-          if (!email || password.length < 8) {
-            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
-            return;
-          }
-          try {
-            await window.supabaseLogin(email, password);
-            const params = new URLSearchParams(window.location.search);
-            const safeReturnUrl = window.getSafeReturnUrl
-              ? window.getSafeReturnUrl(params.get('return'), 'index.html')
-              : 'index.html';
-            window.location.href = safeReturnUrl;
-          } catch (err) {
-            var msg = String(err.message || '');
-            if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('network') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('Failed') !== -1) {
-              feedback.textContent = 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.';
-            } else {
-              feedback.textContent = 'Credenziali non valide.';
-            }
-          }
-        });
-      }
-
-      if (registerForm) {
-        registerForm.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          feedback.textContent = '';
-          const name = document.getElementById('register-email').value.split('@')[0];
-          const email = document.getElementById('register-email').value.trim().toLowerCase();
-          const password = document.getElementById('register-password').value;
-          if (!email || password.length < 8) {
-            feedback.textContent = 'Email e password (min 8 caratteri) richiesti';
-            return;
-          }
-          try {
-            await window.supabaseRegister(email, password, name);
-            feedback.textContent = 'Registrazione inviata. Controlla la tua email per confermare.';
-            registerForm.reset();
-          } catch (err) {
-            var msg = String(err.message || '');
-            if (msg.indexOf('supabase') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('network') !== -1 || msg.indexOf('DNS') !== -1 || msg.indexOf('Failed') !== -1) {
-              feedback.textContent = 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.';
-            } else {
-              feedback.textContent = 'Errore durante la registrazione.';
-            }
-          }
-        });
-      }
-    })();
-  </script>
+<script src="assets/js/main.js?v=20260814a"></script>
 </body>
 </html>
