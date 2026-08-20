@@ -159,6 +159,35 @@
               <div class="protocol-card"><strong>.def</strong><br>Valore assunto al primo avvio o dopo un ripristino.</div>
             </div>
             <p>Il qualificatore distingue valori non configurati, normali, in manutenzione o in verifica e associa il fattore moltiplicativo alla grandezza.</p>
+
+            <h3>Sintesi delle famiglie di oggetti</h3>
+            <p>L'appendice D organizza il catalogo in 23 categorie. La tabella seguente le raggruppa per funzione operativa.</p>
+            <div class="protocol-table-wrap">
+              <table class="protocol-table">
+                <tr><th>Famiglia</th><th>Categorie UNI 11629</th><th>Contenuto principale</th></tr>
+                <tr><td>Misure primarie</td><td>D.7.1 - D.7.7</td><td>Portata, volume, massa, energia, pressioni assolute/relative/differenziali e temperature.</td></tr>
+                <tr><td>Tempo e aggregazioni</td><td>D.7.8, D.7.11, D.7.22</td><td>Data e ora, giorno-gas, report correnti/quart'orari/giornalieri/mensili e traces.</td></tr>
+                <tr><td>Apparato e impianto</td><td>D.7.9, D.7.12</td><td>Identificazione apparato, versione, indirizzi, canali, UUID e anagrafica del punto di misura.</td></tr>
+                <tr><td>Conversione e qualità gas</td><td>D.7.10, D.7.21</td><td>Coefficienti C e Z, parametri SGERG, PCI, Wobbe, densità e dati del densimetro.</td></tr>
+                <tr><td>Sicurezza</td><td>D.7.13</td><td>Password dei profili, PUK, chiavi crittografiche, sigilli, antifrode e contatori di trama.</td></tr>
+                <tr><td>Comunicazione</td><td>D.7.14</td><td>Modalità supportate, riferimenti telefonici/IP, wake-up, configurazione DCE e qualità del segnale.</td></tr>
+                <tr><td>Manutenzione e alimentazione</td><td>D.7.15 - D.7.16</td><td>Date di utilità, autonomia residua, ore di utilizzo e sostituzione delle batterie.</td></tr>
+                <tr><td>Eventi e comandi</td><td>D.7.17 - D.7.18</td><td>Registri eventi/allarmi e funzioni Execute per reset, sincronizzazione, chiavi, sigilli e software.</td></tr>
+                <tr><td>Stato, I/O e allarmi</td><td>D.7.19 - D.7.20, D.7.23</td><td>Diagnostica, sensori, alimentazione, ingressi/uscite, trasduttori e configurazione allarmi.</td></tr>
+              </table>
+            </div>
+
+            <h3>Oggetti chiave</h3>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>Qm, Vm, Qb, Vb</strong><br>Portate e volumi alle condizioni di misura o alle condizioni termodinamiche di riferimento, istantanei e aggregati.</div>
+              <div class="protocol-card"><strong>P, T, C, Z, Zb</strong><br>Pressione, temperatura e coefficienti impiegati nella conversione dei volumi.</div>
+              <div class="protocol-card"><strong>Data&amp;OraL, OFG</strong><br>Orologio locale, ora del giorno-gas, sincronizzazione, fuso e gestione dell'ora legale.</div>
+              <div class="protocol-card"><strong>UUID, versione FW, DL_PA</strong><br>Identificazione univoca, versione software e stato del processo di download.</div>
+              <div class="protocol-card"><strong>Diagnostica, Eventi, Allarmi</strong><br>Stato dell'apparato, sensori, registri cronologici e condizioni anomale.</div>
+              <div class="protocol-card"><strong>Password, KEY, Sigilli</strong><br>Credenziali, chiavi per profilo, stato delle protezioni e totalizzatore antifrode.</div>
+            </div>
+
+            <p><strong>Lettura del catalogo:</strong> per ogni oggetto la norma indica canale, obbligatorietà per le classi I/II/III/DL, accesso R/W/P, simbolo, tipo dati, unità di misura, dominio e valore predefinito.</p>
           </section>
 
           <section id="pot-structures" class="protocol-pane">
