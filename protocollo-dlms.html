@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="page.dlms.metaTitle">Protocollo DLMS | SYSEM</title>
   <meta name="description" content="Protocollo DLMS/COSEM UNI/TS 11291-14-2: modello dati, oggetti, APDU e profili di comunicazione per gruppi di misura gas.">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260820a">
 </head>
 
 <body data-page="dlms" data-required-role="guest">
@@ -33,49 +33,105 @@
         <h1 class="page-title" data-i18n="page.dlms.title">Sezione DLMS</h1>
       </div>
       <div class="page-body">
-        <div class="auth-grid">
-          <article class="auth-card">
-            <h2>Riferimento normativo</h2>
-            <ul class="normative-list">
-              <li>UNI/TS 11291-14-2 (Modello dati)</li>
-              <li>DLMS/COSEM Green Book</li>
-              <li>IEC 62056 serie</li>
-              <li>Applicazione nel contesto gas mass-market e industriali</li>
-            </ul>
-            <p><strong>Nota:</strong> questa pagina e un supporto operativo. Per valutazioni formali fa fede il testo ufficiale della norma.</p>
-          </article>
+        <article class="protocol-shell" aria-label="Scheda protocollo DLMS">
+          <header class="protocol-header">
+            <span class="protocol-badge">UNI/TS 11291-14-2</span>
+            <h2>Modello dati e comunicazione DLMS/COSEM per sistemi di misura gas</h2>
+            <p>Scheda tecnica divulgativa: panoramica, modello dati, APDU, sicurezza, oggetti e profili di comunicazione.</p>
+            <p><strong>Nota legale:</strong> questa pagina è un riassunto originale a scopo informativo e non sostituisce i testi ufficiali applicabili.</p>
+          </header>
 
-          <article class="auth-card">
-            <h2>Modello dati DLMS/COSEM</h2>
-            <ul class="normative-list">
-              <li>Oggetti: register, profile generic, clock, association LN</li>
-              <li>Attributi e metodi per accesso ai dati di misura</li>
-              <li>Struttura gerarchica: logical device, objects, attributes</li>
-              <li>Interface class: definizione standardizzata dei comportamenti</li>
-            </ul>
-          </article>
+          <nav class="protocol-tabs" aria-label="Sezioni protocollo DLMS">
+            <button type="button" class="protocol-tab active" data-tab="dlms-overview">Panoramica</button>
+            <button type="button" class="protocol-tab" data-tab="dlms-model">Modello dati</button>
+            <button type="button" class="protocol-tab" data-tab="dlms-apdu">APDU</button>
+            <button type="button" class="protocol-tab" data-tab="dlms-security">Sicurezza</button>
+            <button type="button" class="protocol-tab" data-tab="dlms-objects">Oggetti</button>
+            <button type="button" class="protocol-tab" data-tab="dlms-profiles">Profili</button>
+          </nav>
 
-          <article class="auth-card">
-            <h2>Comunicazione e APDU</h2>
-            <ul class="normative-list">
-              <li>Formati APDU definiti secondo Green Book</li>
-              <li>Protocollo di trasporto: HDLC, TCP/UDP, wireless M-Bus</li>
-              <li>Parametri di rete: timeout Tg, Tnb, Tresp</li>
-              <li>Cifratura e autenticazione: sicurezza a livello applicativo</li>
+          <section id="dlms-overview" class="protocol-pane active">
+            <h3>Cos'è DLMS/COSEM</h3>
+            <p><strong>DLMS/COSEM</strong> definisce un modello interoperabile per rappresentare e scambiare dati di misura. Gli apparati espongono oggetti standardizzati, identificati e accessibili tramite servizi applicativi.</p>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>Ambito applicativo</strong><br>Gruppi di misura gas, dispositivi mass-market e industriali, concentratori e sistemi centrali.</div>
+              <div class="protocol-card"><strong>Riferimenti</strong><br>UNI/TS 11291-14-2, DLMS/COSEM Green Book e serie IEC 62056.</div>
+              <div class="protocol-card"><strong>Architettura</strong><br>Logical device, oggetti COSEM, attributi, metodi e associazioni applicative.</div>
+            </div>
+            <h3>Caratteristiche principali</h3>
+            <ul>
+              <li>Modello dati a oggetti indipendente dal mezzo di comunicazione.</li>
+              <li>Identificazione delle grandezze tramite codici OBIS.</li>
+              <li>Servizi standard per lettura, scrittura ed esecuzione di azioni.</li>
+              <li>Supporto di profili di carico, eventi, registri e parametri di configurazione.</li>
+              <li>Associazioni applicative e livelli di sicurezza configurabili.</li>
             </ul>
-          </article>
+          </section>
 
-          <article class="auth-card">
-            <h2>Oggetti necessari (CTT)</h2>
-            <ul class="normative-list">
-              <li>Appendice F: oggetti per conformita DLMS/COSEM</li>
-              <li>Registro volumi: Vm, Vb, totalizzatori orari/giornalieri</li>
-              <li>Parametri: P, T, Pb, Tb, fattori di comprimibilita</li>
-              <li>Eventi e allarmi: log con timestamp e codice evento</li>
-            </ul>
-            <p><a class="btn-download" href="protocolli.html#dlms-section">Torna alla sezione DLMS</a></p>
-          </article>
-        </div>
+          <section id="dlms-model" class="protocol-pane">
+            <h3>Modello dati DLMS/COSEM</h3>
+            <p>Ogni informazione è rappresentata da un oggetto appartenente a una interface class. Attributi e metodi definiscono dati disponibili e operazioni consentite.</p>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>Register</strong><br>Valore di misura, unità e fattore di scala.</div>
+              <div class="protocol-card"><strong>Profile Generic</strong><br>Serie storiche, profili di carico, eventi e buffer ordinati.</div>
+              <div class="protocol-card"><strong>Clock</strong><br>Data, ora, fuso, stato e sincronizzazione temporale.</div>
+              <div class="protocol-card"><strong>Association LN</strong><br>Contesto applicativo, oggetti visibili e diritti di accesso.</div>
+            </div>
+            <div class="protocol-code">Logical Device → COSEM Object → Attribute / Method → Value</div>
+          </section>
+
+          <section id="dlms-apdu" class="protocol-pane">
+            <h3>Comunicazione e APDU</h3>
+            <div class="protocol-table-wrap">
+              <table class="protocol-table">
+                <tr><th>Servizio</th><th>Scopo</th><th>Uso tipico</th></tr>
+                <tr><td>AARQ / AARE</td><td>Apertura e negoziazione dell'associazione.</td><td>Autenticazione e definizione del contesto.</td></tr>
+                <tr><td>GET</td><td>Lettura di uno o più attributi.</td><td>Registri, parametri e profili.</td></tr>
+                <tr><td>SET</td><td>Scrittura di attributi autorizzati.</td><td>Configurazione e sincronizzazione.</td></tr>
+                <tr><td>ACTION</td><td>Esecuzione di un metodo dell'oggetto.</td><td>Reset, acquisizioni e operazioni specifiche.</td></tr>
+                <tr><td>Event notification</td><td>Notifica spontanea di un evento.</td><td>Allarmi e cambi di stato.</td></tr>
+              </table>
+            </div>
+            <p>Le APDU applicative possono essere trasportate tramite profili HDLC, TCP/UDP o altri mezzi previsti dall'implementazione.</p>
+          </section>
+
+          <section id="dlms-security" class="protocol-pane">
+            <h3>Sicurezza applicativa</h3>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>Autenticazione</strong><br>Verifica dell'identità delle parti durante l'apertura dell'associazione.</div>
+              <div class="protocol-card"><strong>Integrità</strong><br>Protezione dei messaggi contro modifiche non autorizzate.</div>
+              <div class="protocol-card"><strong>Riservatezza</strong><br>Cifratura dei dati applicativi quando richiesta dal profilo di sicurezza.</div>
+            </div>
+            <p>Diritti e servizi disponibili dipendono dall'associazione attiva, dal ruolo del client e dalla configurazione dell'apparato.</p>
+            <div class="protocol-code">Client → Association → Authentication → Access Rights → COSEM Objects</div>
+          </section>
+
+          <section id="dlms-objects" class="protocol-pane">
+            <h3>Oggetti necessari per la misura gas</h3>
+            <div class="protocol-table-wrap">
+              <table class="protocol-table">
+                <tr><th>Gruppo</th><th>Esempi</th><th>Contenuto</th></tr>
+                <tr><td>Volumi</td><td>Vm, Vb, totalizzatori</td><td>Valori correnti e storici orari o giornalieri.</td></tr>
+                <tr><td>Pressione e temperatura</td><td>P, T, Pb, Tb</td><td>Misure, riferimenti e stati associati.</td></tr>
+                <tr><td>Conversione</td><td>Fattori e parametri gas</td><td>Dati utilizzati nel calcolo del volume alle condizioni base.</td></tr>
+                <tr><td>Eventi e allarmi</td><td>Log e registri diagnostici</td><td>Timestamp, codice evento, stato e progressivo.</td></tr>
+                <tr><td>Identificazione</td><td>Matricola, modello, versione</td><td>Informazioni dell'apparato e del firmware.</td></tr>
+              </table>
+            </div>
+            <p>I codici OBIS consentono di identificare in modo uniforme le grandezze esposte dagli oggetti.</p>
+          </section>
+
+          <section id="dlms-profiles" class="protocol-pane">
+            <h3>Profili di comunicazione</h3>
+            <div class="protocol-grid">
+              <div class="protocol-card"><strong>HDLC</strong><br>Profilo orientato al collegamento per interfacce seriali o ottiche.</div>
+              <div class="protocol-card"><strong>TCP / UDP</strong><br>Trasporto su rete IP per collegamenti diretti o tramite infrastruttura mobile.</div>
+              <div class="protocol-card"><strong>Wireless</strong><br>Integrazione con mezzi radio previsti dal sistema e dal profilo applicativo.</div>
+            </div>
+            <p>I parametri temporali, le dimensioni massime e la gestione della sessione devono essere coerenti tra client, apparato e mezzo trasmissivo.</p>
+            <p><a class="btn-download" href="protocolli.html#dlms-section">Torna alla panoramica protocolli</a></p>
+          </section>
+        </article>
       </div>
     </div>
   </div>
@@ -88,5 +144,29 @@
 </div>
 
 <script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820b"></script>
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('.protocol-tab');
+    var panes = document.querySelectorAll('.protocol-pane');
+
+    function activate(tabId) {
+      panes.forEach(function (pane) {
+        pane.classList.toggle('active', pane.id === tabId);
+      });
+      tabs.forEach(function (tab) {
+        tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
+      });
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        activate(tab.getAttribute('data-tab'));
+      });
+    });
+
+    var hash = window.location.hash ? window.location.hash.slice(1) : '';
+    if (hash) activate(hash);
+  })();
+</script>
 </body>
 </html>
