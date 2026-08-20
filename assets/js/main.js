@@ -453,7 +453,6 @@ var NAV_STRUCTURE = [
   { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
-  { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' },
   { labelKey: 'nav.contatti', href: SITE_BASE + 'contact.html' }
 ];
 
