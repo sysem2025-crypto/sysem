@@ -102,7 +102,7 @@ var IT_TRANSLATIONS = {
     "volumeCorrector": "Correttore Volumi",
     "embedded": "Embedded", "embeddedHome": "Progetti Embedded",
     "assistenza": "Assistenza",
-    "utility": "Utility",
+    "utility": "Documentazione tecnica",
     "sistemi": "Sistemi", "download": "Download applicativi",
     "sensori": "Sensori e caratterizzazione", "formule": "Formule di compressione", "protocolli": "Protocolli",
     "normative": "Normative", "guidaNorme": "Guida applicazione norme",
@@ -200,7 +200,7 @@ var IT_TRANSLATIONS = {
     "programAccess": { "overline": "Program access", "title": "Accesso Programma", "metaTitle": "Program Access" },
     "admin": { "overline": "Controllo accessi", "title": "Gestione Accessi", "metaTitle": "Admin Accessi" },
     "contact": { "overline": "Get in touch", "title": "Contact", "metaTitle": "Contact" },
-    "utility": { "overline": "Documentazione tecnica", "title": "Utility", "metaTitle": "Utility" }
+    "utility": { "overline": "Assistenza", "title": "Documentazione tecnica", "metaTitle": "Documentazione tecnica" }
   }
 };
 
@@ -452,7 +452,6 @@ var NAV_STRUCTURE = [
   { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
   { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
-  { labelKey: 'nav.utility', href: SITE_BASE + 'utility.html' },
   { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
   { labelKey: 'nav.sysem', href: SITE_BASE + 'sistemi.html' },
   { labelKey: 'nav.contatti', href: SITE_BASE + 'contact.html' }
@@ -476,7 +475,7 @@ var PAGE_MENU_MAP = {
   'macchina-a-stati': 'nav.progetti',
   'lettura-tachimetrica': 'nav.progetti',
   'lettura-ntc': 'nav.progetti',
-  'utility': 'nav.utility',
+  'utility': 'nav.assistenza',
   'telecontrollo': 'nav.telecontrollo',
   'cedam3': 'nav.telecontrollo',
   'sistemi': 'nav.sysem',

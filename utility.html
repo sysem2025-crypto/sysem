@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="page.utility.metaTitle">Utility | SYSEM</title>
-  <meta name="description" content="Documentazione tecnica SYSEM: sensori, formule, protocolli, normative.">
+  <title data-i18n="page.utility.metaTitle">Documentazione tecnica | SYSEM</title>
+  <meta name="description" content="Documentazione tecnica SYSEM: sistemi di misura, protocolli, normative, manuali e procedure operative.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
 </head>
 <body data-page="utility" data-required-role="guest">
@@ -27,29 +27,52 @@
   <div class="site-body">
     <div class="content-frame">
       <div class="page-heading">
-        <h1 class="page-title" data-i18n="page.utility.title">Utility</h1>
+        <h1 class="page-title" data-i18n="page.utility.title">Documentazione tecnica</h1>
+        <p class="page-subtitle">Specifiche, normative, procedure e riferimenti operativi per i sistemi SYSEM.</p>
       </div>
       <div class="page-body">
         <div class="auth-grid">
           <article class="auth-card">
-            <h2><a href="sensori-caratterizzazione.html">Sensori e caratterizzazione</a></h2>
-            <p>Approfondimento tecnico su sensori e caratterizzazione per sistemi di misura.</p>
+            <h2>Sistemi di misura</h2>
+            <p>Principi di misura, caratterizzazione dei sensori e metodi di correzione dei volumi.</p>
+            <ul class="normative-list">
+              <li><a href="sistema-misura.html">Panoramica del sistema di misura</a></li>
+              <li><a href="sensori-caratterizzazione.html">Sensori e caratterizzazione</a></li>
+              <li><a href="formule-compressione.html">Formule di compressione</a></li>
+            </ul>
+            <p><a class="btn-download" href="sistema-misura.html">Apri sistemi di misura</a></p>
           </article>
+
           <article class="auth-card">
-            <h2><a href="formule-compressione.html">Formule di compressione</a></h2>
-            <p>Formule e metodi di correzione volumetrica per gas ed acqua.</p>
+            <h2>Protocolli di comunicazione</h2>
+            <p>Specifiche e riferimenti operativi per la comunicazione con gruppi di misura e apparati di campo.</p>
+            <ul class="normative-list">
+              <li><a href="protocollo-ctr.html">Protocollo CTR</a></li>
+              <li><a href="protocollo-pot.html">Protocollo POT</a></li>
+              <li><a href="protocollo-dlms.html">Protocollo DLMS/COSEM</a></li>
+            </ul>
+            <p><a class="btn-download" href="protocolli.html">Apri panoramica protocolli</a></p>
           </article>
+
           <article class="auth-card">
-            <h2><a href="protocolli.html">Protocolli</a></h2>
-            <p>Specifiche tecniche dei protocolli di comunicazione: CTR, POT, DLMS.</p>
+            <h2>Normative e conformità</h2>
+            <p>Riferimenti normativi e metodo operativo per applicare i requisiti tecnici ai progetti.</p>
+            <ul class="normative-list">
+              <li><a href="normative.html">Normative MID, WELMEC, RED e UNI</a></li>
+              <li><a href="guida-applicazione-norme.html">Guida applicazione norme</a></li>
+            </ul>
+            <p><a class="btn-download" href="normative.html">Apri normative</a></p>
           </article>
+
           <article class="auth-card">
-            <h2><a href="normative.html">Normative</a></h2>
-            <p>Riferimenti normativi per il settore utilities e misura.</p>
-          </article>
-          <article class="auth-card">
-            <h2><a href="guida-applicazione-norme.html">Guida applicazione norme</a></h2>
-            <p>Metodo operativo per l'applicazione delle norme tecniche.</p>
+            <h2>Manuali e procedure operative</h2>
+            <p>Manuali degli applicativi, note di versione e materiali operativi associati ai software SYSEM.</p>
+            <ul class="normative-list">
+              <li>Manuali operatore degli applicativi</li>
+              <li>Storico release e aggiornamenti</li>
+              <li>Procedure di installazione e configurazione</li>
+            </ul>
+            <p><a class="btn-download" href="resource.html">Apri manuali applicativi</a></p>
           </article>
         </div>
       </div>
@@ -63,6 +86,6 @@
   <nav><ul></ul></nav>
 </div>
 
-<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260814a"></script>
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820b"></script>
 </body>
 </html>

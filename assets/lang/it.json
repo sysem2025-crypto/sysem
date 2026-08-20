@@ -18,7 +18,7 @@
   },
   "nav": {
     "systema": "Systema",
-    "utility": "Utility",
+    "utility": "Documentazione tecnica",
     "sensori": "Sensori e caratterizzazione",
     "compressione": "Compressione",
     "protocolli": "Protocolli",
@@ -160,9 +160,9 @@
       "metaTitle": "Contact"
     },
     "utility": {
-      "overline": "Knowledge base",
-      "title": "Utility",
-      "metaTitle": "Utility"
+      "overline": "Assistenza",
+      "title": "Documentazione tecnica",
+      "metaTitle": "Documentazione tecnica"
     },
     "ticketing": {
       "overline": "Supporto tecnico",
