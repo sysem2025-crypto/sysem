@@ -113,9 +113,7 @@
   <script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
   <script>
     (function() {
-      const TICKETING_ORIGIN = 'https://sf-service-web.vercel.app';
-      const SB_URL = 'https://auzzyobxnoliswpvcvsa.supabase.co';
-      const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxNzM4NTIsImV4cCI6MjA4OTc0OTg1Mn0.3t4QxdhjCAIaZ7Ae-29hptAkcDg0vPYjkRPuAkZF7eA';
+      var TICKETING_ORIGIN = 'https://sf-service-web.vercel.app';
 
       function initSsoLinks() {
         var linkNuovo = document.getElementById('linkNuovoTicket');
@@ -131,7 +129,11 @@
         var path = target.href.replace(TICKETING_ORIGIN, '') || '/ticket/nuovo';
 
         try {
-          var sb = supabase.createClient(SB_URL, SB_KEY);
+          var sb = (typeof getSupabase === 'function') ? getSupabase() : window.supabaseClient;
+          if (!sb) {
+            window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+            return;
+          }
           var result = await sb.auth.getSession();
           var session = result.data && result.data.session;
 
