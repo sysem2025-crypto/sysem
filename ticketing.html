@@ -131,11 +131,13 @@
         try {
           var sb = (typeof getSupabase === 'function') ? getSupabase() : window.supabaseClient;
           if (!sb) {
+            console.warn('[SSO] No supabase client found');
             window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
             return;
           }
           var result = await sb.auth.getSession();
           var session = result.data && result.data.session;
+          console.log('[SSO] Session:', session ? 'exists' : 'null', 'hasToken:', !!(session && session.access_token));
 
           if (session && session.access_token) {
             window.open(
@@ -144,6 +146,7 @@
               'noopener,noreferrer'
             );
           } else {
+            console.warn('[SSO] No access_token, opening directly');
             window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
           }
         } catch (err) {
