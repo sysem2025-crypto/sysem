@@ -151,16 +151,20 @@
           if (!session || !session.access_token) {
             var user = await window.getCurrentUser();
             if (!user || !user.email) {
+              console.warn('[SSO] No user found in localStorage');
               window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
               return;
             }
             var storedUsers = JSON.parse(localStorage.getItem('sysem_users') || '[]');
             var found = storedUsers.find(function(u) { return u.email === user.email; });
             if (!found || !found.password) {
+              console.warn('[SSO] No password found for', user.email);
               window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
               return;
             }
+            console.log('[SSO] Signing in as', found.email);
             var signInResult = await sb.auth.signInWithPassword({ email: found.email, password: found.password });
+            console.log('[SSO] SignIn result:', signInResult.error ? signInResult.error.message : 'OK');
             if (signInResult.error || !signInResult.data.session) {
               window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
               return;
@@ -169,6 +173,7 @@
           }
 
           if (session && session.access_token) {
+            console.log('[SSO] Opening with token');
             window.open(
               TICKETING_ORIGIN + '/api/auth/sso?token=' + encodeURIComponent(session.access_token) + '&redirect=' + encodeURIComponent(path),
               '_blank',
