@@ -190,7 +190,7 @@
           if (session && session.access_token) {
             console.log('[SSO] Opening with token');
             window.open(
-              TICKETING_ORIGIN + '/api/auth/sso?token=' + encodeURIComponent(session.access_token) + '&redirect=' + encodeURIComponent(path),
+              TICKETING_ORIGIN + '/api/auth/sso?token=' + encodeURIComponent(session.access_token) + '&refresh_token=' + encodeURIComponent(session.refresh_token || '') + '&redirect=' + encodeURIComponent(path),
               '_blank',
               'noopener,noreferrer'
             );
