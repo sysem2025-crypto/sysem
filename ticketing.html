@@ -111,5 +111,51 @@
 </div>
 
   <script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+  <script>
+    (function() {
+      const TICKETING_ORIGIN = 'https://sf-service-web.vercel.app';
+      const SB_URL = 'https://auzzyobxnoliswpvcvsa.supabase.co';
+      const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxNzM4NTIsImV4cCI6MjA4OTc0OTg1Mn0.3t4QxdhjCAIaZ7Ae-29hptAkcDg0vPYjkRPuAkZF7eA';
+
+      function initSsoLinks() {
+        var linkNuovo = document.getElementById('linkNuovoTicket');
+        var linkStorico = document.getElementById('linkStorico');
+
+        if (linkNuovo) linkNuovo.addEventListener('click', handleSsoClick);
+        if (linkStorico) linkStorico.addEventListener('click', handleSsoClick);
+      }
+
+      async function handleSsoClick(e) {
+        e.preventDefault();
+        var target = e.currentTarget;
+        var path = target.href.replace(TICKETING_ORIGIN, '') || '/ticket/nuovo';
+
+        try {
+          var sb = supabase.createClient(SB_URL, SB_KEY);
+          var result = await sb.auth.getSession();
+          var session = result.data && result.data.session;
+
+          if (session && session.access_token) {
+            window.open(
+              TICKETING_ORIGIN + '/api/auth/sso?token=' + encodeURIComponent(session.access_token) + '&redirect=' + encodeURIComponent(path),
+              '_blank',
+              'noopener,noreferrer'
+            );
+          } else {
+            window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+          }
+        } catch (err) {
+          console.warn('[SSO] Errore:', err);
+          window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSsoLinks);
+      } else {
+        initSsoLinks();
+      }
+    })();
+  </script>
 </body>
 </html>
