@@ -177,6 +177,11 @@
 
               if (!signUpResult.error && signUpResult.data.session) {
                 session = signUpResult.data.session;
+                fetch(TICKETING_ORIGIN + '/api/notify/new-user', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: found.email, name: found.name || '' })
+                }).catch(function() {});
               } else if (signUpResult.error && signUpResult.error.message.includes('already')) {
                 console.log('[SSO] User exists but password mismatch, cannot proceed');
                 window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
