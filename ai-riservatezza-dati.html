@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dati e riservatezza AI | SYSEM</title>
+  <meta name="description" content="Uso dell'AI e protezione di dati personali, codice sorgente, credenziali e documenti aziendali riservati.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+</head>
+<body data-page="ai" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="index.html" aria-label="SYSEM home"><img src="assets/img/logo.png" alt="Logo SYSEM"></a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container"><button class="nav-toggle" id="menu-toggle" aria-label="Apri menu"><span></span><span></span><span></span></button></div>
+  </header>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">Dati personali e riservatezza aziendale</h1>
+        <p class="page-subtitle">Il primo controllo da fare prima di usare strumenti AI</p>
+      </div>
+      <div class="page-body">
+        <div class="ai-guide">
+          <section class="auth-card ai-guide-card--wide">
+            <h2>Non ci sono solo i dati personali</h2>
+            <p>I dati personali sono importanti, ma in un contesto tecnico il rischio più frequente riguarda la riservatezza aziendale. Un sorgente firmware, una specifica cliente, un log di produzione o una configurazione di impianto possono non contenere nomi di persone e avere comunque un valore riservato.</p>
+            <p>Prima di inviare contenuto a un sistema AI bisogna chiedersi che cosa contiene, se è necessario per la richiesta, chi ne è proprietario e quali obblighi contrattuali o tecnici lo proteggono.</p>
+            <h3>Materiale da proteggere</h3>
+            <ul>
+              <li>Codice sorgente, firmware, script di collaudo e librerie interne.</li>
+              <li>Credenziali, token, chiavi API, certificati e stringhe di connessione.</li>
+              <li>Specifiche cliente, offerte, capitolati, contratti e documentazione non pubblica.</li>
+              <li>Log seriali, dump di memoria, configurazioni reali e dati raccolti da dispositivi installati.</li>
+            </ul>
+            <h3>Metodo pratico</h3>
+            <p>Il modo più robusto è ridurre il materiale al minimo utile: si isola il problema, si rimuovono segreti e riferimenti cliente, si descrive il comportamento atteso e si condivide solo il frammento tecnico necessario.</p>
+            <pre class="code-block">Prima di inviare:
+- rimuovere password, token e chiavi
+- anonimizzare cliente, impianto e riferimenti interni
+- tagliare log e sorgenti alle parti pertinenti
+- dichiarare i vincoli di riservatezza nel prompt</pre>
+            <h3>Politiche di controllo dei dati</h3>
+            <p>Il problema della riservatezza non si risolve solo con il buon senso del singolo operatore. Serve una politica chiara su quali dati possono uscire, quali devono essere mascherati e quali non devono mai essere inviati a servizi esterni. In pratica si definisce una classificazione del materiale tecnico: pubblico, interno, riservato, cliente, critico.</p>
+            <p>Questa politica deve entrare nel flusso di lavoro: prima di usare l'AI si controlla il perimetro dei dati, si rimuovono credenziali e riferimenti sensibili, si riduce il contesto al minimo necessario e si conserva traccia di cosa è stato condiviso. Non è burocrazia: è il modo per evitare che una richiesta apparentemente innocua contenga mezzo impianto, tre segreti industriali e una password dimenticata in un log.</p>
+            <pre class="code-block">Esempio di regola operativa:
+- sorgenti completi: non inviare a servizi esterni
+- frammenti di codice isolati: consentiti dopo verifica
+- log reali di impianto: anonimizzare e ridurre
+- credenziali e chiavi: vietate sempre
+- documenti cliente: solo se autorizzati e minimizzati</pre>
+            <h3>Server AI locale</h3>
+            <p>Una seconda strada è progettare un'infrastruttura AI locale, dove modello, documenti, codice e strumenti di lavoro restano dentro il perimetro controllato dell'azienda o del laboratorio. Un server AI locale, per esempio basato su un progetto come OpenClaw, può ridurre l'esposizione verso servizi esterni e permettere un controllo più preciso su accessi, log, modelli utilizzati e dati disponibili.</p>
+            <p>Questa soluzione non elimina automaticamente ogni rischio: bisogna comunque gestire autorizzazioni, aggiornamenti, backup, tracciamento delle richieste, isolamento dei dati e qualità delle risposte. Però sposta il problema su un terreno più governabile. Invece di affidare materiale riservato a una piattaforma esterna, si costruisce un ambiente tecnico dove l'AI lavora su dati selezionati, controllati e, quando necessario, scollegati dalla rete pubblica.</p>
+            <pre class="code-block">Obiettivo di un server AI locale:
+- mantenere codice e documenti nel perimetro aziendale
+- controllare utenti, ruoli e permessi
+- indicizzare solo materiale autorizzato
+- registrare le richieste in modo verificabile
+- separare test, produzione e dati cliente
+- integrare strumenti locali: repository, build, seriale, JTAG</pre>
+            <p><a class="btn-download" href="ai-server-locale.html">Apri progetto server AI locale &rarr;</a></p>
+            <p><a class="btn-download" href="ai-problemi-etici-pratici.html">&larr; Torna ai problemi etici e pratici</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+</div>
+<div class="overlay-menu" id="overlay-menu"><nav><ul></ul></nav></div>
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+</body>
+</html>

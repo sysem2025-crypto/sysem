@@ -1,4 +1,13 @@
 [
+  { "date": "2026-09-10", "text": "Aggiunto flusso interno query-risposta nella pagina server AI locale" },
+  { "date": "2026-09-10", "text": "Ampliata la pagina server AI locale con modalità di installazione, OpenClaw e risparmio token" },
+  { "date": "2026-09-10", "text": "Creata pagina progetto per l'implementazione di un server AI locale" },
+  { "date": "2026-09-10", "text": "Ampliata la pagina sulla riservatezza con policy dati e server AI locale" },
+  { "date": "2026-09-10", "text": "Aggiunto commento etico sull'uso sconsiderato dell'AI, dalle frodi alle applicazioni militari" },
+  { "date": "2026-09-09", "text": "Collegata la voce Applicazione AI all'assistente SYSEM" },
+  { "date": "2026-09-09", "text": "Sviluppate pagine dedicate per ogni tema dei problemi etici e pratici dell'AI" },
+  { "date": "2026-09-09", "text": "Aggiunta pagina dedicata ai problemi etici e pratici nell'uso dell'AI" },
+  { "date": "2026-09-09", "text": "Riorganizzata la sezione AI con due card e pagine dedicate per vademecum e implementazione" },
   { "date": "2026-06-13", "text": "Unificazione login/register: TicketWeb ora usa autenticazione Sysem" },
   { "date": "2026-06-13", "text": "Link ticketing spostati su Vercel (sf-service-web.vercel.app)" },
   { "date": "2026-06-13", "text": "Changelog spostato in basso a sinistra e ridotto" },

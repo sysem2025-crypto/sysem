@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI SYSEM implementazione | SYSEM</title>
+  <meta name="description" content="Implementazione dell'assistente AI SYSEM: front-end, back-end Flask, database, Supabase, Groq e utility.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+</head>
+
+<body data-page="ai" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="index.html" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">AI SYSEM implementazione</h1>
+        <p class="page-subtitle">Com'è fatta l'applicazione dell'assistente</p>
+      </div>
+      <div class="page-body">
+        <div class="ai-guide">
+          <section class="auth-card ai-guide-card--wide">
+            <h2>IA del sito SYSEM</h2>
+            <p>Questa pagina descrive in modo più dettagliato l'architettura dell'assistente SYSEM: interfaccia web, servizi back-end, persistenza dei dati e collegamento al modello AI.</p>
+            <h3>Front-end: <code>index.html</code></h3>
+            <p>Il front-end è una pagina statica: HTML, CSS e JavaScript sono nello stesso file. Mostra la chat, raccoglie il messaggio e chiama il back-end remoto pubblicato all'indirizzo <code>https://gianluca-ai-ten.vercel.app/api</code>.</p>
+            <h3>Back-end: Python e Flask</h3>
+            <p>Il back-end è in <code>api/main.py</code>. È un'applicazione Flask con endpoint per stato, autenticazione, profilo, cronologia e chat: <code>/api/health</code>, <code>/api/auth/...</code>, <code>/api/profile</code>, <code>/api/history</code> e <code>/api/chat</code>.</p>
+            <p>Flask è un framework web per Python: permette di trasformare funzioni Python in indirizzi raggiungibili dal browser o dal front-end. In questa applicazione riceve le richieste HTTP, legge o salva dati nel database, prepara le chiamate verso Groq e restituisce risposte JSON alla pagina.</p>
+            <h3>Database: SQLite e Supabase</h3>
+            <p><code>api/database.py</code> gestisce la persistenza dei dati in due modalità. In ambiente locale usa un database SQLite con le tabelle dedicate al profilo dell'assistente, alla cronologia delle conversazioni e alle preferenze. In deploy può collegarsi a Supabase tramite API REST. Lo script <code>scripts/setup_db.py</code> inizializza la base dati e carica le informazioni di partenza dai file JSON del profilo.</p>
+            <p>Supabase è un servizio cloud che fornisce un database PostgreSQL e API pronte per leggere e scrivere dati da un'applicazione web. In questo caso serve quando l'assistente è pubblicato online: invece di dipendere solo da un file SQLite locale, il back-end può salvare profilo, preferenze e conversazioni su un database raggiungibile dal deploy.</p>
+            <h3>Connessione a Groq</h3>
+            <p>In <code>api/main.py</code> la funzione <code>ask_groq()</code> prepara i messaggi, legge la variabile <code>GROQ_API_KEY</code> e invia una richiesta POST a <code>https://api.groq.com/openai/v1/chat/completions</code>, usando il modello <code>openai/gpt-oss-120b</code>.</p>
+            <h3>Utility tecniche</h3>
+            <p>La sezione utility raccoglie documentazione e riferimenti tecnici collegati al sito: sistemi di misura, protocolli, normative, manuali applicativi e procedure operative.</p>
+            <p><a class="btn-download" href="utility.html">Apri utility &rarr;</a></p>
+            <h3>Flusso reale della richiesta</h3>
+            <ol class="ai-flow">
+              <li>L'utente apre la pagina dell'assistente e scrive la domanda.</li>
+              <li>Il front-end controlla che l'API sia raggiungibile e invia una richiesta HTTP.</li>
+              <li>Il back-end autentica la chiamata e costruisce la richiesta verso Groq.</li>
+              <li>Groq restituisce la risposta del modello al back-end.</li>
+              <li>Il back-end restituisce il JSON e il front-end aggiorna la conversazione.</li>
+            </ol>
+            <pre class="code-block">Browser
+  assets/js/main.js  --fetch()-->  API_BASE/api/...
+                                      |
+                                      +--> Groq API
+                                      |
+  interfaccia  &lt;-- JSON -----------+
+</pre>
+            <p><a class="btn-download" href="ai.html">&larr; Torna ad AI</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer class="site-footer" id="site-footer"></footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+</body>
+</html>

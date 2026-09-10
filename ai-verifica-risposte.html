@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verifica risposte AI | SYSEM</title>
+  <meta name="description" content="Metodo per distinguere risposte AI, ipotesi tecniche e verifiche reali.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+</head>
+<body data-page="ai" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="index.html" aria-label="SYSEM home"><img src="assets/img/logo.png" alt="Logo SYSEM"></a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container"><button class="nav-toggle" id="menu-toggle" aria-label="Apri menu"><span></span><span></span><span></span></button></div>
+  </header>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">Verifica delle risposte AI</h1>
+        <p class="page-subtitle">Separare evidenze, ipotesi e decisioni tecniche</p>
+      </div>
+      <div class="page-body">
+        <div class="ai-guide">
+          <section class="auth-card ai-guide-card--wide">
+            <h2>Una risposta non è ancora una prova</h2>
+            <p>L'AI può leggere codice, proporre diagnosi e suggerire test, ma una risposta generata non deve essere trattata come un fatto tecnico finché non viene verificata. Nel firmware, nei protocolli e nei sistemi di misura contano le evidenze: compilazione, log, trame, misure, documentazione e comportamento reale del dispositivo.</p>
+            <h3>Tre livelli da tenere separati</h3>
+            <ul>
+              <li><strong>Evidenza.</strong> Un dato osservato: errore di compilazione, log seriale, risposta del dispositivo, valore letto da debugger.</li>
+              <li><strong>Ipotesi.</strong> Una spiegazione possibile proposta dal modello o dal tecnico.</li>
+              <li><strong>Decisione.</strong> Una modifica scelta dopo confronto con codice, requisiti e test.</li>
+            </ul>
+            <h3>Controlli utili</h3>
+            <p>Ogni suggerimento importante dovrebbe essere ricondotto a file, righe di codice, requisito o risultato di test. Se il modello non indica da dove deriva una conclusione, quella conclusione va trattata come ipotesi.</p>
+            <pre class="code-block">Checklist:
+- la risposta cita il file o la funzione interessata?
+- il comportamento è stato riprodotto?
+- la modifica compila?
+- il test dimostra il caso corretto?
+- sono rimasti limiti o casi non verificati?</pre>
+            <p><a class="btn-download" href="ai-problemi-etici-pratici.html">&larr; Torna ai problemi etici e pratici</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+</div>
+<div class="overlay-menu" id="overlay-menu"><nav><ul></ul></nav></div>
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+</body>
+</html>

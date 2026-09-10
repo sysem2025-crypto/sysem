@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flusso operativo AI | SYSEM</title>
+  <meta name="description" content="Separare analisi, modifica, compilazione, caricamento e test quando si usa l'AI in attività firmware.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+</head>
+<body data-page="ai" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="index.html" aria-label="SYSEM home"><img src="assets/img/logo.png" alt="Logo SYSEM"></a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container"><button class="nav-toggle" id="menu-toggle" aria-label="Apri menu"><span></span><span></span><span></span></button></div>
+  </header>
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">Separare analisi, modifica e verifica</h1>
+        <p class="page-subtitle">Un flusso controllato per lavorare su firmware e dispositivi reali</p>
+      </div>
+      <div class="page-body">
+        <div class="ai-guide">
+          <section class="auth-card ai-guide-card--wide">
+            <h2>Perché separare le fasi</h2>
+            <p>Quando l'AI lavora su un progetto tecnico è facile passare troppo in fretta dall'ipotesi alla modifica. Nei firmware e nei sistemi collegati a dispositivi reali conviene invece dividere il lavoro in passaggi verificabili: prima capire, poi modificare, poi compilare, poi provare.</p>
+            <ol class="ai-flow">
+              <li><strong>Analisi.</strong> Lettura dei file e ricostruzione del flusso senza modificare nulla.</li>
+              <li><strong>Modifica.</strong> Intervento piccolo, motivato e collegato al problema osservato.</li>
+              <li><strong>Compilazione.</strong> Build pulita, warning valutati e artefatti generati identificati.</li>
+              <li><strong>Caricamento.</strong> Flash solo su scheda corretta e con versione tracciata.</li>
+              <li><strong>Test locale.</strong> Invio di comandi da seriale, lettura risposte e raccolta log.</li>
+              <li><strong>Verifica JTAG.</strong> Controllo di registri, memoria e stato del programma quando serve.</li>
+            </ol>
+            <h3>Risultato atteso</h3>
+            <p>Il risultato finale non dovrebbe essere solo una frase come “funziona”. Dovrebbe essere un piccolo rapporto tecnico: cosa è stato cambiato, perché, quali prove sono state eseguite, quali risultati sono stati osservati e quali limiti restano aperti.</p>
+            <pre class="code-block">Report minimo:
+- file modificati
+- motivo della modifica
+- comando di build eseguito
+- firmware caricato e target usato
+- test seriali eseguiti
+- evidenze osservate
+- verifiche non eseguite</pre>
+            <p><a class="btn-download" href="ai-problemi-etici-pratici.html">&larr; Torna ai problemi etici e pratici</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+</div>
+<div class="overlay-menu" id="overlay-menu"><nav><ul></ul></nav></div>
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+</body>
+</html>

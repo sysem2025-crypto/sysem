@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI vademecum | SYSEM</title>
+  <meta name="description" content="Vademecum SYSEM per usare l'intelligenza artificiale in modo pratico: contesto, skill, MCP e debug firmware.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
+</head>
+
+<body data-page="ai" data-required-role="guest">
+<div class="site">
+  <header class="site-header">
+    <div class="site-header__left">
+      <a class="brand" href="index.html" aria-label="SYSEM home">
+        <img src="assets/img/logo.png" alt="Logo SYSEM">
+      </a>
+      <span class="site-header__menu" id="menu-label"></span>
+    </div>
+    <div class="nav-container">
+      <button class="nav-toggle" id="menu-toggle" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="site-body">
+    <div class="content-frame">
+      <div class="page-heading">
+        <h1 class="page-title">AI vademecum</h1>
+        <p class="page-subtitle">Metodo pratico, rischi e flussi tecnici con Codex</p>
+      </div>
+      <div class="page-body">
+        <div class="ai-guide">
+          <section class="auth-card ai-guide-card--wide">
+            <h2>IA, Codex e flusso firmware</h2>
+            <p>L'intelligenza artificiale può aiutare a leggere codice, preparare verifiche, scrivere documentazione e ricostruire problemi tecnici. Non sostituisce il giudizio del progettista: rende più importante definire bene contesto, limiti, prove e responsabilità.</p>
+            <h3>Problemi etici e pratici</h3>
+            <p>Dati personali, codice sorgente, credenziali e documenti riservati richiedono una valutazione esplicita prima di entrare in un flusso AI. La pagina dedicata raccoglie i criteri principali per distinguere informazioni condivisibili, contenuti da filtrare, ipotesi generate dal modello e verifiche tecniche reali.</p>
+            <p><a class="btn-download" href="ai-problemi-etici-pratici.html">Apri problemi etici e pratici &rarr;</a></p>
+            <h3>Server MCP e skill</h3>
+            <p>Un server MCP, Model Context Protocol, espone strumenti e dati a Codex in modo controllato: file, sistemi di build, strumenti di test, seriali, database o servizi interni.</p>
+            <p>Una skill è una procedura riutilizzabile: istruzioni, criteri, script e controlli che insegnano a Codex come svolgere un'attività ricorrente.</p>
+            <h3>Costruire il contesto</h3>
+            <pre class="code-block">Obiettivo: verificare la correzione del comando seriale X.
+Contesto: firmware, protocollo, log precedenti, scheda usata in laboratorio.
+Vincoli: non modificare interfacce pubbliche, non cambiare pinout, non eseguire flash senza conferma.
+Verifica: compilazione pulita, flash su scheda di test, comando seriale, lettura risposta, controllo JTAG.</pre>
+            <h3>Flusso completo di debug firmware con Codex</h3>
+            <ol class="ai-flow">
+              <li><strong>Analisi iniziale.</strong> Codex legge struttura del progetto, punti di ingresso, toolchain e documentazione disponibile.</li>
+              <li><strong>Riproduzione del problema.</strong> Si definisce un caso di prova: comando, stato iniziale, risposta attesa e risposta osservata.</li>
+              <li><strong>Modifica circoscritta.</strong> Codex propone una correzione piccola, motivata e collegata al difetto.</li>
+              <li><strong>Compilazione.</strong> La skill o il server MCP eseguono il comando di build e raccolgono errori, warning e file generati.</li>
+              <li><strong>Caricamento flash.</strong> Solo su hardware autorizzato, con procedura esplicita, versione tracciata e possibilità di ripristino.</li>
+              <li><strong>Comandi da seriale locale.</strong> Il test invia comandi controllati, registra risposte, timeout e log diagnostici.</li>
+              <li><strong>Verifica JTAG.</strong> Quando serve, si controllano registri, memoria, stato del programma e segnali utili alla diagnosi.</li>
+              <li><strong>Conclusione.</strong> Il risultato non è "funziona": è un rapporto con prove eseguite, limiti, file modificati e verifiche mancanti.</li>
+            </ol>
+            <h3>Esempi pratici</h3>
+            <div class="ai-examples">
+              <article>
+                <h4>Prompt di partenza</h4>
+                <pre class="code-block">Analizza il firmware senza modificare i file.
+Ricostruisci il flusso del comando seriale SET_TEMP.
+Indica dove viene validato il parametro, dove viene salvato e quali test servono.</pre>
+              </article>
+              <article>
+                <h4>Compilazione</h4>
+                <pre class="code-block">Compila il progetto con la toolchain configurata.
+Se fallisce, separa errori bloccanti, warning e possibili cause.
+Non modificare file generati.</pre>
+              </article>
+              <article>
+                <h4>Flash su scheda di test</h4>
+                <pre class="code-block">Carica il firmware sulla scheda di laboratorio.
+Registra versione, file hex/bin usato, programmatore e risultato del verify.
+Non procedere se la scheda non corrisponde al target dichiarato.</pre>
+              </article>
+              <article>
+                <h4>Test seriale locale</h4>
+                <pre class="code-block">Apri la porta COM autorizzata.
+Invia: SET_TEMP 230
+Leggi risposta, timeout e log diagnostico.
+Confronta con il comportamento atteso.</pre>
+              </article>
+              <article>
+                <h4>Verifica JTAG</h4>
+                <pre class="code-block">Metti un breakpoint dopo il parsing del comando.
+Controlla registro stato, valore parametro e ramo eseguito.
+Riporta solo evidenze osservate, non deduzioni non verificate.</pre>
+              </article>
+            </div>
+            <p><a class="btn-download" href="ai.html">&larr; Torna ad AI</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer class="site-footer" id="site-footer"></footer>
+</div>
+
+<div class="overlay-menu" id="overlay-menu">
+  <nav><ul></ul></nav>
+</div>
+
+<script src="assets/js/auth-supabase.js?v=20260811a"></script><script src="assets/js/main.js?v=20260820c"></script>
+</body>
+</html>

@@ -726,6 +726,92 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.86rem;
 }
 
+.ai-guide {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.ai-guide-card--wide {
+  grid-column: 1 / -1;
+}
+
+.ai-guide--two {
+  align-items: start;
+}
+
+.ai-guide .auth-card {
+  background: rgba(252, 250, 244, 0.9);
+}
+
+.ai-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ai-guide ul,
+.ai-flow {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.55;
+}
+
+.ai-guide li {
+  margin-bottom: 8px;
+}
+
+.ai-guide li:last-child {
+  margin-bottom: 0;
+}
+
+.ai-guide .code-block {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(31, 26, 22, 0.04);
+  color: var(--ink);
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.ai-examples {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ai-examples article {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  background: rgba(250, 246, 235, 0.56);
+}
+
+.ai-examples h4 {
+  margin: 0 0 8px;
+  color: var(--aqua);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.ai-examples .code-block {
+  margin-top: 0;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 900px) {
+  .ai-guide {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ==============================
    ADMIN
    ============================== */
@@ -842,18 +928,22 @@ a { color: inherit; text-decoration: none; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
-  background: var(--aqua);
-  color: var(--white);
-  border-radius: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(47, 74, 69, 0.28);
+  background: rgba(252, 250, 244, 0.55);
+  color: var(--aqua);
+  border-radius: 6px;
   font-weight: 800;
   text-transform: uppercase;
   font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  transition: opacity 0.3s ease;
+  letter-spacing: 0.03em;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
-.btn-download:hover { opacity: 0.9; }
+.btn-download:hover {
+  border-color: var(--aqua);
+  background: rgba(47, 74, 69, 0.06);
+}
 
 .btn-download-secondary {
   display: inline-flex;
@@ -1442,8 +1532,8 @@ a { color: inherit; text-decoration: none; }
    ============================== */
 .construction-float {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  top: 96px;
+  left: 24px;
   z-index: 9999;
   display: flex;
   align-items: center;

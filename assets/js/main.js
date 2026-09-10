@@ -162,7 +162,7 @@ var IT_TRANSLATIONS = {
     "en": "EN"
   },
   "page": {
-    "home": { "overline": "Studio Tecnico Informatico", "title": "SYSEM", "metaTitle": "Soluzioni software per utilities", "subtitle": "soluzioni digitali per telecontrollo utilities" },
+    "home": { "overline": "Studio Tecnico Informatico", "title": "SYSEM", "metaTitle": "Soluzioni software per utilities", "subtitle": "soluzioni digitali per telecontrollo e utilities" },
     "about": { "overline": "Chi siamo", "title": "SYSEM", "metaTitle": "Azienda", "desc1": "Siamo una realtà che sviluppa software per il settore dei servizi pubblici (utilities), attivo nella distribuzione di acqua, gas ed energia elettrica.", "desc2": "Uniamo competenza tecnica sul campo e approccio digitale per semplificare le attività quotidiane di tecnici e operatori." },
     "services": { "overline": "Servizi operativi", "title": "Servizi per utilities", "metaTitle": "Servizi", "desc1": "Supportiamo utility, distributori e partner tecnici nella gestione completa del ciclo operativo dei sistemi.", "desc2": "Copriamo avvio impianto, parametrizzazione, integrazione con sistemi centrali e supporto post-attivazione." },
     "industries": { "overline": "Ambiti applicativi", "title": "Dove operiamo", "metaTitle": "Applicazioni", "desc1": "Le nostre soluzioni sono pensate per reti utilities, cabine di misura e punti di consegna industriali.", "desc2": "Interveniamo in contesti dove affidabilità del dato, continuità del servizio e tracciabilità sono requisiti essenziali." },
@@ -452,7 +452,7 @@ var NAV_STRUCTURE = [
   { labelKey: 'nav.systema', href: SITE_BASE + 'datacenter.html' },
   { labelKey: 'nav.assistenza', href: SITE_BASE + 'ticketing.html' },
   { labelKey: 'nav.progetti', href: SITE_BASE + 'progetti.html' },
-  { labelKey: 'nav.telecontrollo', href: SITE_BASE + 'telecontrollo.html' },
+  { labelKey: 'nav.ai', href: SITE_BASE + 'ai.html' },
   { labelKey: 'nav.contatti', href: SITE_BASE + 'contact.html' }
 ];
 
@@ -475,8 +475,8 @@ var PAGE_MENU_MAP = {
   'lettura-tachimetrica': 'nav.progetti',
   'lettura-ntc': 'nav.progetti',
   'utility': 'nav.assistenza',
-  'telecontrollo': 'nav.telecontrollo',
-  'cedam3': 'nav.telecontrollo',
+  'telecontrollo': 'nav.progetti',
+  'cedam3': 'nav.progetti',
   'sistemi': 'nav.sysem',
   'sistema-correttori': 'nav.sysem',
   'about': 'nav.sysem',
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', function() {
     badge.querySelector('.construction-float-close').addEventListener('click', function() {
       badge.style.animation = 'none';
       badge.style.opacity = '0';
-      badge.style.transform = 'translateY(20px)';
+      badge.style.transform = 'translateY(-20px)';
       badge.style.transition = 'opacity 0.3s, transform 0.3s';
       setTimeout(function() { badge.remove(); }, 300);
       sessionStorage.setItem('construction_dismissed', '1');
@@ -1297,8 +1297,8 @@ function renderFooter() {
   el.className = 'site-footer';
   el.innerHTML =
     '  <div class="footer-inner">' +
-    '    <a class="footer-brand-line" href="/" aria-label="SYSEM home">' +
-    '      <img src="/assets/img/logo.png" alt="Logo SYSEM">' +
+    '    <a class="footer-brand-line" href="' + SITE_BASE + 'index.html" aria-label="SYSEM home">' +
+    '      <img src="' + SITE_BASE + 'assets/img/logo.png" alt="Logo SYSEM">' +
     '      <span>SYSEM</span>' +
     '    </a>' +
     '    <nav class="footer-links">' +
@@ -1329,7 +1329,7 @@ function loadChangelog() {
   fetch(SITE_BASE + 'changelog.json?v=' + Date.now())
     .then(function(r) { return r.json(); })
     .then(function(entries) {
-      var lastThree = entries.slice(-3).reverse();
+      var lastThree = entries.slice(0, 3);
       list.innerHTML = '';
       lastThree.forEach(function(entry) {
         var row = document.createElement('div');
