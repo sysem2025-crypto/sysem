@@ -9,7 +9,6 @@
   <title data-i18n="page.ticketing.metaTitle">Assistenza | SYSEM</title>
   <meta name="description" content="Assistenza tecnica SYSEM: ticket di supporto, knowledge base applicativi e download firmware/software per utenti registrati.">
   <link rel="stylesheet" href="assets/css/style.css?v=20260813c">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body data-page="ticketing" data-required-role="guest">
@@ -115,11 +114,24 @@
   <script>
     (function() {
       var TICKETING_ORIGIN = 'https://sf-service-web.vercel.app';
+      var SB_URL = 'https://auzzyobxnoliswpvcvsa.supabase.co';
+      var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1enp5b2J4bm9saXN3cHZjdnNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxNzM4NTIsImV4cCI6MjA4OTc0OTg1Mn0.3t4QxdhjCAIaZ7Ae-29hptAkcDg0vPYjkRPuAkZF7eA';
+      var CDN_LOADED = false;
+
+      function loadCDN() {
+        return new Promise(function(resolve, reject) {
+          if (CDN_LOADED || window.supabase) { CDN_LOADED = true; resolve(); return; }
+          var s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+          s.onload = function() { CDN_LOADED = true; resolve(); };
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
 
       function initSsoLinks() {
         var linkNuovo = document.getElementById('linkNuovoTicket');
         var linkStorico = document.getElementById('linkStorico');
-
         if (linkNuovo) linkNuovo.addEventListener('click', handleSsoClick);
         if (linkStorico) linkStorico.addEventListener('click', handleSsoClick);
       }
@@ -130,15 +142,31 @@
         var path = target.href.replace(TICKETING_ORIGIN, '') || '/ticket/nuovo';
 
         try {
-          var sb = (typeof getSupabase === 'function') ? getSupabase() : window.supabaseClient;
-          if (!sb) {
-            console.warn('[SSO] No supabase client found');
-            window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
-            return;
+          await loadCDN();
+          var sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+          var sessionResult = await sb.auth.getSession();
+          var session = sessionResult.data && sessionResult.data.session;
+
+          if (!session || !session.access_token) {
+            var user = await window.getCurrentUser();
+            if (!user || !user.email) {
+              window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+              return;
+            }
+            var storedUsers = JSON.parse(localStorage.getItem('sysem_users') || '[]');
+            var found = storedUsers.find(function(u) { return u.email === user.email; });
+            if (!found || !found.password) {
+              window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+              return;
+            }
+            var signInResult = await sb.auth.signInWithPassword({ email: found.email, password: found.password });
+            if (signInResult.error || !signInResult.data.session) {
+              window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+              return;
+            }
+            session = signInResult.data.session;
           }
-          var result = await sb.auth.getSession();
-          var session = result.data && result.data.session;
-          console.log('[SSO] Session:', session ? 'exists' : 'null', 'hasToken:', !!(session && session.access_token));
 
           if (session && session.access_token) {
             window.open(
@@ -147,7 +175,6 @@
               'noopener,noreferrer'
             );
           } else {
-            console.warn('[SSO] No access_token, opening directly');
             window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
           }
         } catch (err) {
