@@ -51,7 +51,7 @@
     "normative": { "overline": "Compliance", "title": "Regulations", "metaTitle": "Regulations" },
     "guidaNorme": { "overline": "Method", "title": "Standards Application Guide", "metaTitle": "Standards Guide" },
     "sistemaMisura": { "overline": "Overview", "title": "Measuring System", "metaTitle": "Measuring System" },
-    "ai": { "overline": "Innovation", "title": "AI", "metaTitle": "AI" },
+    "ai": { "overline": "Innovation", "title": "AI", "subtitle": "Technical documentation and link to the separate AI project", "metaTitle": "AI" },
     "progetti": { "overline": "Projects", "title": "Projects", "metaTitle": "Projects" },
     "telecontrollo": { "overline": "Telecontrol", "title": "Telecontrol Applications", "subtitle": "Remote monitoring and automation for utility plants", "metaTitle": "Telecontrol" },
     "cedam3": { "overline": "Telecontrol", "title": "Cedam 3", "subtitle": "Telecontrol system for water lifting plants", "metaTitle": "Cedam 3" },

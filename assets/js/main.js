@@ -177,7 +177,7 @@ var IT_TRANSLATIONS = {
     "guidaNorme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
     "guida-norme": { "overline": "Metodo operativo", "title": "Come Applicare le Norme", "metaTitle": "Guida Applicazione Norme" },
     "sistemaMisura": { "overline": "Panoramica tecnica", "title": "Sistema di Misura", "metaTitle": "Sistema di Misura" },
-    "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "metaTitle": "AI" },
+    "ai": { "overline": "Innovazione", "title": "Intelligenza Artificiale", "subtitle": "Documentazione tecnica e collegamento al progetto AI separato", "metaTitle": "AI" },
     "progetti": { "overline": "Progetti", "title": "Progetti", "metaTitle": "Progetti" },
     "telecontrollo": { "overline": "Telecontrollo", "title": "Applicazioni di Telecontrollo", "subtitle": "Soluzioni per automazione e monitoraggio remoto di impianti utility", "metaTitle": "Telecontrollo" },
     "cedam3": { "overline": "Telecontrollo", "title": "Cedam 3", "subtitle": "Sistema di automazione e telecontrollo per impianti di sollevamento acque", "metaTitle": "Cedam 3" },
@@ -514,6 +514,48 @@ function generateDownloadToken() {
   const user = getCachedUser();
   if (!user) return '';
   return btoa(user.email + '|' + user.role + '|' + new Date().toISOString().slice(0, 10));
+}
+
+function generateAiAppToken(user) {
+  if (!user || !user.email) return '';
+  var role = user.role || 'base';
+  if (!['guest', 'base', 'pro', 'admin'].includes(role)) role = 'base';
+  return btoa(user.email + '|' + role + '|' + new Date().toISOString().slice(0, 10));
+}
+
+function initAiAppLinks() {
+  var links = document.querySelectorAll('[data-ai-app-link], #open-ai-app');
+  if (!links.length) return;
+
+  links.forEach(function(link) {
+    var appBase = window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8124/'
+      : 'https://gianluca-ai-ten.vercel.app/';
+    link.href = appBase;
+
+    link.addEventListener('click', async function(event) {
+      var user = null;
+      try {
+        user = await getCurrentUser();
+      } catch {
+        user = getCachedUser();
+      }
+
+      if (!user || !user.email) {
+        event.preventDefault();
+        var returnUrl = window.location.pathname + window.location.search;
+        window.location.href = 'access.html?return=' + encodeURIComponent(returnUrl);
+        return;
+      }
+
+      var token = generateAiAppToken(user);
+      if (!token) return;
+      var target = new URL(appBase);
+      target.searchParams.set('token', token);
+      target.searchParams.set('email', user.email);
+      link.href = target.toString();
+    });
+  });
 }
 
 function renderNavigation(currentPage) {
@@ -1288,6 +1330,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     renderFooter();
     loadChangelog();
+    initAiAppLinks();
   });
 });
 

@@ -32,6 +32,10 @@
   }
 
   // Cache utente Supabase
+  function normalizeRole(role) {
+    return ROLE_LEVEL[role] !== undefined ? role : 'base';
+  }
+
   async function getCurrentUserSupabase() {
     if (currentUserCache) return currentUserCache;
     if (currentUserPromise) return currentUserPromise;
@@ -44,7 +48,8 @@
         return null;
       }
       const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-      currentUserCache = profile ? { ...profile, email: user.email, id: user.id } : { email: user.email, id: user.id, role: 'user' };
+      currentUserCache = profile ? { ...profile, email: user.email, id: user.id } : { email: user.email, id: user.id, role: 'base' };
+      currentUserCache.role = normalizeRole(currentUserCache.role);
       return currentUserCache;
     })();
 
@@ -116,6 +121,7 @@
         var found = users.find(function(u) { return u.email === email && u.password === password; });
         if (found) {
           var safeUser = { email: found.email, role: found.role || 'base', name: found.name || found.email };
+          safeUser.role = normalizeRole(safeUser.role);
           setCachedUser(safeUser);
           localStorage.setItem('sysem_session_email', found.email);
           return { user: safeUser };
