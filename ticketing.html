@@ -165,11 +165,26 @@
             console.log('[SSO] Signing in as', found.email);
             var signInResult = await sb.auth.signInWithPassword({ email: found.email, password: found.password });
             console.log('[SSO] SignIn result:', signInResult.error ? signInResult.error.message : 'OK');
-            if (signInResult.error || !signInResult.data.session) {
-              window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
-              return;
+
+            if (signInResult.error) {
+              console.log('[SSO] Trying signUp...');
+              var signUpResult = await sb.auth.signUp({
+                email: found.email,
+                password: found.password,
+                options: { data: { full_name: found.name || found.email } }
+              });
+              console.log('[SSO] SignUp result:', signUpResult.error ? signUpResult.error.message : 'OK');
+
+              if (!signUpResult.error && signUpResult.data.session) {
+                session = signUpResult.data.session;
+              } else if (signUpResult.error && signUpResult.error.message.includes('already')) {
+                console.log('[SSO] User exists but password mismatch, cannot proceed');
+                window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+                return;
+              }
+            } else if (signInResult.data.session) {
+              session = signInResult.data.session;
             }
-            session = signInResult.data.session;
           }
 
           if (session && session.access_token) {
