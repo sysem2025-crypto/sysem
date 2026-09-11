@@ -136,6 +136,13 @@
         if (linkStorico) linkStorico.addEventListener('click', handleSsoClick);
       }
 
+      function isTokenExpired(token) {
+        try {
+          var payload = JSON.parse(atob(token.split('.')[1]));
+          return payload.exp * 1000 < Date.now();
+        } catch(e) { return true; }
+      }
+
       async function handleSsoClick(e) {
         e.preventDefault();
         var target = e.currentTarget;
@@ -145,9 +152,26 @@
           await loadCDN();
           var sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-          var sessionResult = await sb.auth.getSession();
-          var session = sessionResult.data && sessionResult.data.session;
+          var session = null;
 
+          // Try existing session first, but validate token
+          var sessionResult = await sb.auth.getSession();
+          var cached = sessionResult.data && sessionResult.data.session;
+          if (cached && cached.access_token && !isTokenExpired(cached.access_token)) {
+            session = cached;
+          } else if (cached && cached.access_token && isTokenExpired(cached.access_token)) {
+            // Token expired, try refresh
+            console.log('[SSO] Token expired, refreshing...');
+            var refreshResult = await sb.auth.refreshSession();
+            if (refreshResult.data && refreshResult.data.session) {
+              session = refreshResult.data.session;
+              console.log('[SSO] Refresh OK');
+            } else {
+              console.log('[SSO] Refresh failed:', refreshResult.error ? refreshResult.error.message : 'unknown');
+            }
+          }
+
+          // No valid session → sign in with stored credentials
           if (!session || !session.access_token) {
             var user = await window.getCurrentUser();
             if (!user || !user.email) {
@@ -193,14 +217,29 @@
           }
 
           if (session && session.access_token) {
-            console.log('[SSO] Opening with token');
+            console.log('[SSO] Pre-validating token...');
+            try {
+              var verifyRes = await sb.auth.getUser(session.access_token);
+              if (verifyRes.error || !verifyRes.data || !verifyRes.data.user) {
+                console.warn('[SSO] Token pre-validation failed:', verifyRes.error ? verifyRes.error.message : 'no user');
+                session = null;
+              }
+            } catch (vErr) {
+              console.warn('[SSO] Token pre-validation error:', vErr);
+              session = null;
+            }
+          }
+
+          if (session && session.access_token) {
+            console.log('[SSO] Opening with token (valid=' + !isTokenExpired(session.access_token) + ')');
             window.open(
               TICKETING_ORIGIN + '/api/auth/sso?token=' + encodeURIComponent(session.access_token) + '&refresh_token=' + encodeURIComponent(session.refresh_token || '') + '&redirect=' + encodeURIComponent(path),
               '_blank',
               'noopener,noreferrer'
             );
           } else {
-            window.open(TICKETING_ORIGIN + path, '_blank', 'noopener,noreferrer');
+            console.log('[SSO] No valid token, redirecting to login');
+            window.open(TICKETING_ORIGIN + '/login', '_blank', 'noopener,noreferrer');
           }
         } catch (err) {
           console.warn('[SSO] Errore:', err);
