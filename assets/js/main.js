@@ -799,6 +799,33 @@ if (password.length < 8) {
   refreshLoginOptions();
 }
 
+function deleteUser(email, uid) {
+  var feedback = document.getElementById('admin-feedback');
+  var cachedUser = getCachedUser();
+  var adminEmail = cachedUser ? cachedUser.email : '';
+
+  fetch('https://sf-service-web.vercel.app/api/admin/delete-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-email': adminEmail },
+    body: JSON.stringify({ userId: uid })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      var users = readJson(STORAGE_KEYS.users, []);
+      users = users.filter(function(u) { return u.email !== email; });
+      writeJson(STORAGE_KEYS.users, users);
+      if (feedback) feedback.textContent = 'Utente ' + email + ' eliminato.';
+      renderTable();
+    } else {
+      if (feedback) feedback.textContent = 'Errore: ' + (data.error || 'sconosciuto');
+    }
+  })
+  .catch(function(err) {
+    if (feedback) feedback.textContent = 'Errore eliminazione: ' + err.message;
+  });
+}
+
 function initAdminPage() {
   const usersBody = document.getElementById('admin-users-body');
   const searchInput = document.getElementById('admin-search');
@@ -876,6 +903,18 @@ function initAdminPage() {
         saveBtn.textContent = t('admin.saveBtn');
         saveBtn.addEventListener('click', function() { saveRole(user.email, user.id, roleSelect.value); });
         actionTd.appendChild(saveBtn);
+        if (user.email !== 'gianluca.piga@sysem.it') {
+          var deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = 'btn-download admin-save-btn';
+          deleteBtn.style.cssText = 'margin-left:6px;background:#9b2f20;border-color:#9b2f20;';
+          deleteBtn.textContent = 'Elimina';
+          deleteBtn.addEventListener('click', function() {
+            if (!window.confirm('Eliminare definitivamente l\'utente ' + user.email + '?')) return;
+            deleteUser(user.email, user.id);
+          });
+          actionTd.appendChild(deleteBtn);
+        }
         row.appendChild(emailTd);
         row.appendChild(roleTd);
         row.appendChild(createdTd);
