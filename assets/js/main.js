@@ -744,8 +744,12 @@ if (password.length < 8) {
     window.supabaseLogin(email, password)
       .then(function() {
         var params = new URLSearchParams(window.location.search);
-        var returnUrl = getSafeReturnUrl(params.get('return'), getAllowedLanding('base'));
-        window.location.href = returnUrl;
+        var returnUrl = params.get('return');
+        if (returnUrl && returnUrl.indexOf('access.html') === -1) {
+          window.location.href = getSafeReturnUrl(returnUrl, 'access.html');
+        } else {
+          window.location.href = 'access.html';
+        }
       })
       .catch(function(err) {
         var msg = String(err.message || '');
@@ -797,6 +801,18 @@ if (password.length < 8) {
     });
   }
   refreshLoginOptions();
+  if (cachedUser) {
+    var loggedInPanel = document.getElementById('logged-in-panel');
+    var loggedInEmail = document.getElementById('logged-in-email');
+    var loginSection = document.getElementById('login-section');
+    var registerSection = document.getElementById('register-section');
+    if (loggedInPanel && loggedInEmail) {
+      loggedInEmail.textContent = cachedUser.email;
+      loggedInPanel.style.display = 'block';
+      if (loginSection) loginSection.style.display = 'none';
+      if (registerSection) registerSection.style.display = 'none';
+    }
+  }
 }
 
 function deleteUser(email, uid) {
